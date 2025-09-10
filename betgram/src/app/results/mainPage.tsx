@@ -2,9 +2,19 @@
 import { League } from "@/types/results";
 import Results from "./results";
 import { useEffect, useState } from "react";
+import { useUser } from "@/app/context/UserContext";
+import { getCurrentDate } from "@/app/utils/date";
 
 export default function MainPage() {
- const [selectedDate, setSelectedDate] = useState(new Date().toISOString().slice(0, 10));
+ const { user } = useUser();
+  const timezone = user?.timezone || "UTC";
+ const [selectedDate, setSelectedDate] = useState(getCurrentDate(timezone));
+
+ function formatDate(date: string) {
+  const [year, month, day] = date.split("-");
+  return `${day}-${month}-${year}`;
+}
+
 
   return (
     <div className="flex flex-col items-center">
@@ -16,7 +26,7 @@ export default function MainPage() {
           id="selected-date"
         />
       </div>
-      <Results date={selectedDate}/>
+      <Results date={formatDate(selectedDate)}/>
     </div>
   );
 }

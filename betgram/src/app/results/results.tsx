@@ -10,25 +10,28 @@ type Props = {
 
 export default function Results({ date }: Props) {
   const [results, setResults] = useState<Result[]>([]);
-  const leagues: number[] = [135, 78, 94, 61, 140, 39];
 
   useEffect(() => {
     if (!date) return;
     const fetchResults = async () => {
-      const res = await fetch(`http://localhost:3000/mock/results.json?date=${date}`);
+      const res = await fetch(`http://localhost:3001/api/fixtures/filter/data/${date}`);
       const json = await res.json();
-      setResults(json.response);
+      console.log("API response:", json); // 👈 stampa la forma esatta
+      setResults(json);
     };
     fetchResults();
   }, [date]);
 
+  if(results.length === 0) return <div>No results</div>;
   const uniqueLeagues: League[] = Array.from(
     new Map(
       results
-        .filter((r) => leagues.includes(r.league.id))
         .map((r) => [r.league.id, r.league])
     ).values()
   );
+
+  uniqueLeagues.sort((a, b) => a.name.localeCompare(b.name));
+  results.sort((a, b) => a.fixture.timestamp - b.fixture.timestamp);
 
   const fixturesByLeagueId: { [leagueId: number]: Result[] } = {};
   results.forEach((result) => {
