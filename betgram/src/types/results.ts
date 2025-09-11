@@ -40,6 +40,20 @@ export interface League {
     standings: boolean
 }
 
+export interface LeagueData {
+    league: {
+        id: number,
+        name: string,
+        type: string,
+        logo: string
+    },
+    country: {
+        name: string,
+        code: string,
+        flag: string
+    }
+}
+
 export interface Teams {
     home: {
         id: number,

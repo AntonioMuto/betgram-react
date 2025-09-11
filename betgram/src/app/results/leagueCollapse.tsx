@@ -17,7 +17,7 @@ export default function LeagueCollapse({ league, matches }: LeagueData) {
 
   return (
     <div
-      className={`collapse collapse-arrow bg-base-100 border border-base-300 w-3/5 mx-auto mb-2  
+      className={`collapse collapse-arrow bg-base-100 border border-base-300 w-3/4 mx-auto mb-2  
         ${!open ? "hover:bg-base-300" : ""}`}
     >
       <input

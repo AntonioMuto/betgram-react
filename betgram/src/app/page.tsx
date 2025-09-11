@@ -5,7 +5,7 @@ import MainPage from "./results/mainPage";
 
 export default function Home() {
   return (
-    <section className="max-w-5xl mx-auto p-6">
+    <section className="mx-8 p-6">
       <MainPage />
     </section>
   )
