@@ -18,7 +18,7 @@ export default function LeagueCollapse({ league, matches }: LeagueData) {
   return (
     <div
       className={`collapse collapse-arrow bg-base-100 border border-base-300 w-3/4 mx-auto mb-2  
-        ${!open ? "hover:bg-base-300" : ""}`}
+        ${!open ? "hover:bg-base-200" : ""}`}
     >
       <input
         key={`checkbox-league-${league.id}`}
@@ -38,16 +38,15 @@ export default function LeagueCollapse({ league, matches }: LeagueData) {
       </div>
 
       {open && (
-        <div className="collapse-content text-sm ">
+        <div className="collapse-content !p-0 text-sm bg-base-300 w-full">
           {matches.map((match) => (
             <div
               key={match.fixture.id}
-              className={`flex items-center justify-between p-4 mt-1 rounded ${
-                open && "hover:bg-base-300"
+              className={`flex items-center justify-between p-4 mt-1 rounded w-full cursor-pointer ${
+                open && "hover:bg-base-100"
               }`}
             >
               <div className="flex items-center w-1/3">
-                {/* 👇 immagine caricata solo se open === true */}
                 <img
                   src={match.teams.home.logo}
                   alt={match.teams.home.name}

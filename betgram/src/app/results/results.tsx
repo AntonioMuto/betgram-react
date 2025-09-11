@@ -10,24 +10,25 @@ type Props = {
 
 export default function Results({ date }: Props) {
   const [results, setResults] = useState<Result[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
     if (!date) return;
     const fetchResults = async () => {
-      const res = await fetch(`http://localhost:3001/api/fixtures/filter/data/${date}`);
+      setLoading(true);
+      const res = await fetch(
+        `http://localhost:3001/api/fixtures/filter/data/${date}`
+      );
       const json = await res.json();
       console.log("API response:", json); // 👈 stampa la forma esatta
       setResults(json);
+      setLoading(false);
     };
     fetchResults();
   }, [date]);
 
-  if(results.length === 0) return <div>No results</div>;
   const uniqueLeagues: League[] = Array.from(
-    new Map(
-      results
-        .map((r) => [r.league.id, r.league])
-    ).values()
+    new Map(results.map((r) => [r.league.id, r.league])).values()
   );
 
   uniqueLeagues.sort((a, b) => a.name.localeCompare(b.name));
@@ -45,13 +46,23 @@ export default function Results({ date }: Props) {
 
   return (
     <>
-      {uniqueLeagues.map((league) => (
-        <LeagueCollapse
-          key={league.id}
-          league={league}
-          matches={fixturesByLeagueId[league.id]}
-        />
-      ))}
+      {loading ? (
+        <div className="md:col-span-8 flex flex-col items-center justify-center bg-base-100 ">
+          <span className="loading loading-bars loading-xl"></span>
+        </div>
+      ) : results.length === 0 ? (
+        <div className="md:col-span-8 flex flex-col items-center justify-center bg-base-100 p-4 text-center rounded">
+          Nessun match in programma
+        </div>
+      ) : (
+        uniqueLeagues.map((league) => (
+          <LeagueCollapse
+            key={league.id}
+            league={league}
+            matches={fixturesByLeagueId[league.id]}
+          />
+        ))
+      )}
     </>
   );
 }
