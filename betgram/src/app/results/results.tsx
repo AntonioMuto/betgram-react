@@ -17,7 +17,12 @@ export default function Results({ date }: Props) {
     const fetchResults = async () => {
       setLoading(true);
       const res = await fetch(
-        `http://localhost:3001/api/fixtures/filter/data/${date}`
+        `http://[2a00:f48:1000:408::1]:3001/api/fixtures/filter/data/${date}`, {
+          method: 'GET',
+          headers: {
+            'Cache-Control': 'no-cache'
+          },
+        }
       );
       const json = await res.json();
       console.log("API response:", json); // 👈 stampa la forma esatta

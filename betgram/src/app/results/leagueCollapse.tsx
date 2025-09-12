@@ -1,9 +1,9 @@
 "use client";
-
 import { League, Result } from "@/types/results";
 import { useState } from "react";
 import { formatTimeToTimezone } from "@/app/utils/date";
 import { useUser } from "@/app/context/UserContext";
+import { useRouter } from "next/navigation";
 
 type LeagueData = {
   league: League;
@@ -14,6 +14,7 @@ export default function LeagueCollapse({ league, matches }: LeagueData) {
   const [open, setOpen] = useState(false);
   const { user } = useUser();
   const timezone = user?.timezone || "UTC";
+  const router = useRouter();
 
   return (
     <div
@@ -41,6 +42,9 @@ export default function LeagueCollapse({ league, matches }: LeagueData) {
         <div className="collapse-content !p-0 text-sm bg-base-300 w-full">
           {matches.map((match) => (
             <div
+              onClick={() =>
+                router.push(`/fixture/${match.fixture.id}`)
+              }
               key={match.fixture.id}
               className={`flex items-center justify-between p-4 mt-1 rounded w-full cursor-pointer ${
                 open && "hover:bg-base-100"

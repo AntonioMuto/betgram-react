@@ -9,7 +9,7 @@ export default function LeaguesList() {
   useEffect(() => {
     const fetchLeagues = async () => {
       setLoading(true);
-      const res = await fetch(`http://localhost:3001/api/leagues`);
+      const res = await fetch(`http://[2a00:f48:1000:408::1]:3001/api/leagues`);
       const json = await res.json();
       setLeagues(json);
       setLoading(false);

@@ -1,0 +1,124 @@
+import { useUser } from "@/app/context/UserContext";
+import { formatTimeToTimezone } from "@/app/utils/date";
+import { FixtureData } from "@/types/results";
+import { GlobeEuropeAfricaIcon } from "@heroicons/react/24/outline";
+import { DateTime } from "luxon";
+import React, { useEffect, useState } from "react";
+
+interface FixtureInfoProps {
+  fixture: FixtureData;
+}
+
+export default function FixtureInfo({ fixture }: FixtureInfoProps) {
+  const [timeLeft, setTimeLeft] = useState("");
+  const { user } = useUser();
+  const timezone = user?.timezone || "UTC";
+
+  // Countdown timer
+  useEffect(() => {
+    if (!fixture || fixture.fixture.status.short !== "NS") return;
+
+    const targetDate = DateTime.fromISO(fixture.fixture.date, {
+      zone: "Europe/Rome",
+    });
+
+    const interval = setInterval(() => {
+      const now = DateTime.now().setZone("Europe/Rome");
+      const diff = targetDate.toMillis() - now.toMillis();
+
+      if (diff <= 0) {
+        setTimeLeft("Match started!");
+        clearInterval(interval);
+        return;
+      }
+
+      const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+      const minutes = Math.floor((diff / (1000 * 60)) % 60);
+      const seconds = Math.floor((diff / 1000) % 60);
+
+      const formattedTime = `${String(hours).padStart(2, "0")}:${String(
+        minutes
+      ).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
+
+      setTimeLeft(formattedTime);
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [fixture]);
+
+  return (
+    <div className="flex flex-col ">
+      <div className="flex item-start items-center p-2 gap-2">
+        <GlobeEuropeAfricaIcon className="w-4 h-4" />
+        <span className="text-gray-400 text-sm">
+          {fixture.fixture.venue.city}, {fixture.fixture.venue.name}
+        </span>
+      </div>
+      <div className="flex items-center justify-evenly py-8">
+        <div className="flex items-center gap-2">
+          <img
+            src={fixture.teams.home.logo}
+            alt={fixture.teams.home.name}
+            className="w-10 h-10"
+          />
+          <span className="font-bold">{fixture.teams.home.name}</span>
+        </div>
+
+        <div className="flex items-center flex-col">
+          <>
+            {fixture.fixture.status.short === "NS" && (
+              <div className="text-2xl font-bold">
+                {formatTimeToTimezone(fixture.fixture.date, timezone)}
+              </div>
+            )}
+          </>
+          <div className="text-xl">
+            {fixture.fixture.status.short === "NS"
+              ? timeLeft || (
+                  <span className="loading loading-spinner loading-sm"></span>
+                )
+              : `${fixture.goals.home} - ${fixture.goals.away}`}
+          </div>
+        </div>
+
+        <div className="flex items-center gap-2">
+          <span className="font-bold">{fixture.teams.away.name}</span>
+          <img
+            src={fixture.teams.away.logo}
+            alt={fixture.teams.away.name}
+            className="w-10 h-10"
+          />
+        </div>
+      </div>
+      <div className="flex justify-evenly pb-3 gap-4">
+        {/* Goal squadra di casa */}
+        <div className="flex flex-col items-start gap-1 mx-auto">
+          {fixture.events
+            .filter(
+              (event) =>
+                (event.type === "Goal" || event.type === "Own Goal") && event.team.id === fixture.teams.home.id
+            )
+            .map((event, index) => (
+              <span key={index} className="text-gray-400 text-sm">
+                {event.player.name} {event.time.elapsed}'
+              </span>
+            ))}
+        </div>
+
+        {/* Goal squadra ospite */}
+        <div className="flex flex-col items-end gap-1 mx-auto">
+          {fixture.events
+            .filter(
+              (event) =>
+                (event.type === "Goal" || event.type === "Own Goal") && event.team.id === fixture.teams.away.id
+            )
+            .map((event, index) => (
+              <span key={index} className="text-gray-400 text-sm">
+                {event.time.elapsed}' {event.player.name}
+              </span>
+            ))}
+        </div>
+      </div>
+    </div>
+  );
+}

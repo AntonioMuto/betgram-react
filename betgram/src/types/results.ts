@@ -54,6 +54,38 @@ export interface LeagueData {
     }
 }
 
+export interface FixtureData {
+    fixture: Fixture,
+    league: League,
+    teams: Teams,
+    goals: Goals,
+    score: Score,
+    events: Event[]
+}
+
+export interface Event {
+    time: {
+        elapsed: number,
+        extra: number
+    },
+    team: {
+        id: number,
+        name: string,
+        logo: string
+    },
+    player: {
+        id: number,
+        name: string
+    },
+    assist: {
+        id: number,
+        name: string
+    },
+    type: string,
+    detail: string,
+    comments: string
+}
+
 export interface Teams {
     home: {
         id: number,
