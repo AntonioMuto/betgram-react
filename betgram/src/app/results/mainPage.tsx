@@ -23,7 +23,7 @@ export default function MainPage() {
 
       {/* Colonna centrale */}
       <div className="md:col-span-8 flex flex-col items-center">
-        <div className="flex justify-center items-center bg-base-100 border border-base-300 w-3/5 p-2 mb-2 rounded">
+        <div className="flex justify-center items-center bg-zinc-800 border border-base-300 w-3/5 p-2 mb-2 rounded">
           <input
             type="date"
             value={selectedDate}

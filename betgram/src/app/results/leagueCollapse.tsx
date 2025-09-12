@@ -18,8 +18,8 @@ export default function LeagueCollapse({ league, matches }: LeagueData) {
 
   return (
     <div
-      className={`collapse collapse-arrow bg-base-100 border border-base-300 w-3/4 mx-auto mb-2  
-        ${!open ? "hover:bg-base-200" : ""}`}
+      className={`collapse collapse-arrow bg-gray-900 border border-gray-800 border-base-300 w-3/4 mx-auto mb-2  
+        ${!open ? "hover:bg-gray-800" : ""}`}
     >
       <input
         key={`checkbox-league-${league.id}`}
@@ -27,27 +27,30 @@ export default function LeagueCollapse({ league, matches }: LeagueData) {
         checked={open}
         onChange={() => setOpen((prev) => !prev)}
       />
-      <div className="collapse-title font-semibold">
-        <div className="flex justify-left">
-          <img
-            src={league.logo}
-            alt={league.name}
-            className="w-8 h-8 object-contain"
-          />
-          <div className="p-1 ml-2 text-base font-bold ">{league.name}</div>
+      <div className="collapse-title text-base">
+        <div className="flex justify-between">
+          <div className="flex items-center">
+            <img
+              src={league.logo}
+              alt={league.name}
+              className="w-7 h-7 object-contain"
+            />
+            <div className="p-1 ml-2 text-base font-bold ">{league.name}</div>
+          </div>
+          {/* <div>
+            live
+          </div> */}
         </div>
       </div>
 
       {open && (
-        <div className="collapse-content !p-0 text-sm bg-base-300 w-full">
+        <div className="collapse-content !p-0 text-sm dark:bg-gray-900 w-full">
           {matches.map((match) => (
             <div
-              onClick={() =>
-                router.push(`/fixture/${match.fixture.id}`)
-              }
+              onClick={() => router.push(`/fixture/${match.fixture.id}`)}
               key={match.fixture.id}
-              className={`flex items-center justify-between p-4 mt-1 rounded w-full cursor-pointer ${
-                open && "hover:bg-base-100"
+              className={`flex items-center justify-between p-4 mt-1 rounded w-full cursor-pointer border-t border-gray-800 ${
+                open && "hover:bg-gray-800"
               }`}
             >
               <div className="flex items-center w-1/3">
