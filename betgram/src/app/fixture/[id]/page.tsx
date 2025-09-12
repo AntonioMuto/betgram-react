@@ -45,7 +45,7 @@ const FixturePage = () => {
         <FixtureHeader fixture={fixture} /> 
 
         {/* Main info */}
-        <FixtureInfo fixture={fixture} />
+        <FixtureInfo fixture={fixture} setFixture={setFixture}  />
         <FixtureTabs fixture={fixture} /> 
       </div>
     </div>

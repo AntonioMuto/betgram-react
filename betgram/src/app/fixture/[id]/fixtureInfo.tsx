@@ -1,5 +1,6 @@
 import { useUser } from "@/app/context/UserContext";
 import { formatTimeToTimezone } from "@/app/utils/date";
+import { isFixtureFinished, isFixtureInProgress, isFixtureScheduled } from "@/app/utils/fixtureState";
 import { FixtureData } from "@/types/results";
 import { GlobeEuropeAfricaIcon } from "@heroicons/react/24/outline";
 import { DateTime } from "luxon";
@@ -7,9 +8,10 @@ import React, { useEffect, useState } from "react";
 
 interface FixtureInfoProps {
   fixture: FixtureData;
+  setFixture: React.Dispatch<React.SetStateAction<FixtureData | null>>;
 }
 
-export default function FixtureInfo({ fixture }: FixtureInfoProps) {
+export default function FixtureInfo({ fixture, setFixture }: FixtureInfoProps) {
   const [timeLeft, setTimeLeft] = useState("");
   const { user } = useUser();
   const timezone = user?.timezone || "UTC";
@@ -46,6 +48,26 @@ export default function FixtureInfo({ fixture }: FixtureInfoProps) {
     return () => clearInterval(interval);
   }, [fixture]);
 
+  useEffect(() => {
+    const interval = setInterval(async () => {
+      if(!isFixtureInProgress(fixture.fixture.status.short)) return;
+      console.log("fetching fixture jsonsilo");
+      const res = await fetch(
+        `https://api.jsonsilo.com/public/9147f508-d2b4-4309-8028-f82dc554152d`,
+        { headers: { "Cache-Control": "no-cache" } }
+      );
+      const json = await res.json();
+      const newFixture = json[0].live.filter(
+        (f: FixtureData) => f.fixture.id === fixture.fixture.id
+      );
+      if (!newFixture.length) return;
+      fixture = newFixture[0];
+      setFixture(newFixture[0]);
+    }, 15000);
+
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <div className="flex flex-col ">
       <div className="flex item-start items-center p-2 gap-2">
@@ -66,18 +88,41 @@ export default function FixtureInfo({ fixture }: FixtureInfoProps) {
 
         <div className="flex items-center flex-col">
           <>
-            {fixture.fixture.status.short === "NS" && (
+            {isFixtureScheduled(fixture.fixture.status.short) && (
               <div className="text-2xl font-bold">
                 {formatTimeToTimezone(fixture.fixture.date, timezone)}
               </div>
             )}
           </>
           <div className="text-xl">
-            {fixture.fixture.status.short === "NS"
-              ? timeLeft || (
-                  <span className="loading loading-spinner loading-sm"></span>
-                )
-              : `${fixture.goals.home} - ${fixture.goals.away}`}
+            {isFixtureScheduled(fixture.fixture.status.short) ? (
+              timeLeft || (
+                <span className="loading loading-spinner loading-sm"></span>
+              )
+            ) : (
+              <div className="flex flex-col items-center">
+                <div
+                  className={`text-2xl font-bold ${
+                    isFixtureInProgress(fixture.fixture.status.short)
+                      ? "text-red-500"
+                      : "text-white"
+                  }`}
+                >
+                  {fixture.goals.home} - {fixture.goals.away}
+                </div>
+                {isFixtureScheduled(fixture.fixture.status.short) && (
+                  <div className="text-sm text-red-500">
+                    {isFixtureFinished(fixture.fixture.status.short)
+                      ? ""
+                      : `${
+                          fixture.fixture.status.extra
+                            ? `${fixture.fixture.status.elapsed}+${fixture.fixture.status.extra}'`
+                            : `${fixture.fixture.status.elapsed}'`
+                        }`}
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         </div>
 
@@ -96,7 +141,8 @@ export default function FixtureInfo({ fixture }: FixtureInfoProps) {
           {fixture.events
             .filter(
               (event) =>
-                (event.type === "Goal" || event.type === "Own Goal") && event.team.id === fixture.teams.home.id
+                (event.type === "Goal" || event.type === "Own Goal") &&
+                event.team.id === fixture.teams.home.id
             )
             .map((event, index) => (
               <span key={index} className="text-gray-400 text-sm">
@@ -110,7 +156,8 @@ export default function FixtureInfo({ fixture }: FixtureInfoProps) {
           {fixture.events
             .filter(
               (event) =>
-                (event.type === "Goal" || event.type === "Own Goal") && event.team.id === fixture.teams.away.id
+                (event.type === "Goal" || event.type === "Own Goal") &&
+                event.team.id === fixture.teams.away.id
             )
             .map((event, index) => (
               <span key={index} className="text-gray-400 text-sm">
