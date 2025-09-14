@@ -4,6 +4,7 @@ import { useState } from "react";
 import { formatTimeToTimezone } from "@/app/utils/date";
 import { useUser } from "@/app/context/UserContext";
 import { useRouter } from "next/navigation";
+import { isFixtureInProgress, isFixtureScheduled } from "../utils/fixtureState";
 
 type LeagueData = {
   league: League;
@@ -44,7 +45,7 @@ export default function LeagueCollapse({ league, matches }: LeagueData) {
       </div>
 
       {open && (
-        <div className="collapse-content !p-0 text-sm dark:bg-gray-900 w-full">
+        <div className="collapse-content !p-0 text-sm dark:bg-gray-950 w-full">
           {matches.map((match) => (
             <div
               onClick={() => router.push(`/fixture/${match.fixture.id}`)}
@@ -53,7 +54,7 @@ export default function LeagueCollapse({ league, matches }: LeagueData) {
                 open && "hover:bg-gray-800"
               }`}
             >
-              <div className="flex items-center w-1/3">
+              <div className="flex text-base items-center w-1/3">
                 <img
                   src={match.teams.home.logo}
                   alt={match.teams.home.name}
@@ -61,16 +62,29 @@ export default function LeagueCollapse({ league, matches }: LeagueData) {
                 />
                 <div className="text-left ml-4">{match.teams.home.name}</div>
               </div>
-
-              <div className="w-1/6 text-center font-bold">
-                {match.fixture.status.short === "NS" ||
-                match.fixture.status.short === "TBD"
-                  ? `${formatTimeToTimezone(match.fixture.date, timezone)}`
-                  : `${match.goals.home} - ${match.goals.away}`}
-              </div>
+              {isFixtureInProgress(match.fixture.status.short) ? (
+                <div className="flex flex-col items-center">
+                  <div className="flex flex-row text-base text-center font-bold text-red-500">
+                    {match.goals.home} - {match.goals.away}
+                  </div>
+                  <div className="flex flex-row text-xs text-base text-center font-bold text-red-500">
+                    {match.fixture.status.elapsed}'
+                  </div>
+                </div>
+              ) : isFixtureScheduled(match.fixture.status.short) ? (
+                <div className="text-base text-center font-bold">
+                  {formatTimeToTimezone(match.fixture.date, timezone)}
+                </div>
+              ) : (
+                <div className="text-base text-center font-bold">
+                  {match.goals.home} - {match.goals.away}
+                </div>
+              )}
 
               <div className="flex items-center justify-end w-1/3">
-                <div className="text-right mr-4">{match.teams.away.name}</div>
+                <div className="text-right text-base mr-4">
+                  {match.teams.away.name}
+                </div>
                 <img
                   src={match.teams.away.logo}
                   alt={match.teams.away.name}
