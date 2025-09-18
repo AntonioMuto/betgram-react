@@ -1,10 +1,11 @@
+'use client'
 import { useUser } from "@/app/context/UserContext";
 import { formatTimeToTimezone } from "@/app/utils/date";
 import { isFixtureFinished, isFixtureInProgress, isFixtureScheduled } from "@/app/utils/fixtureState";
 import { FixtureData } from "@/types/results";
 import { GlobeEuropeAfricaIcon } from "@heroicons/react/24/outline";
 import { DateTime } from "luxon";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 
 interface FixtureInfoProps {
   fixture: FixtureData;
@@ -16,13 +17,10 @@ export default function FixtureInfo({ fixture, setFixture }: FixtureInfoProps) {
   const { user } = useUser();
   const timezone = user?.timezone || "UTC";
 
-  // Countdown timer
   useEffect(() => {
     if (!fixture || fixture.fixture.status.short !== "NS") return;
 
-    const targetDate = DateTime.fromISO(fixture.fixture.date, {
-      zone: "Europe/Rome",
-    });
+    const targetDate = DateTime.fromISO(fixture.fixture.date, { zone: "Europe/Rome" });
 
     const interval = setInterval(() => {
       const now = DateTime.now().setZone("Europe/Rome");
@@ -50,23 +48,45 @@ export default function FixtureInfo({ fixture, setFixture }: FixtureInfoProps) {
 
   useEffect(() => {
     const interval = setInterval(async () => {
-      if(!isFixtureInProgress(fixture.fixture.status.short)) return;
+      if (!isFixtureInProgress(fixture.fixture.status.short)) return;
+
       console.log("fetching fixture jsonsilo");
       const res = await fetch(
         `https://api.jsonsilo.com/public/9147f508-d2b4-4309-8028-f82dc554152d`,
         { headers: { "Cache-Control": "no-cache" } }
       );
+
       const json = await res.json();
       const newFixture = json[0].live.filter(
         (f: FixtureData) => f.fixture.id === fixture.fixture.id
       );
       if (!newFixture.length) return;
-      fixture = newFixture[0];
       setFixture(newFixture[0]);
     }, 15000);
 
     return () => clearInterval(interval);
-  }, []);
+  }, [fixture, setFixture]);
+
+  // Memoizzazione filtri eventi
+  const homeGoals = useMemo(
+    () =>
+      fixture.events.filter(
+        (event) =>
+          (event.type === "Goal" || event.type === "Own Goal") &&
+          event.team.id === fixture.teams.home.id
+      ),
+    [fixture.events, fixture.teams.home.id]
+  );
+
+  const awayGoals = useMemo(
+    () =>
+      fixture.events.filter(
+        (event) =>
+          (event.type === "Goal" || event.type === "Own Goal") &&
+          event.team.id === fixture.teams.away.id
+      ),
+    [fixture.events, fixture.teams.away.id]
+  );
 
   return (
     <div className="flex flex-col ">
@@ -96,9 +116,7 @@ export default function FixtureInfo({ fixture, setFixture }: FixtureInfoProps) {
           </>
           <div className="text-xl">
             {isFixtureScheduled(fixture.fixture.status.short) ? (
-              timeLeft || (
-                <span className="loading loading-spinner loading-sm"></span>
-              )
+              timeLeft || <span className="loading loading-spinner loading-sm"></span>
             ) : (
               <div className="flex flex-col items-center">
                 <div
@@ -138,32 +156,20 @@ export default function FixtureInfo({ fixture, setFixture }: FixtureInfoProps) {
       <div className="flex justify-evenly pb-3 gap-4">
         {/* Goal squadra di casa */}
         <div className="flex flex-col items-start gap-1 mx-auto">
-          {fixture.events
-            .filter(
-              (event) =>
-                (event.type === "Goal" || event.type === "Own Goal") &&
-                event.team.id === fixture.teams.home.id
-            )
-            .map((event, index) => (
-              <span key={index} className="text-gray-400 text-sm">
-                {event.player.name} {event.time.elapsed}'
-              </span>
-            ))}
+          {homeGoals.map((event, index) => (
+            <span key={index} className="text-gray-400 text-sm">
+              {event.player.name} {event.time.elapsed}'
+            </span>
+          ))}
         </div>
 
         {/* Goal squadra ospite */}
         <div className="flex flex-col items-end gap-1 mx-auto">
-          {fixture.events
-            .filter(
-              (event) =>
-                (event.type === "Goal" || event.type === "Own Goal") &&
-                event.team.id === fixture.teams.away.id
-            )
-            .map((event, index) => (
-              <span key={index} className="text-gray-400 text-sm">
-                {event.time.elapsed}' {event.player.name}
-              </span>
-            ))}
+          {awayGoals.map((event, index) => (
+            <span key={index} className="text-gray-400 text-sm">
+              {event.time.elapsed}' {event.player.name}
+            </span>
+          ))}
         </div>
       </div>
     </div>
