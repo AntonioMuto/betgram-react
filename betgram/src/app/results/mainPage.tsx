@@ -1,9 +1,8 @@
 "use client";
-import { League, LeagueData  } from "@/types/results";
-import Results from "./results";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useUser } from "@/app/context/UserContext";
 import { getCurrentDate } from "@/app/utils/date";
+import Results from "./results";
 import LeaguesList from "./leaguesList";
 
 export default function MainPage() {
@@ -17,57 +16,33 @@ export default function MainPage() {
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-14 gap-4 items-start">
-      {/* Colonna sinistra */}
-      <LeaguesList/>
-
-      {/* Colonna centrale */}
-      <div className="md:col-span-8 flex flex-col items-center">
-        <div className="flex justify-center items-center bg-zinc-800 border border-base-300 w-3/5 p-2 mb-2 rounded">
-          <input
-            type="date"
-            value={selectedDate}
-            onChange={(e) => setSelectedDate(e.target.value)}
-            id="selected-date"
-          />
+    <div className="w-full max-w-[1800px] mx-auto px-4 py-5">
+      <div className="grid grid-cols-12 gap-6 items-start">
+        
+        {/* SEZIONE A */}
+        <div className="col-span-3 rounded-2xl p-1 shadow-md ">
+          <LeaguesList />
         </div>
-        <Results date={formatDate(selectedDate)} />
-      </div>
 
-      {/* Colonna destra */}
-      <div className="md:col-span-3 carousel rounded-box overflow-x-auto whitespace-nowrap [scrollbar-width:none] [-ms-overflow-style:none]">
-        <div className="flex animate-[scroll_20s_linear_infinite]">
-          <div className="carousel-item">
-            <img
-              src="https://img.daisyui.com/images/stock/photo-1559703248-dcaaec9fab78.webp"
-              alt="Burger"
+        {/* SEZIONE B */}
+        <div className="col-span-6 bg-custom-dark rounded-2xl shadow-lg flex flex-col items-center">
+          <div className="w-full max-w-xl h-24 mb-6 rounded-2xl flex items-center justify-center">
+            <input
+              type="date"
+              value={selectedDate}
+              onChange={(e) => setSelectedDate(e.target.value)}
+              id="selected-date"
+              className="p-2 text-2xl rounded-xl border border-gray-600 bg-custom-dark w-2/3 text-center"
             />
           </div>
-          <div className="carousel-item">
-            <img
-              src="https://img.daisyui.com/images/stock/photo-1565098772267-60af42b81ef2.webp"
-              alt="Burger"
-            />
-          </div>
-          <div className="carousel-item">
-            <img
-              src="https://img.daisyui.com/images/stock/photo-1572635148818-ef6fd45eb394.webp"
-              alt="Burger"
-            />
-          </div>
-          <div className="carousel-item">
-            <img
-              src="https://img.daisyui.com/images/stock/photo-1494253109108-2e30c049369b.webp"
-              alt="Burger"
-            />
-          </div>
-          <div className="carousel-item">
-            <img
-              src="https://img.daisyui.com/images/stock/photo-1550258987-190a2d41a8ba.webp"
-              alt="Burger"
-            />
-          </div>
+          <Results date={formatDate(selectedDate)} />
         </div>
+
+        {/* SEZIONE C */}
+        <div className="col-span-3 bg-custom-dark rounded-2xl p-4 shadow-lg">
+          
+        </div>
+
       </div>
     </div>
   );

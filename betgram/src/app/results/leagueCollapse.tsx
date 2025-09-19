@@ -1,6 +1,6 @@
 "use client";
 import { League, Result } from "@/types/results";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { formatTimeToTimezone } from "@/app/utils/date";
 import { useUser } from "@/app/context/UserContext";
 import { useRouter } from "next/navigation";
@@ -12,15 +12,32 @@ type LeagueData = {
 };
 
 export default function LeagueCollapse({ league, matches }: LeagueData) {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(true);
   const { user } = useUser();
   const timezone = user?.timezone || "UTC";
   const router = useRouter();
 
+
+    // Calcolo i conteggi dei match per categoria
+  const { inProgressCount, scheduledCount, finishedCount } = useMemo(() => {
+    let inProgress = 0;
+    let scheduled = 0;
+    let finished = 0;
+
+    matches.forEach((match) => {
+      const status = match.fixture.status.short;
+      if (isFixtureInProgress(status)) inProgress++;
+      else if (isFixtureScheduled(status)) scheduled++;
+      else finished++;
+    });
+
+    return { inProgressCount: inProgress, scheduledCount: scheduled, finishedCount: finished };
+  }, [matches]);
+
   return (
     <div
-      className={`collapse collapse-arrow bg-gray-900 border border-gray-800 border-base-300 w-3/4 mx-auto mb-2  
-        ${!open ? "hover:bg-gray-800" : ""}`}
+      className={`collapse collapse-arrow bg-custom-league-card border-base-300  mx-auto mb-2  
+        ${!open ? "hover:bg-highlight-custom-dark" : ""}`}
     >
       <input
         key={`checkbox-league-${league.id}`}
@@ -32,63 +49,72 @@ export default function LeagueCollapse({ league, matches }: LeagueData) {
         <div className="flex justify-between">
           <div className="flex items-center">
             <img
-              src={league.logo}
+              src={league.flag ?? league.logo}
               alt={league.name}
-              className="w-7 h-7 object-contain"
+              className="w-8 h-8 object-contain"
             />
-            <div className="p-1 ml-2 text-base font-bold ">{league.name}</div>
+            <div className="p-1 ml-2 text-xl font-bold ">{league.name}</div>
           </div>
-          {/* <div>
-            live
-          </div> */}
+          {!open && (
+            <div className="flex gap-2">
+              {inProgressCount > 0 && (
+                <div className="badge badge-error text-lg">{inProgressCount}</div>
+              )}
+              {scheduledCount > 0 && (
+                <div className="badge badge-warning text-lg">{scheduledCount}</div>
+              )}
+              {finishedCount > 0 && (
+                <div className="badge badge-success text-lg">{finishedCount}</div>
+              )}
+            </div>
+          )}
         </div>
       </div>
 
       {open && (
-        <div className="collapse-content !p-0 text-sm dark:bg-gray-950 w-full">
+        <div className="collapse-content !p-0 text-sm dark:bg-custom-dark w-full">
           {matches.map((match) => (
             <div
               onClick={() => router.push(`/fixture/${match.fixture.id}`)}
               key={match.fixture.id}
-              className={`flex items-center justify-between p-4 mt-1 rounded w-full cursor-pointer border-t border-gray-800 ${
-                open && "hover:bg-gray-800"
-              }`}
+              className={`flex items-center justify-between p-4 mt-1 rounded w-full cursor-pointer border-t border-gray-800 ${open && "hover:bg-highlight-collapse-child"
+                }`}
             >
               <div className="flex text-base items-center w-1/3">
                 <img
                   src={match.teams.home.logo}
                   alt={match.teams.home.name}
-                  className="w-6 h-6 mr-2 object-contain"
+                  className="w-8 h-8 mr-2 object-contain"
                 />
-                <div className="text-left ml-4">{match.teams.home.name}</div>
+                <div className="text-left text-lg ml-4">{match.teams.home.name}</div>
               </div>
               {isFixtureInProgress(match.fixture.status.short) ? (
                 <div className="flex flex-col items-center">
-                  <div className="flex flex-row text-base text-center font-bold text-red-500">
+                  <div className="flex flex-row text-lg text-center font-bold text-red-500">
                     {match.goals.home} - {match.goals.away}
                   </div>
-                  <div className="flex flex-row text-xs text-base text-center font-bold text-red-500">
+                  <div className="flex flex-row text-lg text-base text-center font-bold text-red-500">
                     {match.fixture.status.elapsed}'
                   </div>
                 </div>
               ) : isFixtureScheduled(match.fixture.status.short) ? (
-                <div className="text-base text-center font-bold">
+                <div className="text-lg text-center font-bold">
                   {formatTimeToTimezone(match.fixture.date, timezone)}
                 </div>
               ) : (
-                <div className="text-base text-center font-bold">
+                <div className="text-lg text-center font-bold">
                   {match.goals.home} - {match.goals.away}
                 </div>
               )}
 
               <div className="flex items-center justify-end w-1/3">
-                <div className="text-right text-base mr-4">
+                <div className="text-right text-lg mr-4">
                   {match.teams.away.name}
                 </div>
                 <img
                   src={match.teams.away.logo}
                   alt={match.teams.away.name}
-                  className="w-6 h-6 ml-2 object-contain"
+                  className="w-8 h-8 ml-2 object-contain"
                 />
               </div>
             </div>

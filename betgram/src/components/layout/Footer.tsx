@@ -1,6 +1,6 @@
 export default function Footer() {
     return (
-      <footer className="w-full mt-10 p-6 bg-gray-900 border-t border-gray-800">
+      <footer className="w-full mt-10 p-6 bg-custom-dark border-t border-gray-800">
         <div className="max-w-5xl mx-auto flex flex-col sm:flex-row justify-between items-center text-gray-600 text-sm">
           <p>© {new Date().getFullYear()} Betgram. Tutti i diritti riservati.</p>
           

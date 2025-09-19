@@ -14,14 +14,14 @@ interface FixtureInfoProps {
 export default function FixtureHeader({ fixture }: FixtureInfoProps) {
   const router = useRouter();
   return (
-    <div className="flex items-center justify-between border-b border-gray-700 p-4">
-      <div className="flex items-center gap-2">
+    <div className="flex items-center border-b border-gray-700 p-4">
+      <div className="flex items-center gap-2 flex-1">
         <button className="btn btn-circle" onClick={() => router.back()}>
-          <ArrowLeftCircleIcon className="w-6 h-6" />
+          <ArrowLeftCircleIcon className="w-8 h-8" />
         </button>
-        <span className="text-sm font-light">Indietro</span>
+        <span className="text-lg font-light">Indietro</span>
       </div>
-      <div className="flex items-center gap-2 mr-20">
+      <div className="flex items-center gap-2 mx-auto">
         <img
           src={fixture.league.logo}
           alt={fixture.league.name}
@@ -29,9 +29,11 @@ export default function FixtureHeader({ fixture }: FixtureInfoProps) {
         />
         <span className="font-semibold">{fixture.league.name}</span>
       </div>
-      <div>
+      <div className="flex justify-end flex-1">
         <InformationCircleIcon className="w-6 h-6" />
       </div>
     </div>
   );
+
+
 }

@@ -91,8 +91,8 @@ export default function FixtureInfo({ fixture, setFixture }: FixtureInfoProps) {
   return (
     <div className="flex flex-col ">
       <div className="flex item-start items-center p-2 gap-2">
-        <GlobeEuropeAfricaIcon className="w-4 h-4" />
-        <span className="text-gray-400 text-sm">
+        <GlobeEuropeAfricaIcon className="w-6 h-6" />
+        <span className="text-gray-400 text-lg">
           {fixture.fixture.venue.city}, {fixture.fixture.venue.name}
         </span>
       </div>

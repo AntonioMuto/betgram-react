@@ -13,7 +13,7 @@ export default function FixtureTabs( { fixture } : FixtureTabsProps ) {
     <div className="tabs tabs-lift">
           <label className="tab">
             <input type="radio" name="my_tabs_4" defaultChecked />
-            <PlayIcon className="size-4 me-2" />
+            <PlayIcon className="size-8 me-2" />
             DETTAGLI
           </label>
           <div className="tab-content bg-base-100 border-base-300 p-6">
@@ -22,7 +22,7 @@ export default function FixtureTabs( { fixture } : FixtureTabsProps ) {
 
           <label className="tab">
             <input type="radio" name="my_tabs_4" />
-            <BanknotesIcon className="size-4 me-2" />
+            <BanknotesIcon className="size-8 me-2" />
             QUOTE
           </label>
           <div className="tab-content bg-base-100 border-base-300 p-6">
@@ -31,7 +31,7 @@ export default function FixtureTabs( { fixture } : FixtureTabsProps ) {
 
           <label className="tab">
             <input type="radio" name="my_tabs_4" />
-            <UsersIcon className="size-4 me-2" />
+            <UsersIcon className="size-8 me-2" />
             FORMAZIONI
           </label>
           <div className="tab-content bg-base-100 border-base-300 p-6">
@@ -40,7 +40,7 @@ export default function FixtureTabs( { fixture } : FixtureTabsProps ) {
 
           <label className="tab">
             <input type="radio" name="my_tabs_4" />
-            <QueueListIcon className="size-4 me-2" />
+            <QueueListIcon className="size-8 me-2" />
             CLASSIFICA
           </label>
           <div className="tab-content bg-base-100 border-base-300 p-6">

@@ -4,7 +4,8 @@
 
 :root {
   --background: #ffffff;
-  --foreground: #171717;
+  --foreground: #000000;
+  --example: #272727;
 }
 
 @theme inline {
@@ -12,6 +13,11 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --color-custom-dark: #232324;
+  --color-custom-league-card: #313131;
+  --color-custom-dark-black: #1d1d1d;
+  --color-highlight-custom-dark: #2e2e2e;
+  --color-highlight-collapse-child: #292929;
 }
 
 @media (prefers-color-scheme: dark) {
