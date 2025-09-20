@@ -27,7 +27,7 @@ export default function FixtureHeader({ fixture }: FixtureInfoProps) {
           alt={fixture.league.name}
           className="w-6 h-6"
         />
-        <span className="font-semibold">{fixture.league.name}</span>
+        <span className="font-semibold text-lg">{fixture.league.name}</span>
       </div>
       <div className="flex justify-end flex-1">
         <InformationCircleIcon className="w-6 h-6" />

@@ -1,11 +1,16 @@
-'use client'
+"use client";
 import { useUser } from "@/app/context/UserContext";
 import { formatTimeToTimezone } from "@/app/utils/date";
-import { isFixtureFinished, isFixtureInProgress, isFixtureScheduled } from "@/app/utils/fixtureState";
+import {
+  isFixtureFinished,
+  isFixtureInProgress,
+  isFixtureScheduled,
+} from "@/app/utils/fixtureState";
 import { FixtureData } from "@/types/results";
 import { GlobeEuropeAfricaIcon } from "@heroicons/react/24/outline";
 import { DateTime } from "luxon";
 import React, { useEffect, useMemo, useState } from "react";
+import FixtureScorers from "./fixtureScorers";
 
 interface FixtureInfoProps {
   fixture: FixtureData;
@@ -20,7 +25,9 @@ export default function FixtureInfo({ fixture, setFixture }: FixtureInfoProps) {
   useEffect(() => {
     if (!fixture || fixture.fixture.status.short !== "NS") return;
 
-    const targetDate = DateTime.fromISO(fixture.fixture.date, { zone: "Europe/Rome" });
+    const targetDate = DateTime.fromISO(fixture.fixture.date, {
+      zone: "Europe/Rome",
+    });
 
     const interval = setInterval(() => {
       const now = DateTime.now().setZone("Europe/Rome");
@@ -67,27 +74,6 @@ export default function FixtureInfo({ fixture, setFixture }: FixtureInfoProps) {
     return () => clearInterval(interval);
   }, [fixture, setFixture]);
 
-  // Memoizzazione filtri eventi
-  const homeGoals = useMemo(
-    () =>
-      fixture.events.filter(
-        (event) =>
-          (event.type === "Goal" || event.type === "Own Goal") &&
-          event.team.id === fixture.teams.home.id
-      ),
-    [fixture.events, fixture.teams.home.id]
-  );
-
-  const awayGoals = useMemo(
-    () =>
-      fixture.events.filter(
-        (event) =>
-          (event.type === "Goal" || event.type === "Own Goal") &&
-          event.team.id === fixture.teams.away.id
-      ),
-    [fixture.events, fixture.teams.away.id]
-  );
-
   return (
     <div className="flex flex-col ">
       <div className="flex item-start items-center p-2 gap-2">
@@ -97,13 +83,13 @@ export default function FixtureInfo({ fixture, setFixture }: FixtureInfoProps) {
         </span>
       </div>
       <div className="flex items-center justify-evenly py-8">
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-5">
           <img
             src={fixture.teams.home.logo}
             alt={fixture.teams.home.name}
-            className="w-10 h-10"
+            className="w-13 h-15"
           />
-          <span className="font-bold">{fixture.teams.home.name}</span>
+          <span className="font-bold text-xl">{fixture.teams.home.name}</span>
         </div>
 
         <div className="flex items-center flex-col">
@@ -116,7 +102,9 @@ export default function FixtureInfo({ fixture, setFixture }: FixtureInfoProps) {
           </>
           <div className="text-xl">
             {isFixtureScheduled(fixture.fixture.status.short) ? (
-              timeLeft || <span className="loading loading-spinner loading-sm"></span>
+              timeLeft || (
+                <span className="loading loading-spinner loading-sm"></span>
+              )
             ) : (
               <div className="flex flex-col items-center">
                 <div
@@ -144,34 +132,16 @@ export default function FixtureInfo({ fixture, setFixture }: FixtureInfoProps) {
           </div>
         </div>
 
-        <div className="flex items-center gap-2">
-          <span className="font-bold">{fixture.teams.away.name}</span>
+        <div className="flex items-center gap-5">
+          <span className="font-bold text-xl">{fixture.teams.away.name}</span>
           <img
             src={fixture.teams.away.logo}
             alt={fixture.teams.away.name}
-            className="w-10 h-10"
+            className="w-13 h-15"
           />
         </div>
       </div>
-      <div className="flex justify-evenly pb-3 gap-4">
-        {/* Goal squadra di casa */}
-        <div className="flex flex-col items-start gap-1 mx-auto">
-          {homeGoals.map((event, index) => (
-            <span key={index} className="text-gray-400 text-sm">
-              {event.player.name} {event.time.elapsed}'
-            </span>
-          ))}
-        </div>
-
-        {/* Goal squadra ospite */}
-        <div className="flex flex-col items-end gap-1 mx-auto">
-          {awayGoals.map((event, index) => (
-            <span key={index} className="text-gray-400 text-sm">
-              {event.time.elapsed}' {event.player.name}
-            </span>
-          ))}
-        </div>
-      </div>
+      <FixtureScorers fixture={fixture} />
     </div>
   );
 }
