@@ -25,7 +25,6 @@ export default function Results({ date }: Props) {
         }
       );
       const json = await res.json();
-      console.log("API response:", json); // 👈 stampa la forma esatta
       setResults(json);
       setLoading(false);
     };

@@ -9,7 +9,7 @@ import {
 import { FixtureData } from "@/types/results";
 import { GlobeEuropeAfricaIcon } from "@heroicons/react/24/outline";
 import { DateTime } from "luxon";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import FixtureScorers from "./fixtureScorers";
 
 interface FixtureInfoProps {
@@ -22,6 +22,7 @@ export default function FixtureInfo({ fixture, setFixture }: FixtureInfoProps) {
   const { user } = useUser();
   const timezone = user?.timezone || "UTC";
 
+  // countdown pre-partita
   useEffect(() => {
     if (!fixture || fixture.fixture.status.short !== "NS") return;
 
@@ -53,6 +54,7 @@ export default function FixtureInfo({ fixture, setFixture }: FixtureInfoProps) {
     return () => clearInterval(interval);
   }, [fixture]);
 
+  // aggiornamento live
   useEffect(() => {
     const interval = setInterval(async () => {
       if (!isFixtureInProgress(fixture.fixture.status.short)) return;
@@ -75,36 +77,55 @@ export default function FixtureInfo({ fixture, setFixture }: FixtureInfoProps) {
   }, [fixture, setFixture]);
 
   return (
-    <div className="flex flex-col ">
-      <div className="flex item-start items-center p-2 gap-2">
+    <div className="flex flex-col">
+      {/* Venue */}
+      <div className="flex items-center p-2 gap-2">
         <GlobeEuropeAfricaIcon className="w-6 h-6" />
         <span className="text-gray-400 text-lg">
           {fixture.fixture.venue.city}, {fixture.fixture.venue.name}
         </span>
       </div>
-      <div className="flex items-center justify-evenly py-8">
-        <div className="flex items-center gap-5">
+
+      {/* Match header */}
+      <div className="grid grid-cols-3 items-center py-8">
+        {/* Home team */}
+        <div className="flex items-center justify-end gap-3">
           <img
             src={fixture.teams.home.logo}
             alt={fixture.teams.home.name}
-            className="w-13 h-15"
+            className="w-12 h-12"
           />
           <span className="font-bold text-xl">{fixture.teams.home.name}</span>
         </div>
 
-        <div className="flex items-center flex-col">
-          <>
-            {isFixtureScheduled(fixture.fixture.status.short) && (
-              <div className="text-2xl font-bold">
-                {formatTimeToTimezone(fixture.fixture.date, timezone)}
-              </div>
-            )}
-          </>
+        {/* Center (time or score) */}
+        <div className="flex flex-col items-center">
+          {isFixtureScheduled(fixture.fixture.status.short) && (
+            <div className="text-2xl font-bold">
+              {formatTimeToTimezone(fixture.fixture.date, timezone)}
+            </div>
+          )}
+
           <div className="text-xl">
             {isFixtureScheduled(fixture.fixture.status.short) ? (
-              timeLeft || (
+              <span className="countdown font-mono text-2xl text-zinc-400">
+              {timeLeft ? (
+                timeLeft.split(":").map((val, idx, arr) => (
+                  <React.Fragment key={idx}>
+                    <span
+                      style={{ "--value": Number(val) } as React.CSSProperties}
+                      aria-live="polite"
+                      aria-label={`${val} ${idx === 0 ? "hours" : idx === 1 ? "minutes" : "seconds"}`}
+                    >
+                      {val}
+                    </span>
+                    {idx < arr.length - 1 && ":"} {/* aggiunge ':' tra gli span */}
+                  </React.Fragment>
+                ))
+              ) : (
                 <span className="loading loading-spinner loading-sm"></span>
-              )
+              )}
+            </span>
             ) : (
               <div className="flex flex-col items-center">
                 <div
@@ -116,15 +137,11 @@ export default function FixtureInfo({ fixture, setFixture }: FixtureInfoProps) {
                 >
                   {fixture.goals.home} - {fixture.goals.away}
                 </div>
-                {isFixtureScheduled(fixture.fixture.status.short) && (
+                {!isFixtureFinished(fixture.fixture.status.short) && (
                   <div className="text-sm text-red-500">
-                    {isFixtureFinished(fixture.fixture.status.short)
-                      ? ""
-                      : `${
-                          fixture.fixture.status.extra
-                            ? `${fixture.fixture.status.elapsed}+${fixture.fixture.status.extra}'`
-                            : `${fixture.fixture.status.elapsed}'`
-                        }`}
+                    {fixture.fixture.status.extra
+                      ? `${fixture.fixture.status.elapsed}+${fixture.fixture.status.extra}'`
+                      : `${fixture.fixture.status.elapsed}'`}
                   </div>
                 )}
               </div>
@@ -132,15 +149,18 @@ export default function FixtureInfo({ fixture, setFixture }: FixtureInfoProps) {
           </div>
         </div>
 
-        <div className="flex items-center gap-5">
+        {/* Away team */}
+        <div className="flex items-center justify-start gap-3">
           <span className="font-bold text-xl">{fixture.teams.away.name}</span>
           <img
             src={fixture.teams.away.logo}
             alt={fixture.teams.away.name}
-            className="w-13 h-15"
+            className="w-12 h-12"
           />
         </div>
       </div>
+
+      {/* Scorers / Events */}
       <FixtureScorers fixture={fixture} />
     </div>
   );

@@ -12,7 +12,7 @@ type UserContextType = {
 };
 
 const defaultUser: User = {
-    timezone: "Europe/Rome", // ⚡️ timezone di default
+    timezone: "Europe/Rome",
   };
 
 const UserContext = createContext<UserContextType | undefined>(undefined);

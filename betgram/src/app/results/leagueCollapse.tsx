@@ -18,7 +18,6 @@ export default function LeagueCollapse({ league, matches }: LeagueData) {
   const router = useRouter();
 
 
-    // Calcolo i conteggi dei match per categoria
   const { inProgressCount, scheduledCount, finishedCount } = useMemo(() => {
     let inProgress = 0;
     let scheduled = 0;

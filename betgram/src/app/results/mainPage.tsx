@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useUser } from "@/app/context/UserContext";
 import { getCurrentDate } from "@/app/utils/date";
 import Results from "./results";
@@ -8,7 +8,25 @@ import LeaguesList from "./leaguesList";
 export default function MainPage() {
   const { user } = useUser();
   const timezone = user?.timezone || "UTC";
-  const [selectedDate, setSelectedDate] = useState(getCurrentDate(timezone));
+
+  const [selectedDate, setSelectedDate] = useState("");
+
+  // al primo render recupera da localStorage o fallback su oggi
+  useEffect(() => {
+    const storedDate = localStorage.getItem("selectedDate");
+    if (storedDate) {
+      setSelectedDate(storedDate);
+    } else {
+      setSelectedDate(getCurrentDate(timezone));
+    }
+  }, [timezone]);
+
+  // ogni volta che cambia selectedDate la salvo
+  useEffect(() => {
+    if (selectedDate) {
+      localStorage.setItem("selectedDate", selectedDate);
+    }
+  }, [selectedDate]);
 
   function formatDate(date: string) {
     const [year, month, day] = date.split("-");
@@ -35,14 +53,11 @@ export default function MainPage() {
               className="p-2 text-2xl rounded-xl border border-gray-600 bg-custom-dark w-2/3 text-center"
             />
           </div>
-          <Results date={formatDate(selectedDate)} />
+          {selectedDate && <Results date={formatDate(selectedDate)} />}
         </div>
 
         {/* SEZIONE C */}
-        <div className="col-span-3 bg-custom-dark rounded-2xl p-4 shadow-lg">
-          
-        </div>
-
+        <div className="col-span-3 bg-custom-dark rounded-2xl p-4 shadow-lg"></div>
       </div>
     </div>
   );

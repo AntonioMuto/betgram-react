@@ -4,6 +4,7 @@ import {
   BanknotesIcon,
   UsersIcon,
   QueueListIcon,
+  ChartBarSquareIcon
 } from "@heroicons/react/24/outline";
 import React from "react";
 import FixtureInfo from "./fixtureInfo";
@@ -15,7 +16,7 @@ interface FixtureTabsProps {
 
 export default function FixtureTabs({ fixture }: FixtureTabsProps) {
   return (
-    <div className="tabs tabs-lift ">
+    <div className="tabs tabs-lift mt-4">
         <label className="tab">
           <input type="radio" name="my_tabs_4" defaultChecked />
           <PlayIcon className="size-8 me-2" />
@@ -23,6 +24,15 @@ export default function FixtureTabs({ fixture }: FixtureTabsProps) {
         </label>
       <div className="tab-content bg-custom-dark-black border-base-300 p-6">
         <FixtureDetailTab fixture={fixture} />
+      </div>
+
+      <label className="tab">
+        <input type="radio" name="my_tabs_4" />
+        <ChartBarSquareIcon className="size-8 me-2" />
+        STATISTICHE
+      </label>
+      <div className="tab-content bg-custom-dark-black border-base-300 p-6">
+        tab statistiche
       </div>
 
       <label className="tab">

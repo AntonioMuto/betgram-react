@@ -61,6 +61,82 @@ export interface FixtureData {
     goals: Goals,
     score: Score,
     events: Event[]
+    players?: PlayersData[];
+}
+
+export interface PlayersData {
+    team: {
+        id: number,
+        name: string,
+        logo: string,
+        update: string
+    },
+    players: PlayerData[]
+}
+
+export interface PlayerData {
+    player: {
+        id: number,
+        name: string,
+        photo: string
+    },
+    statistics: Statistic[]
+}
+
+export interface Statistic {
+    games: {
+        minutes: number,
+        number: number,
+        position: string,
+        rating: string,
+        captain: boolean,
+        substitute: boolean
+    },
+    offsides: null,
+    shots: {
+        total: null,
+        on: null
+    },
+    goals: {
+        total: null,
+        conceded: number,
+        assists: number,
+        saves: number
+    },
+    passes: {
+        total: number,
+        key: number,
+        accuracy: string
+    },
+    tackles: {
+        total: number,
+        blocks: number,
+        interceptions: number
+    },
+    duels: {
+        total: number,
+        won: number
+    },
+    dribbles: {
+        attempts: number,
+        success: number,
+        past: number
+    }
+    fouls: {
+        drawn: number,
+        committed: number
+    },
+    cards: {
+        yellow: number,
+        red: number
+    },
+    penalty: {
+        won: number,
+        commited: number,
+        scored: number,
+        missed: number,
+        saved: number
+    }
 }
 
 export interface Event {

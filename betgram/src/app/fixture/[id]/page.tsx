@@ -10,12 +10,11 @@ const FixturePage = () => {
   const { id } = useParams();
   const [fixture, setFixture] = useState<FixtureData | null>(null);
 
-  // Funzione memoizzata con useCallback che aggiorna il fixture
   const aggiornaFixture = useCallback(
     (newFixture: React.SetStateAction<FixtureData | null>) => {
       setFixture(newFixture);
     },
-    [] // nessuna dipendenza, la funzione è stabile
+    []
   );
 
   useEffect(() => {
