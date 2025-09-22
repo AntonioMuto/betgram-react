@@ -1,4 +1,4 @@
-import { Event, FixtureData } from "@/types/results";
+import { Event, FixtureData, PlayerInfoModal } from "@/types/results";
 import React, { useCallback, useMemo, useRef } from "react";
 import yellowCard from "../../../../public/images/yellow-card.png";
 import redCard from "../../../../public/images/red-card.png";
@@ -16,6 +16,16 @@ interface FixtureDetailTabProps {
 
 export default function FixtureDetailTab({ fixture }: FixtureDetailTabProps) {
   const modalRef = useRef<HTMLDialogElement>(null);
+  const [selectedPlayer, setSelectedPlayer] = React.useState<PlayerInfoModal | null>(null);
+
+  const handleClick = (playerId: number, teamId: number) => {
+    const playerInfo : PlayerInfoModal = {
+      playerId: playerId,
+      teamId: teamId
+    }
+    setSelectedPlayer(playerInfo);
+    modalRef.current?.showModal();
+  };
 
   const renderDetail = useCallback((event: Event) => {
     if (event.type === "Var") {
@@ -105,18 +115,24 @@ export default function FixtureDetailTab({ fixture }: FixtureDetailTabProps) {
 
           const playerInfo = (
             <div className={`flex flex-col ${isSubstitution ? 'text-red-400' : ''} ${isHome ? "items-end" : "items-start"}`}>
-              <span className="cursor-pointer hover:underline" onClick={() => modalRef.current?.showModal()}>
-                {event.player?.name ?? "???"}
-              </span>
+              <span
+                  className="cursor-pointer hover:underline"
+                  onClick={() => handleClick(event.player.id, event.team.id)}
+                >
+                  {event.player?.name ?? "???"}
+                </span>
 
-              <dialog ref={modalRef} className="modal">
-              <div className="modal-box">
-                <PlayerFixtureInfo players={fixture.players ?? []} />
-              </div>
-              <form method="dialog" className="modal-backdrop">
-                <button>close</button>
-              </form>
-              </dialog>
+                <dialog ref={modalRef} className="modal">
+                  <div className="modal-box">
+                    <PlayerFixtureInfo
+                      players={fixture.players ?? []}
+                      selectedPlayer={selectedPlayer}
+                    />
+                  </div>
+                  <form method="dialog" className="modal-backdrop">
+                    <button>close</button>
+                  </form>
+                </dialog>
               {renderDetail(event)}
             </div>
           );

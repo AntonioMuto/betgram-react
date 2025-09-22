@@ -74,6 +74,11 @@ export interface PlayersData {
     players: PlayerData[]
 }
 
+export interface PlayerInfoModal {
+    playerId: number,
+    teamId: number
+}
+
 export interface PlayerData {
     player: {
         id: number,
