@@ -5,9 +5,7 @@ import redCard from "../../../../public/images/red-card.png";
 import substitution from "../../../../public/images/substitution.png";
 import { Icon } from "lucide-react";
 import { soccerBall } from "@lucide/lab";
-import {
-  ArrowPathRoundedSquareIcon,
-} from "@heroicons/react/24/outline";
+import { ArrowPathRoundedSquareIcon } from "@heroicons/react/24/outline";
 import { translate } from "@/app/utils/translate";
 import PlayerFixtureInfo from "./playerFixtureInfo";
 interface FixtureDetailTabProps {
@@ -16,56 +14,67 @@ interface FixtureDetailTabProps {
 
 export default function FixtureDetailTab({ fixture }: FixtureDetailTabProps) {
   const modalRef = useRef<HTMLDialogElement>(null);
-  const [selectedPlayer, setSelectedPlayer] = React.useState<PlayerInfoModal | null>(null);
+  const [selectedPlayer, setSelectedPlayer] =
+    React.useState<PlayerInfoModal | null>(null);
 
   const handleClick = (playerId: number, teamId: number) => {
-    const playerInfo : PlayerInfoModal = {
+    const playerInfo: PlayerInfoModal = {
       playerId: playerId,
-      teamId: teamId
-    }
+      teamId: teamId,
+    };
     setSelectedPlayer(playerInfo);
+    console.log(playerInfo);
     modalRef.current?.showModal();
   };
 
-  const renderDetail = useCallback((event: Event) => {
-    if (event.type === "Var") {
+  const renderDetail = useCallback(
+    (event: Event) => {
+      if (event.type === "Var") {
+        return (
+          <div className="flex text-base text-gray-400">
+            {translate(event.detail)}
+          </div>
+        );
+      }
+
+      if (event.type === "Card") {
+        return (
+          <div className="flex text-base text-gray-400">
+            {translate(event.comments)}
+          </div>
+        );
+      }
+
+      if (event.type === "subst") {
+        return (
+          <div
+            className="flex text-base text-green-500 cursor-pointer hover:underline"
+            onClick={() => handleClick(event.assist.id, event.team.id)}
+          >
+            {event.assist?.id === event.player?.id ? "" : event.assist?.name}
+          </div>
+        );
+      }
+
+      if (event.type === "Goal" && event.detail === "Penalty") {
+        return (
+          <div className="flex text-base text-gray-400">
+            {translate(event.detail)}
+          </div>
+        );
+      }
+
       return (
-        <div className="flex text-base text-gray-400">
-          {translate(event.detail)}
-        </div>
-      );
-    }
-  
-    if (event.type === "Card") {
-      return (
-        <div className="flex text-base text-gray-400">
-          {translate(event.comments)}
-        </div>
-      );
-    }
-  
-    if (event.type === "subst") {
-      return (
-        <div className="flex text-base text-green-500 cursor-pointer hover:underline" onClick={() => modalRef.current?.showModal()}>
+        <div
+          className="flex text-base text-gray-400 cursor-pointer hover:underline"
+          onClick={() => handleClick(event.assist.id, event.team.id)}
+        >
           {event.assist?.id === event.player?.id ? "" : event.assist?.name}
         </div>
       );
-    }
-
-    if (event.type === "Goal" && event.detail === "Penalty") {
-      return (
-        <div className="flex text-base text-gray-400">
-          {translate(event.detail)}
-        </div>
-      );
-    }
-  
-    return (
-      <div className="flex text-base text-gray-400 cursor-pointer hover:underline" onClick={() => modalRef.current?.showModal()}>
-        {event.assist?.id === event.player?.id ? "" : event.assist?.name}
-      </div>
-    );
-  }, [fixture.events]); 
+    },
+    [fixture.events]
+  );
 
   return (
     <div>
@@ -94,51 +103,44 @@ export default function FixtureDetailTab({ fixture }: FixtureDetailTabProps) {
                 />
               )}
               {event.type === "Card" && event.detail === "Red Card" && (
-                <img
-                  className="w-5 h-6"
-                  src={redCard.src}
-                  alt="yellow card"
-                />
+                <img className="w-5 h-6" src={redCard.src} alt="yellow card" />
               )}
-              {event.type === "Var" && event.detail === "Goal Disallowed - offside" && (
-                <div className="px-1 py-1 text-xs text-white font-bold bg-red-700 rounded">
-                  VAR
-                </div> 
-              )}
+              {event.type === "Var" &&
+                event.detail === "Goal Disallowed - offside" && (
+                  <div className="px-1 py-1 text-xs text-white font-bold bg-red-700 rounded">
+                    VAR
+                  </div>
+                )}
               {event.type === "Var" && event.detail === "Goal confirmed" && (
                 <div className="px-1 py-1 text-xs text-white font-bold bg-green-800 rounded">
                   VAR
-                </div> 
+                </div>
               )}
             </>
           );
 
           const playerInfo = (
-            <div className={`flex flex-col ${isSubstitution ? 'text-red-400' : ''} ${isHome ? "items-end" : "items-start"}`}>
+            <div
+              className={`flex flex-col ${
+                isSubstitution ? "text-red-400" : ""
+              } ${isHome ? "items-end" : "items-start"}`}
+            >
               <span
-                  className="cursor-pointer hover:underline"
-                  onClick={() => handleClick(event.player.id, event.team.id)}
-                >
-                  {event.player?.name ?? "???"}
-                </span>
-
-                <dialog ref={modalRef} className="modal">
-                  <div className="modal-box">
-                    <PlayerFixtureInfo
-                      players={fixture.players ?? []}
-                      selectedPlayer={selectedPlayer}
-                    />
-                  </div>
-                  <form method="dialog" className="modal-backdrop">
-                    <button>close</button>
-                  </form>
-                </dialog>
+                className="cursor-pointer hover:underline"
+                onClick={() => handleClick(event.player.id, event.team.id)}
+              >
+                {event.player?.name ?? "???"}
+              </span>
               {renderDetail(event)}
             </div>
           );
 
           return (
-            <li key={`${event.time.elapsed}-${event.player?.id}-${event.type}-${event.detail ?? ''}`}>
+            <li
+              key={`${event.time.elapsed}-${event.player?.id}-${event.type}-${
+                event.detail ?? ""
+              }`}
+            >
               <div
                 className={`text-lg ${
                   isHome ? "timeline-start mr-7" : "timeline-end ml-7"
@@ -164,6 +166,17 @@ export default function FixtureDetailTab({ fixture }: FixtureDetailTabProps) {
           );
         })}
       </ul>
+      <dialog ref={modalRef} className="modal">
+        <div className="modal-box">
+          <PlayerFixtureInfo
+            players={fixture.players ?? []}
+            selectedPlayer={selectedPlayer}
+          />
+        </div>
+        <form method="dialog" className="modal-backdrop">
+          <button>close</button>
+        </form>
+      </dialog>
     </div>
   );
 }
