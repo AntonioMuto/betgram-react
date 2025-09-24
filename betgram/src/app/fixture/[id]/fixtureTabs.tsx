@@ -9,6 +9,7 @@ import {
 import React from "react";
 import FixtureInfo from "./fixtureInfo";
 import FixtureDetailTab from "./fixtureDetailTab";
+import FixtureStatsTab from "./fixtureStatsTab";
 
 interface FixtureTabsProps {
   fixture: FixtureData;
@@ -32,7 +33,7 @@ export default function FixtureTabs({ fixture }: FixtureTabsProps) {
         STATISTICHE
       </label>
       <div className="tab-content bg-custom-dark-black border-base-300 p-6">
-        tab statistiche
+        <FixtureStatsTab fixture={fixture}/>
       </div>
 
       <label className="tab">

@@ -205,3 +205,17 @@ export interface Score {
         away: number
     }
 }
+
+export interface FixtureStatistics {
+    team: {
+        id: number,
+        name: string,
+        logo: string
+    },
+    statistics: Statistic[]
+}
+
+export interface Statistic {
+    type: string,
+    value: string
+}

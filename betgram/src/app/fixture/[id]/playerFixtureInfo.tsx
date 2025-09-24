@@ -18,8 +18,8 @@ export default function PlayerFixtureInfo({
 
     const playerData = teamData
       ? teamData.players.find(
-          (obj) => obj.player.id === selectedPlayer?.playerId
-        )
+        (obj) => obj.player.id === selectedPlayer?.playerId
+      )
       : undefined;
 
     const notAPlayer = playerData === undefined;
@@ -75,8 +75,8 @@ export default function PlayerFixtureInfo({
               >
                 {playerData?.statistics[0].games.rating
                   ? Number(playerData?.statistics[0].games.rating ?? 0).toFixed(
-                      2
-                    )
+                    2
+                  )
                   : "SV"}
               </div>
               <h3 className="font-bold text-xl">
@@ -102,7 +102,7 @@ export default function PlayerFixtureInfo({
                 <TableIcon className="size-5 me-2" />
                 GENERALI
               </label>
-              <div className="tab-content p-1">
+              <div className="tab-content p-1 mt-5">
                 <div className="flex justify-between mx-10">
                   <h2 className="text-lg mt-2">Minuti Giocati</h2>
                   <h2 className="text-lg mt-2">
@@ -150,13 +150,7 @@ export default function PlayerFixtureInfo({
                 <LucideShield className="size-5 me-2" />
                 DIFESA
               </label>
-              <div className="tab-content p-1">
-                <div className="flex justify-between mx-10">
-                  <h2 className="text-lg mt-2">Minuti Giocati</h2>
-                  <h2 className="text-lg mt-2">
-                    {playerData?.statistics[0].games.minutes}'
-                  </h2>
-                </div>
+              <div className="tab-content p-1 mt-5">
                 <div className="flex justify-between mx-10">
                   <h2 className="text-lg mt-2">Cartellini Gialli</h2>
                   <h2 className="text-lg mt-2">
@@ -167,6 +161,36 @@ export default function PlayerFixtureInfo({
                   <h2 className="text-lg mt-2">Cartellini Rossi</h2>
                   <h2 className="text-lg mt-2">
                     {playerData?.statistics[0].cards.red ?? 0}
+                  </h2>
+                </div>
+                <div className="flex justify-between mx-10">
+                  <h2 className="text-lg mt-2">Rigori Parati</h2>
+                  <h2 className="text-lg mt-2">
+                    {playerData?.statistics[0].penalty.saved ?? 0}
+                  </h2>
+                </div>
+                <div className="flex justify-between mx-10">
+                  <h2 className="text-lg mt-2">Falli Commessi</h2>
+                  <h2 className="text-lg mt-2">
+                    {playerData?.statistics[0].fouls.committed ?? 0}
+                  </h2>
+                </div>
+                <div className="flex justify-between mx-10">
+                  <h2 className="text-lg mt-2">Duelli Totali</h2>
+                  <h2 className="text-lg mt-2">
+                    {playerData?.statistics[0].duels.total ?? 0}
+                  </h2>
+                </div>
+                <div className="flex justify-between mx-10">
+                  <h2 className="text-lg mt-2">Duelli Vinti</h2>
+                  <h2 className="text-lg mt-2">
+                    {playerData?.statistics[0].duels.won ?? 0}
+                  </h2>
+                </div>
+                <div className="flex justify-between mx-10">
+                  <h2 className="text-lg mt-2">Contrasti Totali</h2>
+                  <h2 className="text-lg mt-2">
+                    {playerData?.statistics[0].tackles.total ?? 0}
                   </h2>
                 </div>
               </div>
@@ -180,7 +204,7 @@ export default function PlayerFixtureInfo({
                 <SwordsIcon className="size-5 me-2" />
                 ATTACCO
               </label>
-              <div className="tab-content p-1">
+              <div className="tab-content p-1 mt-5">
                 <div className="flex justify-between mx-10">
                   <h2 className="text-lg mt-2">Tiri Totali</h2>
                   <h2 className="text-lg mt-2">
@@ -206,9 +230,9 @@ export default function PlayerFixtureInfo({
                   </h2>
                 </div>
                 <div className="flex justify-between mx-10">
-                  <h2 className="text-lg mt-2">Rigori Parati</h2>
+                  <h2 className="text-lg mt-2">Falli Subiti</h2>
                   <h2 className="text-lg mt-2">
-                    {playerData?.statistics[0].penalty.saved ?? 0}
+                    {playerData?.statistics[0].fouls.drawn ?? 0}
                   </h2>
                 </div>
               </div>
