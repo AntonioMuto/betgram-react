@@ -212,10 +212,17 @@ export interface FixtureStatistics {
         name: string,
         logo: string
     },
-    statistics: Statistic[]
+    statistics: FixtureStatistic[]
 }
 
-export interface Statistic {
+export interface FixtureStatistic {
     type: string,
     value: string
 }
+
+export interface StatPercentages {
+  homePercent: number;
+  awayPercent: number;
+  homeRaw: string | null;
+  awayRaw: string | null;
+};

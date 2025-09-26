@@ -31,7 +31,7 @@ const FixturePage = () => {
   if (!fixture) return <div className="flex justify-center mt-24">Loading…</div>;
 
   return (
-    <div className="flex justify-center mt-10">
+    <div className="flex justify-center mt-10 sticky">
       <div className="card bg-custom-dark text-white w-full max-w-4xl shadow-xl">
         <FixtureHeader fixture={fixture} />
         {/* Passa la funzione memoizzata come prop */}

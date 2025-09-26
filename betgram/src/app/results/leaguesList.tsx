@@ -21,7 +21,17 @@ export default function LeaguesList() {
     <>
       {loading ? (
         <div className="md:col-span-5 flex bg-custom-dark border border-gray-800 rounded-box shadow-md p-4 justify-center">
-            <span className="loading loading-bars loading-xl"></span>
+            <div className="flex w-full flex-col gap-4">
+              <div className="skeleton h-12 w-full"></div>
+              <div className="skeleton h-12 w-full"></div>
+              <div className="skeleton h-12 w-full"></div>
+              <div className="skeleton h-12 w-full"></div>
+              <div className="skeleton h-12 w-full"></div>
+              <div className="skeleton h-12 w-full"></div>
+              <div className="skeleton h-12 w-full"></div>
+              <div className="skeleton h-12 w-full"></div>
+              <div className="skeleton h-12 w-full"></div>
+            </div>
         </div>
       ) : (
         <ul className="md:col-span-3 list bg-custom-dark border border-gray-800 rounded-box shadow-md">
