@@ -59,7 +59,6 @@ export default function FixtureInfo({ fixture, setFixture }: FixtureInfoProps) {
     const interval = setInterval(async () => {
       if (!isFixtureInProgress(fixture.fixture.status.short)) return;
 
-      console.log("fetching fixture jsonsilo");
       const res = await fetch(
         `https://api.jsonsilo.com/public/9147f508-d2b4-4309-8028-f82dc554152d`,
         { headers: { "Cache-Control": "no-cache" } }

@@ -23,7 +23,6 @@ export default function PlayerFixtureInfo({
       : undefined;
 
     const notAPlayer = playerData === undefined;
-    console.log(playerData, teamData, notAPlayer);
     return { playerData, teamData, notAPlayer };
   }, [players, selectedPlayer]);
 

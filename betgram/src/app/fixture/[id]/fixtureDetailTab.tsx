@@ -23,7 +23,6 @@ export default function FixtureDetailTab({ fixture }: FixtureDetailTabProps) {
       teamId: teamId,
     };
     setSelectedPlayer(playerInfo);
-    console.log(playerInfo);
     modalRef.current?.showModal();
   };
 
