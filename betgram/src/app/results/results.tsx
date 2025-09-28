@@ -120,7 +120,17 @@ export default function Results({ date }: Props) {
     <>
       {loading ? (
         <div className="md:col-span-8 flex flex-col items-center justify-center bg-base-100 ">
-          <span className="loading loading-bars loading-xl"></span>
+          <div className="flex w-100 flex-col gap-4">
+              <div className="skeleton h-12 w-full"></div>
+              <div className="skeleton h-12 w-full"></div>
+              <div className="skeleton h-12 w-full"></div>
+              <div className="skeleton h-12 w-full"></div>
+              <div className="skeleton h-12 w-full"></div>
+              <div className="skeleton h-12 w-full"></div>
+              <div className="skeleton h-12 w-full"></div>
+              <div className="skeleton h-12 w-full"></div>
+              <div className="skeleton h-12 w-full"></div>
+            </div>
         </div>
       ) : results.length === 0 ? (
         <div className="md:col-span-8 flex flex-col items-center justify-center bg-base-100 p-4 text-center rounded">
