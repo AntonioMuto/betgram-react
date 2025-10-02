@@ -105,16 +105,11 @@ export default function FixtureDetailTab({ fixture }: FixtureDetailTabProps) {
                 <img className="w-5 h-6" src={redCard.src} alt="yellow card" />
               )}
               {event.type === "Var" &&
-                event.detail === "Goal Disallowed - offside" && (
+                (event.detail === "Goal Disallowed - offside" || event.detail === "Goal confirmed" || event.detail === "Goal cancelled") && (
                   <div className="px-1 py-1 text-xs text-white font-bold bg-red-700 rounded">
                     VAR
                   </div>
                 )}
-              {event.type === "Var" && event.detail === "Goal confirmed" && (
-                <div className="px-1 py-1 text-xs text-white font-bold bg-green-800 rounded">
-                  VAR
-                </div>
-              )}
             </>
           );
 

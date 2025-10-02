@@ -10,6 +10,7 @@ import {
 import FixtureInfo from "./fixtureInfo";
 import FixtureDetailTab from "./fixtureDetailTab";
 import FixtureStatsTab from "./fixtureStatsTab";
+import FixtureStandingTab from "./fixtureStandingTab";
 
 interface FixtureTabsProps {
   fixture: FixtureData;
@@ -87,7 +88,7 @@ export default function FixtureTabs({ fixture }: FixtureTabsProps) {
         CLASSIFICA
       </label>
       <div className="tab-content bg-custom-dark-black border-base-300 p-6">
-        {activeTab === "standings" && <>Tab content 3</>}
+        {activeTab === "standings" && <FixtureStandingTab fixture={fixture}/>}
       </div>
     </div>
   );

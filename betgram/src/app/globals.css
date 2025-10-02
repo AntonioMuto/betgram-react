@@ -5,7 +5,7 @@
 :root {
   --background: #ffffff;
   --foreground: #000000;
-  --example: #272727;
+  --example: #363636;
 }
 
 @theme inline {
@@ -16,8 +16,14 @@
   --color-custom-dark: #232324;
   --color-custom-league-card: #313131;
   --color-custom-dark-black: #1d1d1d;
+  --color-custom-dark-black-light: #252525;
   --color-highlight-custom-dark: #2e2e2e;
   --color-highlight-collapse-child: #292929;
+  --color-custom-champions-league: #30496d;
+  --color-custom-europa-league: #ad6608;
+  --color-custom-conference-league: #648820;
+  --color-custom-highlighted-list-row: #363636;
+
 }
 
 @media (prefers-color-scheme: dark) {

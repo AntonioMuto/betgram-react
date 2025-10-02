@@ -221,8 +221,49 @@ export interface FixtureStatistic {
 }
 
 export interface StatPercentages {
-  homePercent: number;
-  awayPercent: number;
-  homeRaw: string | null;
-  awayRaw: string | null;
+    homePercent: number;
+    awayPercent: number;
+    homeRaw: string | null;
+    awayRaw: string | null;
 };
+
+export interface Standing {
+    team: {
+        id: number,
+        name: string,
+        logo: string
+    },
+    rank: number,
+    points: number,
+    goalsDiff: number,
+    group: string,
+    form: string,
+    status: string,
+    description: string,
+    all: StandingTeamInfo,
+    home: StandingTeamInfo,
+    away: StandingTeamInfo
+}
+
+export interface StandingTeamInfo {
+    goals: {
+        for: number,
+        against: number
+    },
+    played: number,
+    win: number,
+    draw: number,
+    lose: number
+}
+
+export interface StandingsData {
+    league: {
+        id: number,
+        name: string,
+        season: number,
+        country: string,
+        flag: string,
+        logo: string,
+        standings: Standing[][]
+    },
+}
