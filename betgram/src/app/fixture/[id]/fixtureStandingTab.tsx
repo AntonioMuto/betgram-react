@@ -56,15 +56,15 @@ export default function FixtureStandingTab({ fixture }: FixtureStandingTabProps)
           <table className="table">
             {/* head */}
             <thead>
-              <tr>
-                <th>#</th>
-                <th>SQUADRA</th>
+              <tr className="text-center">
+                <th className="text-white">#</th>
+                <th className="text-white">SQUADRA</th>
                 <th></th>
                 <th></th>
                 <th></th>
                 <th></th>
                 <th>
-                  <div className="tooltip tooltip-bottom tooltip-info" data-tip="Punti">
+                  <div className="tooltip tooltip-bottom tooltip-info text-white" data-tip="Punti">
                     PT
                   </div>
                 </th>
@@ -108,9 +108,9 @@ export default function FixtureStandingTab({ fixture }: FixtureStandingTabProps)
             </thead>
             <tbody>
               {standing?.league.standings[0].map((standing: Standing) => (
-                <tr className={`text-lg text-center ${standing.team.id === fixture.teams.home.id || standing.team.id === fixture.teams.away.id ? "bg-custom-highlighted-list-row" : ""}`} key={standing.team.id}>
+                <tr className={`text-lg text-center text-gray-300 ${standing.team.id === fixture.teams.home.id || standing.team.id === fixture.teams.away.id ? "bg-custom-highlighted-list-row" : ""}`} key={standing.team.id}>
                   <td>
-                    <div className={`w-7 h-7 rounded-full flex items-center justify-center ${filterColor(standing.description)}`}>
+                    <div className={`w-7 h-7 rounded-full flex items-center justify-center text-white ${filterColor(standing.description)}`}>
                       {standing.rank}
                     </div>
                   </td>
@@ -121,10 +121,12 @@ export default function FixtureStandingTab({ fixture }: FixtureStandingTabProps)
                         alt={standing.team.name}
                         className="w-7 h-7 mr-4 object-contain"
                       />
-                      {standing.team.name}
+                      <span className="text-white">
+                        {standing.team.name}
+                      </span>
                     </div>
                   </td>
-                  <td className="font-bold">{standing.points}</td>
+                  <td className="font-bold text-white">{standing.points}</td>
                   <td>{standing.all.win}</td>
                   <td>{standing.all.lose}</td>
                   <td>{standing.all.draw}</td>

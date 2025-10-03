@@ -5,6 +5,7 @@
 :root {
   --background: #ffffff;
   --foreground: #000000;
+  --selected-tab: #1d1d1d;
   --example: #363636;
 }
 
@@ -32,6 +33,7 @@
     --foreground: #ededed;
   }
 }
+
 
 body {
   background: var(--background);

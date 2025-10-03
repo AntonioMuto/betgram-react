@@ -21,7 +21,7 @@ export default function FixtureTabs({ fixture }: FixtureTabsProps) {
 
   return (
     <div className="tabs tabs-lift mt-4">
-      <label className="tab">
+      <label className="tab [--tab-bg:var(--selected-tab)]">
         <input
           type="radio"
           name="my_tabs_4"
@@ -35,7 +35,7 @@ export default function FixtureTabs({ fixture }: FixtureTabsProps) {
         {activeTab === "details" && <FixtureDetailTab fixture={fixture} />}
       </div>
 
-      <label className="tab">
+      <label className="tab [--tab-bg:var(--selected-tab)]">
         <input
           type="radio"
           name="my_tabs_4"
@@ -49,7 +49,7 @@ export default function FixtureTabs({ fixture }: FixtureTabsProps) {
         {activeTab === "stats" && <FixtureStatsTab fixture={fixture} />}
       </div>
 
-      <label className="tab">
+      <label className="tab [--tab-bg:var(--selected-tab)]">
         <input
           type="radio"
           name="my_tabs_4"
@@ -63,7 +63,7 @@ export default function FixtureTabs({ fixture }: FixtureTabsProps) {
         {activeTab === "quote" && <>tab quote</>}
       </div>
 
-      <label className="tab">
+      <label className="tab [--tab-bg:var(--selected-tab)]">
         <input
           type="radio"
           name="my_tabs_4"
@@ -77,7 +77,7 @@ export default function FixtureTabs({ fixture }: FixtureTabsProps) {
         {activeTab === "formations" && <>Tab content 2</>}
       </div>
 
-      <label className="tab">
+      <label className="tab [--tab-bg:var(--selected-tab)]">
         <input
           type="radio"
           name="my_tabs_4"
