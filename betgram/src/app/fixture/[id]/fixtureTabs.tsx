@@ -11,6 +11,7 @@ import FixtureInfo from "./fixtureInfo";
 import FixtureDetailTab from "./fixtureDetailTab";
 import FixtureStatsTab from "./fixtureStatsTab";
 import FixtureStandingTab from "./fixtureStandingTab";
+import FixtureLineupsTab from "./fixtureLineupsTab";
 
 interface FixtureTabsProps {
   fixture: FixtureData;
@@ -74,7 +75,7 @@ export default function FixtureTabs({ fixture }: FixtureTabsProps) {
         FORMAZIONI
       </label>
       <div className="tab-content bg-custom-dark-black border-base-300 p-6">
-        {activeTab === "formations" && <>Tab content 2</>}
+        {activeTab === "formations" && <><FixtureLineupsTab fixture={fixture} /></>}
       </div>
 
       <label className="tab [--tab-bg:var(--selected-tab)]">
