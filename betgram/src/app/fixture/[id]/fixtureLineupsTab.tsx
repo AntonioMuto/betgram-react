@@ -1,9 +1,12 @@
+import { ForwardField } from "@/app/components/ForwardPlayerField";
 import { GoalKeeperField } from "@/app/components/GoalKeeperField";
+import { StandardPlayerField } from "@/app/components/StandardPlayerField";
 import { SvgCornerShape } from "@/app/components/SvgCornerShape";
 import { SvgPenaltyArea } from "@/app/components/SvgPenaltyArea";
 import { LineupData } from "@/types/lineups";
 import { FixtureData } from "@/types/results";
-import { useEffect, useState } from "react";
+import { line } from "framer-motion/client";
+import { useEffect, useMemo, useState } from "react";
 
 type FixtureScorersProps = {
     fixture: FixtureData;
@@ -23,11 +26,113 @@ export default function FixtureLineupsTab({ fixture }: FixtureScorersProps) {
         fetchLineups();
     }, [fixture]);
 
-    if (!lineups) return <div>Caricamento formazioni...</div>;
+    const teamLineupsMap = useMemo(() => {
+        if (!lineups?.lineups) return {};
+
+        return lineups.lineups.reduce((acc, teamData) => {
+            const teamId = teamData.team.id;
+
+            const players = teamData.startXI.map((p) => p);
+
+            const goalkeeper = players.filter((p) => p.player.pos === "G");
+            const defenders = players.filter((p) => p.player.grid?.split(":")[0] === "2");
+            const midfielders = players.filter((p) => p.player.grid?.split(":")[0] === "3");
+            let backForwards: any = [];
+            let forwards = players.filter((p) => p.player.grid?.split(":")[0] === "5");
+            if (forwards.length === 0) {
+                forwards = players.filter((p) => p.player.grid?.split(":")[0] === "4");
+            } else {
+                backForwards = players.filter((p) => p.player.grid?.split(":")[0] === "4");
+            }
+
+            acc[teamId] = {
+                team: teamData.team,
+                goalkeeper: sortByGrid(goalkeeper),
+                defenders: sortByGrid(defenders),
+                midfielders: sortByGrid(midfielders),
+                backForwards: sortByGrid(backForwards),
+                forwards: sortByGrid(forwards),
+                formation: teamData.formation,
+                coach: teamData.coach,
+                teamData: teamData.team,
+            };
+
+            return acc;
+        }, {} as Record<number, any>);
+    }, [lineups]);
+
+    function sortByGrid(players: any[]) {
+        return players.sort((a, b) => {
+            const [rowA, colA] = a.player.grid.split(":").map(Number);
+            const [rowB, colB] = b.player.grid.split(":").map(Number);
+
+            return rowA !== rowB ? rowB - rowA : colB - colA;
+        });
+    }
+
+    if (!lineups) return <div key={"loading"}>Caricamento formazioni...</div>;
+
+    const teamIds = Object.keys(teamLineupsMap).sort((a, b) => {
+        if (a === fixture.teams.home.id.toString()) return -1;
+        if (b === fixture.teams.home.id.toString()) return 1;
+        return 0;
+    });
 
     return (
         <div>
-           <GoalKeeperField  goalKeeper={lineups.lineups[0].startXI[0]} />
+            {teamIds.map((teamId: any) => {
+                const team = teamLineupsMap[teamId];
+                const isHomeTeam = team.team.id === fixture.teams.home.id;
+                const { goalkeeper, defenders, midfielders, backForwards, forwards, formation, coach, teamData } = team;
+                return (
+                    < div key={teamId}>
+                        {isHomeTeam ? (
+                            <div className="flex flex-col">
+                                <div className="flex flex-row items-center justify-between">
+                                    <div className="flex flex-row items-center gap-4">
+                                        <div className="avatar">
+                                            <div className="w-9 rounded-full">
+                                                <img src={coach.photo} alt="player" />
+                                            </div>
+                                        </div>
+                                        <span className="font-bold text-lg">{coach.name}</span>
+                                    </div>
+                                    <span className="font-bold text-xl">{formation}</span>
+                                </div>
+                                <div className="relative flex flex-col justify-between h-full mt-4">
+                                    <GoalKeeperField goalKeeper={goalkeeper} isHomeTeam={isHomeTeam} teamData={teamData} />
+                                    <StandardPlayerField players={defenders} isHomeTeam={isHomeTeam} teamData={teamData} />
+                                    <StandardPlayerField players={midfielders} isHomeTeam={isHomeTeam} teamData={teamData} />
+                                    {backForwards.length === 0 ? null : <StandardPlayerField players={backForwards} isHomeTeam={isHomeTeam} teamData={teamData} />}
+                                    <ForwardField forwards={forwards} isHomeTeam={isHomeTeam} teamData={teamData} />
+                                </div>
+                            </div>
+                        ) : (
+                            <div key={teamId} className="flex flex-col">
+                                <div className="relative flex flex-col justify-between h-full mb-4">
+                                    <ForwardField forwards={forwards} isHomeTeam={isHomeTeam} teamData={teamData} />
+                                    {backForwards.length === 0 ? null : <StandardPlayerField players={backForwards} isHomeTeam={isHomeTeam} teamData={teamData} />}
+                                    <StandardPlayerField players={midfielders} isHomeTeam={isHomeTeam} teamData={teamData} />
+                                    <StandardPlayerField players={defenders} isHomeTeam={isHomeTeam} teamData={teamData} />
+                                    <GoalKeeperField goalKeeper={goalkeeper} isHomeTeam={isHomeTeam} teamData={teamData} />
+                                </div>
+                                <div className="flex flex-row items-center justify-between">
+                                    <div className="flex flex-row items-center gap-4">
+                                        <div className="avatar">
+                                            <div className="w-9 rounded-full">
+                                                <img src={coach.photo} alt="player" />
+                                            </div>
+                                        </div>
+                                        <span className="font-bold text-lg">{coach.name}</span>
+                                    </div>
+                                    <span className="font-bold text-xl">{formation}</span>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                );
+            })}
         </div>
+
     );
 }
