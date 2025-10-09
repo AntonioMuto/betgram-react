@@ -6,11 +6,10 @@ export const SvgCornerShape = ({
   isHome = false
 }) => {
   const cx = direction === "right" ? 10 : 1;
-  const cy = 1;
+  const cy = isHome ? 1 : 10;
 
   return (
     <svg viewBox="0 0 14 14" width={size} height={size}>
-      <g transform={!isHome ? "rotate(180 7 7)" : ""}>
         <circle
           stroke={stroke}
           fill="transparent"
@@ -19,7 +18,6 @@ export const SvgCornerShape = ({
           cy={cy}
           r="10"
         />
-      </g>
     </svg>
   );
 };

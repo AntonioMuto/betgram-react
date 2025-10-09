@@ -78,7 +78,7 @@ export default function FixtureDetailTab({ fixture }: FixtureDetailTabProps) {
   return (
     <div>
       <ul className="timeline timeline-vertical gap-4">
-        {fixture.events.map((event) => {
+        {fixture.events.map((event, index) => {
           const isHome = event.team.id === fixture.teams.home.id;
           const isSubstitution = event.type === "subst";
           const icon = (
@@ -131,7 +131,7 @@ export default function FixtureDetailTab({ fixture }: FixtureDetailTabProps) {
 
           return (
             <li
-              key={`${event.time.elapsed}-${event.player?.id}-${event.type}-${
+              key={`${index}-${event.time.elapsed}-${event.player?.id}-${event.type}-${
                 event.detail ?? ""
               }`}
             >

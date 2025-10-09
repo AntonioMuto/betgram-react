@@ -94,7 +94,7 @@ export default function FixtureInfo({ fixture, setFixture }: FixtureInfoProps) {
             alt={fixture.teams.home.name}
             className="w-12 h-12"
           />
-          <span className="font-bold text-xl">{fixture.teams.home.name}</span>
+          <span className={`font-bold ${fixture.teams.home.name.length > 20 ? "text-md" : "text-xl"}`}>{fixture.teams.home.name}</span>
         </div>
 
         {/* Center (time or score) */}
@@ -150,7 +150,7 @@ export default function FixtureInfo({ fixture, setFixture }: FixtureInfoProps) {
 
         {/* Away team */}
         <div className="flex items-center justify-start gap-3">
-          <span className="font-bold text-xl">{fixture.teams.away.name}</span>
+          <span className={`font-bold ${fixture.teams.away.name.length > 20 ? "text-md" : "text-xl"}`}>{fixture.teams.away.name}</span>
           <img
             src={fixture.teams.away.logo}
             alt={fixture.teams.away.name}

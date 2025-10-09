@@ -1,6 +1,6 @@
 import { PlayerInfoModal, PlayersData } from "@/types/results";
 import { LucideShield, PlayIcon, SwordsIcon, TableIcon } from "lucide-react";
-import React, { useCallback, useMemo } from "react";
+import React, { useCallback, useEffect, useMemo } from "react";
 
 type PlayerFixtureInfoProps = {
   players: PlayersData[];
@@ -11,13 +11,14 @@ export default function PlayerFixtureInfo({
   players,
   selectedPlayer,
 }: PlayerFixtureInfoProps) {
+
   const { playerData, teamData, notAPlayer } = useMemo(() => {
-    const teamData = players.find(
+    const teamData = players?.find(
       (data) => data.team.id === selectedPlayer?.teamId
     );
 
     const playerData = teamData
-      ? teamData.players.find(
+      ? teamData.players?.find(
         (obj) => obj.player.id === selectedPlayer?.playerId
       )
       : undefined;
@@ -89,11 +90,11 @@ export default function PlayerFixtureInfo({
             <h3 className="flex justify-center font-bold text-lg mt-2">
               STATISTICHE
             </h3>
-            <div className="tabs tabs-lift mt-2">
+            <div key={selectedPlayer?.playerId} className="tabs tabs-lift mt-2">
               <label className="tab">
                 <input
                   type="radio"
-                  name="modal_tabs"
+                  name={`modal_tabs_${selectedPlayer?.playerId}`}
                   className="tab"
                   aria-label="GENERALI"
                   defaultChecked
@@ -142,7 +143,7 @@ export default function PlayerFixtureInfo({
               <label className="tab">
                 <input
                   type="radio"
-                  name="modal_tabs"
+                  name={`modal_tabs_${selectedPlayer?.playerId}`}
                   className="tab"
                   aria-label="DIFESA"
                 />
@@ -196,7 +197,7 @@ export default function PlayerFixtureInfo({
               <label className="tab">
                 <input
                   type="radio"
-                  name="modal_tabs"
+                  name={`modal_tabs_${selectedPlayer?.playerId}`}
                   className="tab"
                   aria-label="ATTACCO"
                 />

@@ -1,12 +1,14 @@
+'use client'
 import { ForwardField } from "@/app/components/ForwardPlayerField";
 import { GoalKeeperField } from "@/app/components/GoalKeeperField";
 import { StandardPlayerField } from "@/app/components/StandardPlayerField";
 import { SvgCornerShape } from "@/app/components/SvgCornerShape";
 import { SvgPenaltyArea } from "@/app/components/SvgPenaltyArea";
 import { LineupData } from "@/types/lineups";
-import { FixtureData } from "@/types/results";
+import { FixtureData, PlayerInfoModal } from "@/types/results";
 import { line } from "framer-motion/client";
-import { useEffect, useMemo, useState } from "react";
+import React from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 type FixtureScorersProps = {
     fixture: FixtureData;
@@ -45,6 +47,8 @@ export default function FixtureLineupsTab({ fixture }: FixtureScorersProps) {
                 backForwards = players.filter((p) => p.player.grid?.split(":")[0] === "4");
             }
 
+            const playersInfo = lineups.playersInfo.filter((p) => p.team.id === teamId); 
+
             acc[teamId] = {
                 team: teamData.team,
                 goalkeeper: sortByGrid(goalkeeper),
@@ -55,6 +59,7 @@ export default function FixtureLineupsTab({ fixture }: FixtureScorersProps) {
                 formation: teamData.formation,
                 coach: teamData.coach,
                 teamData: teamData.team,
+                statistics: lineups.playersInfo
             };
 
             return acc;
@@ -83,7 +88,7 @@ export default function FixtureLineupsTab({ fixture }: FixtureScorersProps) {
             {teamIds.map((teamId: any) => {
                 const team = teamLineupsMap[teamId];
                 const isHomeTeam = team.team.id === fixture.teams.home.id;
-                const { goalkeeper, defenders, midfielders, backForwards, forwards, formation, coach, teamData } = team;
+                const { goalkeeper, defenders, midfielders, backForwards, forwards, formation, coach, teamData, statistics } = team;
                 return (
                     < div key={teamId}>
                         {isHomeTeam ? (
@@ -100,21 +105,21 @@ export default function FixtureLineupsTab({ fixture }: FixtureScorersProps) {
                                     <span className="font-bold text-xl">{formation}</span>
                                 </div>
                                 <div className="relative flex flex-col justify-between h-full mt-4">
-                                    <GoalKeeperField goalKeeper={goalkeeper} isHomeTeam={isHomeTeam} teamData={teamData} />
-                                    <StandardPlayerField players={defenders} isHomeTeam={isHomeTeam} teamData={teamData} />
-                                    <StandardPlayerField players={midfielders} isHomeTeam={isHomeTeam} teamData={teamData} />
-                                    {backForwards.length === 0 ? null : <StandardPlayerField players={backForwards} isHomeTeam={isHomeTeam} teamData={teamData} />}
-                                    <ForwardField forwards={forwards} isHomeTeam={isHomeTeam} teamData={teamData} />
+                                    <GoalKeeperField goalKeeper={goalkeeper} isHomeTeam={isHomeTeam} teamData={teamData} lineupStats={statistics} />
+                                    <StandardPlayerField players={defenders} isHomeTeam={isHomeTeam} teamData={teamData} lineupStats={statistics} />
+                                    <StandardPlayerField players={midfielders} isHomeTeam={isHomeTeam} teamData={teamData} lineupStats={statistics} />
+                                    {backForwards.length === 0 ? null : <StandardPlayerField players={backForwards} isHomeTeam={isHomeTeam} teamData={teamData} lineupStats={statistics} />}
+                                    <ForwardField forwards={forwards} isHomeTeam={isHomeTeam} teamData={teamData} lineupStats={statistics}  />
                                 </div>
                             </div>
                         ) : (
                             <div key={teamId} className="flex flex-col">
                                 <div className="relative flex flex-col justify-between h-full mb-4">
-                                    <ForwardField forwards={forwards} isHomeTeam={isHomeTeam} teamData={teamData} />
-                                    {backForwards.length === 0 ? null : <StandardPlayerField players={backForwards} isHomeTeam={isHomeTeam} teamData={teamData} />}
-                                    <StandardPlayerField players={midfielders} isHomeTeam={isHomeTeam} teamData={teamData} />
-                                    <StandardPlayerField players={defenders} isHomeTeam={isHomeTeam} teamData={teamData} />
-                                    <GoalKeeperField goalKeeper={goalkeeper} isHomeTeam={isHomeTeam} teamData={teamData} />
+                                    <ForwardField forwards={forwards} isHomeTeam={isHomeTeam} teamData={teamData} lineupStats={statistics} />
+                                    {backForwards.length === 0 ? null : <StandardPlayerField players={backForwards} isHomeTeam={isHomeTeam} teamData={teamData} lineupStats={statistics} />}
+                                    <StandardPlayerField players={midfielders} isHomeTeam={isHomeTeam} teamData={teamData} lineupStats={statistics}  />
+                                    <StandardPlayerField players={defenders} isHomeTeam={isHomeTeam} teamData={teamData} lineupStats={statistics}  />
+                                    <GoalKeeperField goalKeeper={goalkeeper} isHomeTeam={isHomeTeam} teamData={teamData} lineupStats={statistics} />
                                 </div>
                                 <div className="flex flex-row items-center justify-between">
                                     <div className="flex flex-row items-center gap-4">
