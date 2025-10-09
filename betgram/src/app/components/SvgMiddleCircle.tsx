@@ -13,8 +13,8 @@ export const SvgMiddleCircle = ({
     <g transform={!isHome ? "rotate(180 64 16)" : ""}>
       <circle
         cx="64"        // centro orizzontale
-        cy="50"        // centro verticale
-        r="47"         // raggio (lascia un po' di margine)
+        cy="61"        // centro verticale
+        r="60"         // raggio 
         stroke={stroke}
         fill="none"
         strokeWidth="2"

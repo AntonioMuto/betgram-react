@@ -102,7 +102,7 @@ export default function FixtureDetailTab({ fixture }: FixtureDetailTabProps) {
                 />
               )}
               {event.type === "Card" && event.detail === "Red Card" && (
-                <img className="w-5 h-6" src={redCard.src} alt="yellow card" />
+                <img className="w-5 h-6" src={redCard.src} alt="Red card" />
               )}
               {event.type === "Var" &&
                 (event.detail === "Goal Disallowed - offside" || event.detail === "Goal confirmed" || event.detail === "Goal cancelled") && (
@@ -165,6 +165,8 @@ export default function FixtureDetailTab({ fixture }: FixtureDetailTabProps) {
           <PlayerFixtureInfo
             players={fixture.players ?? []}
             selectedPlayer={selectedPlayer}
+            singlePlayerInfo={undefined}
+            singlePlayerTeamData={undefined}
           />
         </div>
         <form method="dialog" className="modal-backdrop">

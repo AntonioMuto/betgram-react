@@ -10,18 +10,17 @@ type PlayersFieldProps = {
     players: PlayerInfoPosition[];
     isHomeTeam: boolean;
     teamData: TeamInfo;
-    lineupStats: PlayersData[]
 }
 
 
-export const StandardPlayerField = ({ players, isHomeTeam, teamData, lineupStats }: PlayersFieldProps) => {
+export const StandardPlayerField = ({ players, isHomeTeam, teamData }: PlayersFieldProps) => {
 
     return (
         <div className="flex flex-row h-30 justify-evenly items-center bg-custom-dark">
             {players.map((player) => {
                 return (
-                    <div key={player.player.id} className="w-1/5">
-                        <PlayerCircleInfo player={player} teamData={teamData} lineupStats={lineupStats} />
+                    <div key={player.player.id} className="w-1/4">
+                        <PlayerCircleInfo player={player} teamData={teamData} isHomeTeam={isHomeTeam} />
                     </div>
                 );
             })}

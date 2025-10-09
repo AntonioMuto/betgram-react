@@ -44,5 +44,6 @@ export interface PlayerInfoPosition {
         number: number;
         pos: string;
         grid: string;
+        photo?: string;
     }
 }

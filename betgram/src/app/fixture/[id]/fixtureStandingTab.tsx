@@ -23,10 +23,6 @@ export default function FixtureStandingTab({ fixture }: FixtureStandingTabProps)
     fetchStanding();
   }, [fixture]);
 
-  useEffect(() => {
-    console.log(standing);
-  }, [standing]);
-
   const filterColor = (description?: string) => {
     if (description && description.includes("Champions League")) return "bg-custom-champions-league";
     if (description && description.includes("Europa League")) return "bg-custom-europa-league";

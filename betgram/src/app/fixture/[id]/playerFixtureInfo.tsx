@@ -5,24 +5,45 @@ import React, { useCallback, useEffect, useMemo } from "react";
 type PlayerFixtureInfoProps = {
   players: PlayersData[];
   selectedPlayer: PlayerInfoModal | null;
+  singlePlayerInfo: any | undefined;
+  singlePlayerTeamData: any | undefined;
 };
 
 export default function PlayerFixtureInfo({
   players,
   selectedPlayer,
+  singlePlayerInfo,
+  singlePlayerTeamData
 }: PlayerFixtureInfoProps) {
 
   const { playerData, teamData, notAPlayer } = useMemo(() => {
-    const teamData = players?.find(
-      (data) => data.team.id === selectedPlayer?.teamId
-    );
+    let teamData = undefined;
+    let playerData = undefined;
 
-    const playerData = teamData
-      ? teamData.players?.find(
-        (obj) => obj.player.id === selectedPlayer?.playerId
-      )
-      : undefined;
-
+    if (singlePlayerInfo) {
+      playerData = {
+        player: {
+          id: singlePlayerInfo.player.id,
+          name: singlePlayerInfo.player.name,
+          photo: singlePlayerInfo.player.photo,
+        },
+        statistics: [singlePlayerInfo.stats]
+      }
+      if (singlePlayerTeamData) {
+        teamData = {
+          team: singlePlayerTeamData
+        }
+      }
+    } else {
+      teamData = players?.find(
+        (data) => data.team.id === selectedPlayer?.teamId
+      );
+      playerData = teamData
+        ? teamData.players?.find(
+          (obj) => obj.player.id === selectedPlayer?.playerId
+        )
+        : undefined;
+    }
     const notAPlayer = playerData === undefined;
     return { playerData, teamData, notAPlayer };
   }, [players, selectedPlayer]);
@@ -56,7 +77,7 @@ export default function PlayerFixtureInfo({
           </div>
           <div className="flex flex-col items-center">
             <img
-              src={teamData?.team.logo}
+              src={teamData?.team?.logo}
               className="w-24 h-24 object-contain"
             ></img>
           </div>

@@ -25,7 +25,7 @@ export default function FixtureHeader({ fixture }: FixtureInfoProps) {
         <img
           src={fixture.league.logo}
           alt={fixture.league.name}
-          className="w-6 h-6"
+          className="w-9 h-9 object-contain"
         />
         <span className="font-semibold text-lg">{fixture.league.name}</span>
       </div>

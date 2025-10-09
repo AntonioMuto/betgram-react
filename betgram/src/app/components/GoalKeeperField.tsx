@@ -9,18 +9,18 @@ type GoalKeeperFieldProps = {
     goalKeeper: PlayerInfoPosition[];
     isHomeTeam: boolean;
     teamData: TeamInfo;
-    lineupStats: PlayersData[]
 }
 
 
-export const GoalKeeperField = ({ goalKeeper, isHomeTeam, teamData, lineupStats }: GoalKeeperFieldProps) => {
+export const GoalKeeperField = ({ goalKeeper, isHomeTeam, teamData }: GoalKeeperFieldProps) => {
+
     return (
         <div className="relative">
             {/* Giocatori (non ruotati mai) */}
             <div className="absolute inset-0 flex justify-evenly items-center mt-3">
                 {goalKeeper.map((player) => (
-                    <div key={player.player.id} className="w-1/5">
-                        <PlayerCircleInfo player={player} teamData={teamData} lineupStats={lineupStats} />
+                    <div key={player.player.id} className="w-1/4">
+                        <PlayerCircleInfo player={player} teamData={teamData} isHomeTeam={isHomeTeam} />
                     </div>
                 ))}
             </div>

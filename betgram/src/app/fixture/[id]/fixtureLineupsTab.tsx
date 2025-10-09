@@ -33,38 +33,59 @@ export default function FixtureLineupsTab({ fixture }: FixtureScorersProps) {
 
         return lineups.lineups.reduce((acc, teamData) => {
             const teamId = teamData.team.id;
-
+            const teamPlayerStats = lineups.playersInfo.find((p) => p.team.id === teamId)?.players || [];
             const players = teamData.startXI.map((p) => p);
 
-            const goalkeeper = players.filter((p) => p.player.pos === "G");
-            const defenders = players.filter((p) => p.player.grid?.split(":")[0] === "2");
-            const midfielders = players.filter((p) => p.player.grid?.split(":")[0] === "3");
-            let backForwards: any = [];
-            let forwards = players.filter((p) => p.player.grid?.split(":")[0] === "5");
-            if (forwards.length === 0) {
-                forwards = players.filter((p) => p.player.grid?.split(":")[0] === "4");
-            } else {
-                backForwards = players.filter((p) => p.player.grid?.split(":")[0] === "4");
-            }
+            const getPositionGroup = (grid: string, pos: string) => {
+                if (pos === "G") return "goalkeeper";
+                const line = grid?.split(":")[0];
+                switch (line) {
+                    case "2": return "defenders";
+                    case "3": return "midfielders";
+                    case "4": return "backForwards";
+                    case "5": return "forwards";
+                    default: return "unknown";
+                }
+            };
 
-            const playersInfo = lineups.playersInfo.filter((p) => p.team.id === teamId); 
+            const mergedPlayers = players.map((playerObj) => {
+                const stats = teamPlayerStats.find((p) => p.player.id === playerObj.player.id);
+                const positionGroup = getPositionGroup(playerObj.player.grid, playerObj.player.pos);
+                playerObj.player.photo = stats?.player.photo
+                return {
+                    ...playerObj,
+                    stats: stats?.statistics?.[0] || null,
+                    positionGroup,
+                    photo: stats?.player.photo
+                };
+            });
+
+            const groupedByRole = mergedPlayers.reduce(
+                (groups, p) => {
+                    groups[p.positionGroup].push(p);
+                    return groups;
+                },
+                {
+                    goalkeeper: [],
+                    defenders: [],
+                    midfielders: [],
+                    backForwards: [],
+                    forwards: [],
+                } as Record<string, any[]>
+            );
 
             acc[teamId] = {
                 team: teamData.team,
-                goalkeeper: sortByGrid(goalkeeper),
-                defenders: sortByGrid(defenders),
-                midfielders: sortByGrid(midfielders),
-                backForwards: sortByGrid(backForwards),
-                forwards: sortByGrid(forwards),
                 formation: teamData.formation,
                 coach: teamData.coach,
                 teamData: teamData.team,
-                statistics: lineups.playersInfo
+                ...groupedByRole,
             };
 
             return acc;
         }, {} as Record<number, any>);
     }, [lineups]);
+
 
     function sortByGrid(players: any[]) {
         return players.sort((a, b) => {
@@ -88,9 +109,11 @@ export default function FixtureLineupsTab({ fixture }: FixtureScorersProps) {
             {teamIds.map((teamId: any) => {
                 const team = teamLineupsMap[teamId];
                 const isHomeTeam = team.team.id === fixture.teams.home.id;
-                const { goalkeeper, defenders, midfielders, backForwards, forwards, formation, coach, teamData, statistics } = team;
+                const { goalkeeper, defenders, midfielders, backForwards, forwards, formation, coach, teamData } = team;
+                const thereAreForwards = forwards.length > 0;
+                const thereAreBackForwards = backForwards.length > 0;
                 return (
-                    < div key={teamId}>
+                    <div key={teamId}>
                         {isHomeTeam ? (
                             <div className="flex flex-col">
                                 <div className="flex flex-row items-center justify-between">
@@ -105,21 +128,24 @@ export default function FixtureLineupsTab({ fixture }: FixtureScorersProps) {
                                     <span className="font-bold text-xl">{formation}</span>
                                 </div>
                                 <div className="relative flex flex-col justify-between h-full mt-4">
-                                    <GoalKeeperField goalKeeper={goalkeeper} isHomeTeam={isHomeTeam} teamData={teamData} lineupStats={statistics} />
-                                    <StandardPlayerField players={defenders} isHomeTeam={isHomeTeam} teamData={teamData} lineupStats={statistics} />
-                                    <StandardPlayerField players={midfielders} isHomeTeam={isHomeTeam} teamData={teamData} lineupStats={statistics} />
-                                    {backForwards.length === 0 ? null : <StandardPlayerField players={backForwards} isHomeTeam={isHomeTeam} teamData={teamData} lineupStats={statistics} />}
-                                    <ForwardField forwards={forwards} isHomeTeam={isHomeTeam} teamData={teamData} lineupStats={statistics}  />
+                                    <GoalKeeperField goalKeeper={goalkeeper} isHomeTeam={isHomeTeam} teamData={teamData} />
+                                    <StandardPlayerField players={defenders} isHomeTeam={isHomeTeam} teamData={teamData} />
+                                    <StandardPlayerField players={midfielders} isHomeTeam={isHomeTeam} teamData={teamData} />
+                                    {thereAreBackForwards && !thereAreForwards && <ForwardField forwards={backForwards} isHomeTeam={isHomeTeam} teamData={teamData} />}
+                                    {thereAreBackForwards && thereAreForwards && <StandardPlayerField players={backForwards} isHomeTeam={isHomeTeam} teamData={teamData} />}
+                                    {thereAreForwards && <ForwardField forwards={forwards} isHomeTeam={isHomeTeam} teamData={teamData} />}
+
                                 </div>
                             </div>
                         ) : (
                             <div key={teamId} className="flex flex-col">
                                 <div className="relative flex flex-col justify-between h-full mb-4">
-                                    <ForwardField forwards={forwards} isHomeTeam={isHomeTeam} teamData={teamData} lineupStats={statistics} />
-                                    {backForwards.length === 0 ? null : <StandardPlayerField players={backForwards} isHomeTeam={isHomeTeam} teamData={teamData} lineupStats={statistics} />}
-                                    <StandardPlayerField players={midfielders} isHomeTeam={isHomeTeam} teamData={teamData} lineupStats={statistics}  />
-                                    <StandardPlayerField players={defenders} isHomeTeam={isHomeTeam} teamData={teamData} lineupStats={statistics}  />
-                                    <GoalKeeperField goalKeeper={goalkeeper} isHomeTeam={isHomeTeam} teamData={teamData} lineupStats={statistics} />
+                                    {thereAreForwards && <ForwardField forwards={forwards} isHomeTeam={isHomeTeam} teamData={teamData} />}
+                                    {thereAreBackForwards && thereAreForwards && <StandardPlayerField players={backForwards} isHomeTeam={isHomeTeam} teamData={teamData} />}
+                                    {thereAreBackForwards && !thereAreForwards && <ForwardField forwards={backForwards} isHomeTeam={isHomeTeam} teamData={teamData} />}
+                                    <StandardPlayerField players={midfielders} isHomeTeam={isHomeTeam} teamData={teamData} />
+                                    <StandardPlayerField players={defenders} isHomeTeam={isHomeTeam} teamData={teamData} />
+                                    <GoalKeeperField goalKeeper={goalkeeper} isHomeTeam={isHomeTeam} teamData={teamData} />
                                 </div>
                                 <div className="flex flex-row items-center justify-between">
                                     <div className="flex flex-row items-center gap-4">
@@ -137,6 +163,9 @@ export default function FixtureLineupsTab({ fixture }: FixtureScorersProps) {
                     </div>
                 );
             })}
+            <div>
+                <span className="font-bold text-lg">TABLE SOSTIUZIONI DA INSERIRE TODO</span>
+            </div>
         </div>
 
     );
