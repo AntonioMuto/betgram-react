@@ -7,6 +7,7 @@ import { SvgPenaltyArea } from "@/app/components/SvgPenaltyArea";
 import { LineupData } from "@/types/lineups";
 import { FixtureData, PlayerInfoModal } from "@/types/results";
 import { line } from "framer-motion/client";
+import { sub } from "framer-motion/m";
 import React from "react";
 import { useEffect, useMemo, useRef, useState } from "react";
 
@@ -38,13 +39,23 @@ export default function FixtureLineupsTab({ fixture }: FixtureScorersProps) {
 
             const getPositionGroup = (grid: string, pos: string) => {
                 if (pos === "G") return "goalkeeper";
-                const line = grid?.split(":")[0];
-                switch (line) {
-                    case "2": return "defenders";
-                    case "3": return "midfielders";
-                    case "4": return "backForwards";
-                    case "5": return "forwards";
-                    default: return "unknown";
+                if (grid) {
+
+                    const line = grid?.split(":")[0];
+                    switch (line) {
+                        case "2": return "defenders";
+                        case "3": return "midfielders";
+                        case "4": return "backForwards";
+                        case "5": return "forwards";
+                        default: return "unknown";
+                    }
+                } else {
+                    switch (pos) {
+                        case "D": return "defenders";
+                        case "M": return "midfielders";
+                        case "F": return "forwards";
+                        default: return "unknown";
+                    }
                 }
             };
 
@@ -60,31 +71,60 @@ export default function FixtureLineupsTab({ fixture }: FixtureScorersProps) {
                 };
             });
 
-            const groupedByRole = mergedPlayers.reduce(
-                (groups, p) => {
-                    groups[p.positionGroup].push(p);
-                    return groups;
-                },
-                {
-                    goalkeeper: [],
-                    defenders: [],
-                    midfielders: [],
-                    backForwards: [],
-                    forwards: [],
-                } as Record<string, any[]>
-            );
+            const groupedByRole = mergedPlayers.reduce((groups, p) => {
+                const key = p.positionGroup;
 
+                if (key && key in groups) {
+                    groups[key].push(p);
+                } else {
+                    if (!groups.unknown) {
+                        groups.unknown = [];
+                    }
+                    groups.unknown.push(p);
+                }
+
+                return groups;
+            }, {
+                goalkeeper: [],
+                defenders: [],
+                midfielders: [],
+                backForwards: [],
+                forwards: [],
+            } as Record<string, any[]>);
+
+            const substitutes = teamData.substitutes.map((playerObj) => {
+                const player = teamPlayerStats.find((p) => p.player.id === playerObj.player.id);
+                return {
+                    ...playerObj,
+                    stats: player?.statistics?.[0] || null,
+                    photo: player?.player.photo
+                };
+            });
+            console.log(substitutes)
             acc[teamId] = {
                 team: teamData.team,
                 formation: teamData.formation,
                 coach: teamData.coach,
                 teamData: teamData.team,
+                substitutes: substitutes,
                 ...groupedByRole,
             };
-
             return acc;
         }, {} as Record<number, any>);
     }, [lineups]);
+
+
+    const ratingColor = (rating: string) => {
+        if (Number(rating) >= 8) {
+            return "bg-green-700";
+        } else if (Number(rating) >= 7) {
+            return "bg-cyan-700";
+        } else if (Number(rating) >= 6) {
+            return "bg-yellow-700";
+        } else {
+            return "bg-red-700";
+        }
+    };
 
 
     function sortByGrid(players: any[]) {
@@ -163,8 +203,46 @@ export default function FixtureLineupsTab({ fixture }: FixtureScorersProps) {
                     </div>
                 );
             })}
-            <div>
-                <span className="font-bold text-lg">TABLE SOSTIUZIONI DA INSERIRE TODO</span>
+            <div className="flex flex-row justify-between mt-8">
+                {teamIds.map((teamId: any) => {
+                    const team = teamLineupsMap[teamId];
+                    return (
+                        <div key={teamId}>
+                            <ul className="list w-full bg-custom-dark border border-gray-800 rounded-box shadow-md">
+                                {team.substitutes.map((player: any) => {
+                                    return (
+                                        <li key={player.player.id} className="list-row hover:bg-highlight-custom-dark">
+                                            <div>
+                                                <div className="w-11 h-11 bg-gray-200 rounded flex items-center justify-center">
+                                                    <img
+                                                        className="size-auto rounded-box object-contain"
+                                                        src={player.photo}
+                                                        alt={player.player.name}
+                                                    />
+                                                </div>
+                                            </div>
+                                            <div className="flex flex-col justify-center">
+                                                <div className="text-lg text-shadow-lg/30">
+                                                    {player.player.name}
+                                                </div>
+                                            </div>
+                                            <div className="flex flex-col justify-center">
+                                                <div className={`text-lg text-shadow-lg/30 px-1 ${ratingColor(
+                                                        player.stats.games.rating ?? "0"
+                                                    )}`}
+                                                >
+                                                    {player.stats.games.rating
+                                                        && Number(player.stats.games.rating ?? 0).toFixed(2)
+                                                        }
+                                                </div>
+                                            </div>
+                                        </li>
+                                    )
+                                })}
+                            </ul>
+                        </div>
+                    )
+                })}
             </div>
         </div>
 
