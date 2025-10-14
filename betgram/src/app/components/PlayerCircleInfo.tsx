@@ -46,7 +46,7 @@ export const PlayerCircleInfo = ({ player, teamData, isHomeTeam }: PlayerFieldPr
             <div
                 onClick={() => loadInfoPlayer(player)}
                 className={`flex flex-col items-center cursor-pointer ${player?.player?.pos === "G"
-                    ? isHomeTeam ? "mt-1" : "mb-2"
+                    ? isHomeTeam ? "mt-1" : "mb-5"
                     : player?.player?.pos === "D"
                         ? isHomeTeam ? "mt-5" : "mb-5"
                         : player?.player?.pos === "M"
@@ -107,12 +107,12 @@ export const PlayerCircleInfo = ({ player, teamData, isHomeTeam }: PlayerFieldPr
                     <span className="text-md font-bold text-gray-400 mr-1">
                         {player.player.number}
                     </span>
-                    <span className="text-md font-bold text-center">{player.player.name}</span>
+                    <span className="text-md font-bold text-center">{player.player.name}{player.stats.games.captain ? " (C)" : ""}</span>
                 </div>
             </div>
 
             <dialog ref={modalRef} className="modal">
-                <div className="modal-box">
+                <div className="modal-box ">
                     <PlayerFixtureInfo
                         players={[]}
                         selectedPlayer={selectedPlayer}

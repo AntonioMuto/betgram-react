@@ -2,14 +2,15 @@
 import { ForwardField } from "@/app/components/ForwardPlayerField";
 import { GoalKeeperField } from "@/app/components/GoalKeeperField";
 import { StandardPlayerField } from "@/app/components/StandardPlayerField";
-import { SvgCornerShape } from "@/app/components/SvgCornerShape";
-import { SvgPenaltyArea } from "@/app/components/SvgPenaltyArea";
-import { LineupData } from "@/types/lineups";
+import { LineupData, PlayerInfoPosition } from "@/types/lineups";
 import { FixtureData, PlayerInfoModal } from "@/types/results";
-import { line } from "framer-motion/client";
-import { sub } from "framer-motion/m";
+import yellowCard from "../../../../public/images/yellow-card.png";
+import redCard from "../../../../public/images/red-card.png";
 import React from "react";
 import { useEffect, useMemo, useRef, useState } from "react";
+import PlayerFixtureInfo from "./playerFixtureInfo";
+import { soccerBall } from "@lucide/lab";
+import { Icon } from "lucide-react";
 
 type FixtureScorersProps = {
     fixture: FixtureData;
@@ -17,6 +18,9 @@ type FixtureScorersProps = {
 
 export default function FixtureLineupsTab({ fixture }: FixtureScorersProps) {
     const [lineups, setLineups] = useState<LineupData | null>(null);
+    const [selectedPlayer, setSelectedPlayer] = useState<PlayerInfoModal | null>(null);
+    const [selectedPlayerData, setSelectedPlayerData] = useState<any | null>(null);
+    const modalRef = useRef<HTMLDialogElement>(null);
 
     useEffect(() => {
         const fetchLineups = async () => {
@@ -28,6 +32,20 @@ export default function FixtureLineupsTab({ fixture }: FixtureScorersProps) {
         };
         fetchLineups();
     }, [fixture]);
+
+    function loadInfoPlayer(player: PlayerInfoPosition, obj: any) {
+        const playerInfo: PlayerInfoModal = {
+            playerId: player?.player?.id,
+            teamId: obj.team.id,
+        };
+        const playerData = {
+            player: player,
+            team: obj.team
+        }
+        setSelectedPlayer(playerInfo);
+        setSelectedPlayerData(playerData);
+        modalRef.current?.showModal();
+    }
 
     const teamLineupsMap = useMemo(() => {
         if (!lineups?.lineups) return {};
@@ -100,7 +118,6 @@ export default function FixtureLineupsTab({ fixture }: FixtureScorersProps) {
                     photo: player?.player.photo
                 };
             });
-            console.log(substitutes)
             acc[teamId] = {
                 team: teamData.team,
                 formation: teamData.formation,
@@ -203,47 +220,97 @@ export default function FixtureLineupsTab({ fixture }: FixtureScorersProps) {
                     </div>
                 );
             })}
+            <div className="divider"></div>
             <div className="flex flex-row justify-between mt-8">
                 {teamIds.map((teamId: any) => {
                     const team = teamLineupsMap[teamId];
                     return (
-                        <div key={teamId}>
-                            <ul className="list w-full bg-custom-dark border border-gray-800 rounded-box shadow-md">
-                                {team.substitutes.map((player: any) => {
-                                    return (
-                                        <li key={player.player.id} className="list-row hover:bg-highlight-custom-dark">
-                                            <div>
-                                                <div className="w-11 h-11 bg-gray-200 rounded flex items-center justify-center">
-                                                    <img
-                                                        className="size-auto rounded-box object-contain"
-                                                        src={player.photo}
-                                                        alt={player.player.name}
-                                                    />
-                                                </div>
+                        <div key={teamId} className="flex flex-col gap-5">
+                            <div className="flex flex-row justify-evenly items-center"> 
+                                <img
+                                    src={team.team.logo}
+                                    alt={team.team.name}
+                                    className="w-12 h-12"
+                                />
+                                <span className="font-bold text-xl">{team.team.name}</span>
+                            </div>
+                            <div>
+                                <ul className="list w-full bg-custom-dark border border-gray-800 rounded-box shadow-md">
+                                    {team.substitutes.map((player: any) => {
+                                        return (
+                                            <div key={player.player.id}>
+                                                <li onClick={() => loadInfoPlayer(player, team)} className="list-row hover:bg-highlight-custom-dark items-center">
+                                                    <div>
+                                                        <div className="w-11 h-11 bg-gray-200 rounded flex items-center justify-center">
+                                                            <img
+                                                                className="size-auto rounded-box object-contain"
+                                                                src={player.photo}
+                                                                alt={player.player.name}
+                                                            />
+                                                        </div>
+                                                    </div>
+                                                    <div className="flex flex-col justify-center">
+                                                        <div className="text-lg text-shadow-lg/30">
+                                                            {player.player.name}
+                                                        </div>
+                                                    </div>
+                                                    {player.stats.goals.total > 0 &&
+                                                        <div
+                                                            className={`h-6 w-10 rounded text-md font-bold text-white shadow-md `}
+                                                        >
+                                                            <Icon
+                                                                iconNode={soccerBall}
+                                                                className={`w-4 h-4 mt-1 ${player.stats.goals.conceded === null || player.stats.goals.conceded === 0 ? "text-white" : "text-red-600"} ml-5`}
+                                                            />
+                                                        </div>
+                                                    }
+                                                    {player.stats.cards.yellow > 0 && player.stats.cards.red === 0 &&
+                                                        <div
+                                                            className={`rounded text-md font-bold text-white shadow-md `}
+                                                        >
+                                                            <img className="w-3.5 h-5" src={yellowCard.src} alt="Red card" />
+                                                        </div>
+                                                    }
+                                                    {player.stats.cards.red > 0 &&
+                                                        <div
+                                                            className={`rounded text-md font-bold text-white shadow-md `}
+                                                        >
+                                                            <img className="w-3.5 h-5" src={redCard.src} alt="Red card" />
+                                                        </div>
+                                                    }
+                                                    <div className="flex flex-col justify-center">
+                                                        <div className={`text-lg text-shadow-lg/30 px-1 ${ratingColor(
+                                                            player.stats.games.rating ?? "0"
+                                                        )}`}
+                                                        >
+                                                            {player.stats.games.rating
+                                                                && Number(player.stats.games.rating ?? 0).toFixed(2)
+                                                            }
+                                                        </div>
+                                                    </div>
+                                                </li>
                                             </div>
-                                            <div className="flex flex-col justify-center">
-                                                <div className="text-lg text-shadow-lg/30">
-                                                    {player.player.name}
-                                                </div>
-                                            </div>
-                                            <div className="flex flex-col justify-center">
-                                                <div className={`text-lg text-shadow-lg/30 px-1 ${ratingColor(
-                                                        player.stats.games.rating ?? "0"
-                                                    )}`}
-                                                >
-                                                    {player.stats.games.rating
-                                                        && Number(player.stats.games.rating ?? 0).toFixed(2)
-                                                        }
-                                                </div>
-                                            </div>
-                                        </li>
-                                    )
-                                })}
-                            </ul>
+                                        )
+                                    })}
+                                </ul>
+                            </div>
                         </div>
                     )
                 })}
             </div>
+            <dialog ref={modalRef} className="modal">
+                <div className="modal-box">
+                    <PlayerFixtureInfo
+                        players={[]}
+                        selectedPlayer={selectedPlayer}
+                        singlePlayerInfo={selectedPlayerData?.player}
+                        singlePlayerTeamData={selectedPlayerData?.team}
+                    />
+                </div>
+                <form method="dialog" className="modal-backdrop">
+                    <button>close</button>
+                </form>
+            </dialog>
         </div>
 
     );

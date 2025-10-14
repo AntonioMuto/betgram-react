@@ -27,7 +27,7 @@ export const GoalKeeperField = ({ goalKeeper, isHomeTeam, teamData }: GoalKeeper
 
             {/* Solo grafica ruotata se non è squadra di casa */}
             <div
-                className={`flex flex-row justify-between bg-custom-dark p-1 ${!isHomeTeam ? "items-baseline" : ""} `}>
+                className={`flex flex-row justify-between bg-custom-dark border ${!isHomeTeam ? "items-baseline border-t-0" : "border-b-0"} border-custom-pitch`}>
                 <SvgCornerShape
                     size={14}
                     stroke="rgba(255,255,255,0.3)"

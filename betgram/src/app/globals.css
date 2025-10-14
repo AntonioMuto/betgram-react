@@ -6,7 +6,7 @@
   --background: #ffffff;
   --foreground: #000000;
   --selected-tab: #1d1d1d;
-  --example: #363636;
+  --example: #FFFFFF4D;
 }
 
 @theme inline {
@@ -24,6 +24,7 @@
   --color-custom-europa-league: #ad6608;
   --color-custom-conference-league: #648820;
   --color-custom-highlighted-list-row: #363636;
+  --color-custom-pitch: #FFFFFF4D;
 
 }
 

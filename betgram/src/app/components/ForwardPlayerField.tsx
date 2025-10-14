@@ -27,7 +27,7 @@ export const ForwardField = ({ forwards, isHomeTeam, teamData}: ForwardFieldProp
                 })}
             </div>
 
-            <div className="flex flex-row justify-center bg-custom-dark">
+            <div className={`flex flex-row justify-center bg-custom-dark border ${ isHomeTeam ? "border-t-0" : "border-b-0" } border-custom-pitch`}>
                 <SvgMiddleCircle width={180}
                     height={125} stroke="rgba(255,255,255,0.3)" isHome={isHomeTeam} />
             </div>

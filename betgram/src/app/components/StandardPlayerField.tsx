@@ -16,7 +16,7 @@ type PlayersFieldProps = {
 export const StandardPlayerField = ({ players, isHomeTeam, teamData }: PlayersFieldProps) => {
 
     return (
-        <div className="flex flex-row h-30 justify-evenly items-center bg-custom-dark">
+        <div className="flex flex-row h-30 justify-evenly items-center bg-custom-dark  border border-t-0 border-b-0 border-custom-pitch">
             {players.map((player) => {
                 return (
                     <div key={player.player.id} className="w-1/4">

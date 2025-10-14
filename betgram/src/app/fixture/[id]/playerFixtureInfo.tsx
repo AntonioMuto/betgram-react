@@ -1,6 +1,7 @@
 import { PlayerInfoModal, PlayersData } from "@/types/results";
-import { LucideShield, PlayIcon, SwordsIcon, TableIcon } from "lucide-react";
+import { Icon, LucideShield, PlayIcon, SwordsIcon, TableIcon } from "lucide-react";
 import React, { useCallback, useEffect, useMemo } from "react";
+import { soccerBall } from "@lucide/lab";
 
 type PlayerFixtureInfoProps = {
   players: PlayersData[];
@@ -25,7 +26,7 @@ export default function PlayerFixtureInfo({
         player: {
           id: singlePlayerInfo.player.id,
           name: singlePlayerInfo.player.name,
-          photo: singlePlayerInfo.player.photo,
+          photo: singlePlayerInfo.photo ?? singlePlayerInfo.player.photo,
         },
         statistics: [singlePlayerInfo.stats]
       }
@@ -50,13 +51,28 @@ export default function PlayerFixtureInfo({
 
   const ratingColor = (rating: string) => {
     if (Number(rating) >= 8) {
-      return "bg-green-600";
+      return "text-green-600";
     } else if (Number(rating) >= 7) {
-      return "bg-cyan-600";
+      return "text-cyan-600";
     } else if (Number(rating) >= 6) {
-      return "bg-yellow-600";
+      return "text-yellow-600";
     } else {
-      return "bg-red-600";
+      return "text-red-600";
+    }
+  };
+
+  const transcodePosition = (position: string) => {
+    switch (position) {
+      case "G":
+        return "POR";
+      case "D":
+        return "DIF";
+      case "M":
+        return "CEN";
+      case "F":
+        return "ATT";
+      default:
+        return position;
     }
   };
 
@@ -82,37 +98,30 @@ export default function PlayerFixtureInfo({
             ></img>
           </div>
         </div>
-        <h3 className="flex justify-center font-bold text-lg mt-5">
+        <h3 className="stat-value flex justify-center mt-5">
           {playerData?.player.name}
         </h3>
         <div className="divider"></div>
         {!notAPlayer && (
           <>
-            <div className="flex justify-evenly items-center">
-              <div
-                className={`px-1 py-1 rounded text-xl ${ratingColor(
-                  playerData?.statistics[0].games.rating ?? "0"
-                )}`}
-              >
-                {playerData?.statistics[0].games.rating
-                  ? Number(playerData?.statistics[0].games.rating ?? 0).toFixed(
-                    2
-                  )
-                  : "SV"}
+            <div className="stats stats-horizontal lg:stats-horizontal shadow">
+              <div className="stat !border-none w-40">
+                <div className="stat-title text-lg">Rating</div>
+                <div className={`stat-value ${ratingColor(playerData?.statistics[0].games.rating ?? "0")}`}>{playerData?.statistics[0].games.rating ?? "0"}</div>
               </div>
-              <h3 className="font-bold text-xl">
-                #{playerData?.statistics[0].games.number}
-              </h3>
-              <h3 className="font-bold text-xl">
-                {playerData?.statistics[0].games.position}
-              </h3>
+              <div className="stat !border-none w-40">
+                <div className="stat-title text-lg">Maglia</div>
+                <div className="stat-value">#{playerData?.statistics[0].games.number}</div>
+              </div>
+
+              <div className="stat !border-none w-40">
+                <div className="stat-title text-lg">Posizione</div>
+                <div className="stat-value">{transcodePosition(playerData?.statistics[0].games.position)}</div>
+              </div>
             </div>
             <div className="divider"></div>
-            <h3 className="flex justify-center font-bold text-lg mt-2">
-              STATISTICHE
-            </h3>
             <div key={selectedPlayer?.playerId} className="tabs tabs-lift mt-2">
-              <label className="tab">
+              <label className="tab text-xl">
                 <input
                   type="radio"
                   name={`modal_tabs_${selectedPlayer?.playerId}`}
@@ -124,44 +133,40 @@ export default function PlayerFixtureInfo({
                 GENERALI
               </label>
               <div className="tab-content p-1 mt-5">
-                <div className="flex justify-between mx-10">
-                  <h2 className="text-lg mt-2">Minuti Giocati</h2>
-                  <h2 className="text-lg mt-2">
-                    {playerData?.statistics[0].games.minutes}'
-                  </h2>
+                <div className="stats stats-horizontal lg:stats-horizontal shadow">
+                  <div className="stat !border-none w-40">
+                    <div className="stat-title text-lg">Minuti Giocati</div>
+                    <div className="stat-value">{playerData?.statistics[0].games.minutes ?? 0}'</div>
+                  </div>
+
+                  <div className="stat !border-none w-40">
+                    <div className="stat-title text-lg">Pass. Totali</div>
+                    <div className="stat-value ">{playerData?.statistics[0].passes.total ?? 0}</div>
+                  </div>
+
+                  <div className="stat !border-none w-40">
+                    <div className="stat-title text-lg">Pass. Chiave</div>
+                    <div className="stat-value ">{playerData?.statistics[0].passes.key ?? 0}</div>
+                  </div>
                 </div>
-                <div className="flex justify-between mx-10">
-                  <h2 className="text-lg mt-2">Passaggi Totali</h2>
-                  <h2 className="text-lg mt-2">
-                    {playerData?.statistics[0].passes.total ?? 0}
-                  </h2>
-                </div>
-                <div className="flex justify-between mx-10">
-                  <h2 className="text-lg mt-2">Passaggi Chiave</h2>
-                  <h2 className="text-lg mt-2">
-                    {playerData?.statistics[0].passes.key ?? 0}
-                  </h2>
-                </div>
-                <div className="flex justify-between mx-10">
-                  <h2 className="text-lg mt-2">Precisione Passaggi</h2>
-                  <h2 className="text-lg mt-2">
-                    {playerData?.statistics[0].passes.accuracy ?? 0}%
-                  </h2>
-                </div>
-                <div className="flex justify-between mx-10">
-                  <h2 className="text-lg mt-2">Goals</h2>
-                  <h2 className="text-lg mt-2">
-                    {playerData?.statistics[0].goals.total ?? 0}
-                  </h2>
-                </div>
-                <div className="flex justify-between mx-10">
-                  <h2 className="text-lg mt-2">Assists</h2>
-                  <h2 className="text-lg mt-2">
-                    {playerData?.statistics[0].goals.assists ?? 0}
-                  </h2>
+                <div className="stats stats-horizontal lg:stats-horizontal shadow mt-0.5">
+                  <div className="stat !border-none w-40">
+                    <div className="stat-title text-lg">Precisione Pass.</div>
+                    <div className="stat-value">{playerData?.statistics[0].passes.accuracy ?? 0}%</div>
+                  </div>
+
+                  <div className="stat !border-none w-40">
+                    <div className="stat-title text-lg">Goals</div>
+                    <div className="stat-value">{playerData?.statistics[0].goals.total ?? 0}</div>
+                  </div>
+
+                  <div className="stat !border-none w-40">
+                    <div className="stat-title text-lg">Assists</div>
+                    <div className="stat-value">{playerData?.statistics[0].goals.assists ?? 0}</div>
+                  </div>
                 </div>
               </div>
-              <label className="tab">
+              <label className="tab text-xl">
                 <input
                   type="radio"
                   name={`modal_tabs_${selectedPlayer?.playerId}`}
@@ -172,50 +177,40 @@ export default function PlayerFixtureInfo({
                 DIFESA
               </label>
               <div className="tab-content p-1 mt-5">
-                <div className="flex justify-between mx-10">
-                  <h2 className="text-lg mt-2">Cartellini Gialli</h2>
-                  <h2 className="text-lg mt-2">
-                    {playerData?.statistics[0].cards.yellow ?? 0}
-                  </h2>
+                <div className="stats stats-horizontal lg:stats-horizontal shadow">
+                  <div className="stat !border-none w-40">
+                    <div className="stat-title text-lg">Ammonizioni</div>
+                    <div className="stat-value text-yellow-500">{playerData?.statistics[0].cards.yellow ?? 0}</div>
+                  </div>
+
+                  <div className="stat !border-none w-40">
+                    <div className="stat-title text-lg">Espulsioni</div>
+                    <div className="stat-value text-red-500">{playerData?.statistics[0].cards.red ?? 0}</div>
+                  </div>
+
+                  <div className="stat !border-none w-40">
+                    <div className="stat-title text-lg">Rigori Parati</div>
+                    <div className="stat-value">{playerData?.statistics[0].penalty.saved ?? 0}</div>
+                  </div>
                 </div>
-                <div className="flex justify-between mx-10">
-                  <h2 className="text-lg mt-2">Cartellini Rossi</h2>
-                  <h2 className="text-lg mt-2">
-                    {playerData?.statistics[0].cards.red ?? 0}
-                  </h2>
-                </div>
-                <div className="flex justify-between mx-10">
-                  <h2 className="text-lg mt-2">Rigori Parati</h2>
-                  <h2 className="text-lg mt-2">
-                    {playerData?.statistics[0].penalty.saved ?? 0}
-                  </h2>
-                </div>
-                <div className="flex justify-between mx-10">
-                  <h2 className="text-lg mt-2">Falli Commessi</h2>
-                  <h2 className="text-lg mt-2">
-                    {playerData?.statistics[0].fouls.committed ?? 0}
-                  </h2>
-                </div>
-                <div className="flex justify-between mx-10">
-                  <h2 className="text-lg mt-2">Duelli Totali</h2>
-                  <h2 className="text-lg mt-2">
-                    {playerData?.statistics[0].duels.total ?? 0}
-                  </h2>
-                </div>
-                <div className="flex justify-between mx-10">
-                  <h2 className="text-lg mt-2">Duelli Vinti</h2>
-                  <h2 className="text-lg mt-2">
-                    {playerData?.statistics[0].duels.won ?? 0}
-                  </h2>
-                </div>
-                <div className="flex justify-between mx-10">
-                  <h2 className="text-lg mt-2">Contrasti Totali</h2>
-                  <h2 className="text-lg mt-2">
-                    {playerData?.statistics[0].tackles.total ?? 0}
-                  </h2>
+                <div className="stats stats-horizontal lg:stats-horizontal shadow mt-0.5">
+                  <div className="stat !border-none w-40">
+                    <div className="stat-title text-lg">Falli Commessi</div>
+                    <div className="stat-value"> {playerData?.statistics[0].fouls.committed ?? 0}</div>
+                  </div>
+
+                  <div className="stat !border-none w-40">
+                    <div className="stat-title text-lg">Duelli Totali</div>
+                    <div className="stat-value">{playerData?.statistics[0].duels.total ?? 0}</div>
+                  </div>
+
+                  <div className="stat !border-none w-40">
+                    <div className="stat-title text-lg">Duelli Vinti</div>
+                    <div className="stat-value">{playerData?.statistics[0].duels.won ?? 0}</div>
+                  </div>
                 </div>
               </div>
-              <label className="tab">
+              <label className="tab text-xl">
                 <input
                   type="radio"
                   name={`modal_tabs_${selectedPlayer?.playerId}`}
@@ -226,35 +221,32 @@ export default function PlayerFixtureInfo({
                 ATTACCO
               </label>
               <div className="tab-content p-1 mt-5">
-                <div className="flex justify-between mx-10">
-                  <h2 className="text-lg mt-2">Tiri Totali</h2>
-                  <h2 className="text-lg mt-2">
-                    {playerData?.statistics[0].shots.total ?? 0}
-                  </h2>
+                <div className="stats stats-horizontal lg:stats-horizontal shadow">
+                  <div className="stat !border-none w-40">
+                    <div className="stat-title text-lg">Tiri Totali</div>
+                    <div className="stat-value">{playerData?.statistics[0].shots.total ?? 0}</div>
+                  </div>
+
+                  <div className="stat !border-none w-40">
+                    <div className="stat-title text-lg">Tiri in Porta</div>
+                    <div className="stat-value">{playerData?.statistics[0].shots.on ?? 0}</div>
+                  </div>
+
+                  <div className="stat !border-none w-40">
+                    <div className="stat-title text-lg">Fuorigioco</div>
+                    <div className="stat-value">{playerData?.statistics[0].offsides ?? 0}</div>
+                  </div>
                 </div>
-                <div className="flex justify-between mx-10">
-                  <h2 className="text-lg mt-2">Tiri in Porta</h2>
-                  <h2 className="text-lg mt-2">
-                    {playerData?.statistics[0].shots.on ?? 0}
-                  </h2>
-                </div>
-                <div className="flex justify-between mx-10">
-                  <h2 className="text-lg mt-2">Fuorigioco</h2>
-                  <h2 className="text-lg mt-2">
-                    {playerData?.statistics[0].offsides ?? 0}
-                  </h2>
-                </div>
-                <div className="flex justify-between mx-10">
-                  <h2 className="text-lg mt-2">Rigori Segnati</h2>
-                  <h2 className="text-lg mt-2">
-                    {playerData?.statistics[0].penalty.scored ?? 0}
-                  </h2>
-                </div>
-                <div className="flex justify-between mx-10">
-                  <h2 className="text-lg mt-2">Falli Subiti</h2>
-                  <h2 className="text-lg mt-2">
-                    {playerData?.statistics[0].fouls.drawn ?? 0}
-                  </h2>
+                <div className="stats stats-horizontal lg:stats-horizontal shadow mt-0.5">
+                  <div className="stat !border-none w-40">
+                    <div className="stat-title text-lg">Rigori Segnati</div>
+                    <div className="stat-value">{playerData?.statistics[0].penalty.scored ?? 0}</div>
+                  </div>
+
+                  <div className="stat !border-none w-40">
+                    <div className="stat-title text-lg">Falli Subiti</div>
+                    <div className="stat-value">{playerData?.statistics[0].fouls.drawn ?? 0}</div>
+                  </div>
                 </div>
               </div>
             </div>
