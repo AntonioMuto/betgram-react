@@ -107,7 +107,7 @@ export default function PlayerFixtureInfo({
             <div className="stats stats-horizontal lg:stats-horizontal shadow">
               <div className="stat !border-none w-40">
                 <div className="stat-title text-lg">Rating</div>
-                <div className={`stat-value ${ratingColor(playerData?.statistics[0].games.rating ?? "0")}`}>{playerData?.statistics[0].games.rating ?? "0"}</div>
+                <div className={`stat-value ${ratingColor(playerData?.statistics[0].games.rating ?? "0")}`}>{Number(playerData?.statistics[0].games.rating).toFixed(2) ?? "0"}</div>
               </div>
               <div className="stat !border-none w-40">
                 <div className="stat-title text-lg">Maglia</div>
