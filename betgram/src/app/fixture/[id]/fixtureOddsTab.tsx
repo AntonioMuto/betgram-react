@@ -77,7 +77,7 @@ export default function FixtureOddsTab({ fixture }: FixtureOddsTabProps) {
           >
             <input type="checkbox" name="my-accordion-2" />
             <div className="collapse-title font-semibold text-lg">
-              {translate(bet.name)}
+              {translate(bet.name).toUpperCase()}
             </div>
 
             <div className="collapse-content text-sm bg-custom-dark-black-light">
