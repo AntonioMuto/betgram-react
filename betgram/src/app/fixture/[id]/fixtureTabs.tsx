@@ -12,6 +12,7 @@ import FixtureDetailTab from "./fixtureDetailTab";
 import FixtureStatsTab from "./fixtureStatsTab";
 import FixtureStandingTab from "./fixtureStandingTab";
 import FixtureLineupsTab from "./fixtureLineupsTab";
+import FixtureOddsTab from "./fixtureOddsTab";
 
 interface FixtureTabsProps {
   fixture: FixtureData;
@@ -61,9 +62,8 @@ export default function FixtureTabs({ fixture }: FixtureTabsProps) {
         QUOTE
       </label>
       <div className="tab-content bg-custom-dark-black border-base-300 p-6">
-        {activeTab === "quote" && <>tab quote</>}
+        {activeTab === "quote" && <FixtureOddsTab fixture={fixture} />}
       </div>
-
       <label className="tab [--tab-bg:var(--selected-tab)]">
         <input
           type="radio"

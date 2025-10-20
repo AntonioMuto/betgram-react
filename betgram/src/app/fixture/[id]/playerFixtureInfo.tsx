@@ -132,7 +132,7 @@ export default function PlayerFixtureInfo({
                 <TableIcon className="size-5 me-2" />
                 GENERALI
               </label>
-              <div className="tab-content p-1 mt-5">
+              <div className="tab-content p-1 mt-5 ">
                 <div className="stats stats-horizontal lg:stats-horizontal shadow">
                   <div className="stat !border-none w-40">
                     <div className="stat-title text-lg">Minuti Giocati</div>
