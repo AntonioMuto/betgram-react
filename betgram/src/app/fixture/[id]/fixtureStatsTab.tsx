@@ -61,8 +61,13 @@ export default function FixtureStatsTab({ fixture }: FixtureDetailTabProps) {
 
     function getStatPercentages(stat: Record<string, string | null>): StatPercentages {
         const [homeId, awayId] = Object.keys(stat);
-        const homeRaw = stat[homeId] ?? "0";
-        const awayRaw = stat[awayId] ?? "0";
+        console.log(homeId, awayId);
+        let homeRaw = stat[homeId] ?? "0";
+        let awayRaw = stat[awayId] ?? "0";
+        if(fixture.teams.home.id !== Number(homeId)) {
+            homeRaw = stat[awayId] ?? "0";
+            awayRaw = stat[homeId] ?? "0";
+        }
         const parseValue = (value: string | null) => {
             if (!value) return 0;
             if (value.includes("%")) return parseInt(value);

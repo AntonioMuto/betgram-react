@@ -55,13 +55,15 @@ export default function FixtureOddsTab({ fixture }: FixtureOddsTabProps) {
 
   return (
     <div>
-      <form className="mb-5">
-        <input className="btn" type="checkbox" aria-label="Svelte" />
-        <input className="btn" type="checkbox" aria-label="Vue" />
-        <input className="btn" type="checkbox" aria-label="React" />
-        <input className="btn btn-square" type="reset" value="×" />
-      </form>
-
+      {isLoading && <div className="flex justify-center mt-5"><span className="loading loading-spinner loading-xl"></span></div>}
+      {!isLoading &&
+        <form className="mb-5">
+          <input className="btn mr-2" type="checkbox" aria-label="Classiche" />
+          <input className="btn mr-2" type="checkbox" aria-label="Goals" />
+          <input className="btn mr-2" type="checkbox" aria-label="Asiatiche" />
+          <input className="btn btn-square" type="reset" value="×" />
+        </form>
+      }
       {odds?.bookmakers[0]?.bets.map((bet) => {
         const count = bet.values.length;
         const isGrid = count >= 3;

@@ -1,13 +1,13 @@
 "use client";
 import { useUser } from "@/app/context/UserContext";
-import { formatTimeToTimezone } from "@/app/utils/date";
+import { formatTimeToTimezone, formatDateTimeToTimezone } from "@/app/utils/date";
 import {
   isFixtureFinished,
   isFixtureInProgress,
   isFixtureScheduled,
 } from "@/app/utils/fixtureState";
 import { FixtureData } from "@/types/results";
-import { GlobeEuropeAfricaIcon } from "@heroicons/react/24/outline";
+import { GlobeEuropeAfricaIcon, ClockIcon } from "@heroicons/react/24/outline";
 import { DateTime } from "luxon";
 import React, { useEffect, useState } from "react";
 import FixtureScorers from "./fixtureScorers";
@@ -40,11 +40,12 @@ export default function FixtureInfo({ fixture, setFixture }: FixtureInfoProps) {
         return;
       }
 
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
       const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
       const minutes = Math.floor((diff / (1000 * 60)) % 60);
       const seconds = Math.floor((diff / 1000) % 60);
 
-      const formattedTime = `${String(hours).padStart(2, "0")}:${String(
+      const formattedTime = ` ${String(days).padStart(2, "0")}:${String(hours).padStart(2, "0")}:${String(
         minutes
       ).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
 
@@ -78,11 +79,19 @@ export default function FixtureInfo({ fixture, setFixture }: FixtureInfoProps) {
   return (
     <div className="flex flex-col">
       {/* Venue */}
-      <div className="flex items-center p-2 gap-2">
-        <GlobeEuropeAfricaIcon className="w-6 h-6" />
-        <span className="text-gray-400 text-lg">
-          {fixture.fixture.venue.city}, {fixture.fixture.venue.name}
-        </span>
+      <div className="flex items-center justify-between p-2 gap-2">
+        <div className="flex flex-row gap-3">
+          <GlobeEuropeAfricaIcon className="w-6 h-6" />
+          <span className="text-gray-400 text-lg">
+            {fixture.fixture.venue.city}, {fixture.fixture.venue.name}
+          </span>
+        </div>
+        <div className="flex flex-row gap-3">
+          <span className="text-gray-400 text-lg mr-2">
+            {formatDateTimeToTimezone(fixture.fixture.date, timezone)}
+          </span>
+          <ClockIcon className="w-6 h-6 mr-2" />
+        </div>
       </div>
 
       {/* Match header */}
@@ -108,31 +117,30 @@ export default function FixtureInfo({ fixture, setFixture }: FixtureInfoProps) {
           <div className="text-xl">
             {isFixtureScheduled(fixture.fixture.status.short) ? (
               <span className="countdown font-mono text-2xl text-zinc-400">
-              {timeLeft ? (
-                timeLeft.split(":").map((val, idx, arr) => (
-                  <React.Fragment key={idx}>
-                    <span
-                      style={{ "--value": Number(val) } as React.CSSProperties}
-                      aria-live="polite"
-                      aria-label={`${val} ${idx === 0 ? "hours" : idx === 1 ? "minutes" : "seconds"}`}
-                    >
-                      {val}
-                    </span>
-                    {idx < arr.length - 1 && ":"} {/* aggiunge ':' tra gli span */}
-                  </React.Fragment>
-                ))
-              ) : (
-                <span className="loading loading-spinner loading-sm"></span>
-              )}
-            </span>
+                {timeLeft ? (
+                  timeLeft.split(":").map((val, idx, arr) => (
+                    <React.Fragment key={idx}>
+                      <span
+                        style={{ "--value": Number(val) } as React.CSSProperties}
+                        aria-live="polite"
+                        aria-label={`${val} ${idx === 0 ? "hours" : idx === 1 ? "minutes" : "seconds"}`}
+                      >
+                        {val}
+                      </span>
+                      {idx < arr.length - 1 && ":"} {/* aggiunge ':' tra gli span */}
+                    </React.Fragment>
+                  ))
+                ) : (
+                  <span className="loading loading-spinner loading-sm"></span>
+                )}
+              </span>
             ) : (
               <div className="flex flex-col items-center">
                 <div
-                  className={`text-2xl font-bold ${
-                    isFixtureInProgress(fixture.fixture.status.short)
-                      ? "text-red-500"
-                      : "text-white"
-                  }`}
+                  className={`text-2xl font-bold ${isFixtureInProgress(fixture.fixture.status.short)
+                    ? "text-red-500"
+                    : "text-white"
+                    }`}
                 >
                   {fixture.goals.home} - {fixture.goals.away}
                 </div>

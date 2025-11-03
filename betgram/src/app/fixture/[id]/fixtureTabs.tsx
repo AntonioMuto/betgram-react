@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { use, useEffect, useState } from "react";
 import { FixtureData } from "@/types/results";
 import {
   PlayIcon,
@@ -13,44 +13,56 @@ import FixtureStatsTab from "./fixtureStatsTab";
 import FixtureStandingTab from "./fixtureStandingTab";
 import FixtureLineupsTab from "./fixtureLineupsTab";
 import FixtureOddsTab from "./fixtureOddsTab";
+import { isFixtureFinished, isFixtureInProgress, isFixtureScheduled } from "@/app/utils/fixtureState";
 
 interface FixtureTabsProps {
   fixture: FixtureData;
 }
 
 export default function FixtureTabs({ fixture }: FixtureTabsProps) {
-  const [activeTab, setActiveTab] = useState<"details" | "stats" | "quote" | "formations" | "standings">("details");
+  const [activeTab, setActiveTab] = useState<string>("details");
+
+  useEffect(() => {
+    let selectedTab = "details";
+    if (isFixtureFinished(fixture.fixture.status.short) || isFixtureInProgress(fixture.fixture.status.short)) selectedTab = "details";
+    if (isFixtureScheduled(fixture.fixture.status.short)) selectedTab = "quote";
+
+    setActiveTab(selectedTab);
+  }, [fixture]);
 
   return (
     <div className="tabs tabs-lift mt-4">
-      <label className="tab [--tab-bg:var(--selected-tab)]">
-        <input
-          type="radio"
-          name="my_tabs_4"
-          checked={activeTab === "details"}
-          onChange={() => setActiveTab("details")}
-        />
-        <PlayIcon className="size-8 me-2" />
-        DETTAGLI
-      </label>
-      <div className="tab-content bg-custom-dark-black border-base-300 p-6">
-        {activeTab === "details" && <FixtureDetailTab fixture={fixture} />}
-      </div>
+      {isFixtureInProgress(fixture.fixture.status.short) || isFixtureFinished(fixture.fixture.status.short) && (
+        <>
+          <label className="tab [--tab-bg:var(--selected-tab)]">
+            <input
+              type="radio"
+              name="my_tabs_4"
+              checked={activeTab === "details"}
+              onChange={() => setActiveTab("details")}
+            />
+            <PlayIcon className="size-8 me-2" />
+            DETTAGLI
+          </label>
+          <div className="tab-content bg-custom-dark-black border-base-300 p-6">
+            {activeTab === "details" && <FixtureDetailTab fixture={fixture} />}
+          </div>
 
-      <label className="tab [--tab-bg:var(--selected-tab)]">
-        <input
-          type="radio"
-          name="my_tabs_4"
-          checked={activeTab === "stats"}
-          onChange={() => setActiveTab("stats")}
-        />
-        <ChartBarSquareIcon className="size-8 me-2" />
-        STATISTICHE
-      </label>
-      <div className="tab-content bg-custom-dark-black border-base-300 p-6">
-        {activeTab === "stats" && <FixtureStatsTab fixture={fixture} />}
-      </div>
-
+          <label className="tab [--tab-bg:var(--selected-tab)]">
+            <input
+              type="radio"
+              name="my_tabs_4"
+              checked={activeTab === "stats"}
+              onChange={() => setActiveTab("stats")}
+            />
+            <ChartBarSquareIcon className="size-8 me-2" />
+            STATISTICHE
+          </label>
+          <div className="tab-content bg-custom-dark-black border-base-300 p-6">
+            {activeTab === "stats" && <FixtureStatsTab fixture={fixture} />}
+          </div>
+        </>
+      )}
       <label className="tab [--tab-bg:var(--selected-tab)]">
         <input
           type="radio"
@@ -89,7 +101,7 @@ export default function FixtureTabs({ fixture }: FixtureTabsProps) {
         CLASSIFICA
       </label>
       <div className="tab-content bg-custom-dark-black border-base-300 p-6">
-        {activeTab === "standings" && <FixtureStandingTab fixture={fixture}/>}
+        {activeTab === "standings" && <FixtureStandingTab fixture={fixture} />}
       </div>
     </div>
   );

@@ -20,15 +20,18 @@ export default function FixtureLineupsTab({ fixture }: FixtureScorersProps) {
     const [lineups, setLineups] = useState<LineupData | null>(null);
     const [selectedPlayer, setSelectedPlayer] = useState<PlayerInfoModal | null>(null);
     const [selectedPlayerData, setSelectedPlayerData] = useState<any | null>(null);
+    const [isLoading, setIsLoading] = useState<boolean>(true);
     const modalRef = useRef<HTMLDialogElement>(null);
 
     useEffect(() => {
         const fetchLineups = async () => {
+            setIsLoading(true);
             const res = await fetch(`https://betgram.click/api/lineups/${fixture.fixture.id}`, {
                 headers: { "Cache-Control": "no-cache" },
             });
             const json = await res.json();
             setLineups(json);
+            setIsLoading(false);
         };
         fetchLineups();
     }, [fixture]);
@@ -163,6 +166,10 @@ export default function FixtureLineupsTab({ fixture }: FixtureScorersProps) {
 
     return (
         <div>
+            {isLoading && <div className="flex justify-center mt-5"><span className="loading loading-spinner loading-xl"></span></div>}
+            {teamIds.length === 0 && !isLoading && <div key={"loading"}>
+                <p className="text-center">Nessuna formazione disponibile</p>    
+            </div>}
             {teamIds.map((teamId: any) => {
                 const team = teamLineupsMap[teamId];
                 const isHomeTeam = team.team.id === fixture.teams.home.id;
@@ -220,7 +227,9 @@ export default function FixtureLineupsTab({ fixture }: FixtureScorersProps) {
                     </div>
                 );
             })}
-            <div className="divider"></div>
+            { !isLoading && 
+                <div className="divider"></div>
+            }
             <div className="flex flex-row justify-between mt-8">
                 {teamIds.map((teamId: any) => {
                     const team = teamLineupsMap[teamId];
@@ -251,10 +260,10 @@ export default function FixtureLineupsTab({ fixture }: FixtureScorersProps) {
                                                     </div>
                                                     <div className="flex flex-col justify-center">
                                                         <div className="text-lg text-shadow-lg/30">
-                                                            {player.player.name}
+                                                            {player.player.name ?? '???'}
                                                         </div>
                                                     </div>
-                                                    {player.stats.goals.total > 0 &&
+                                                    {player.stats?.goals?.total > 0 &&
                                                         <div
                                                             className={`h-6 w-10 rounded text-md font-bold text-white shadow-md `}
                                                         >
@@ -264,14 +273,14 @@ export default function FixtureLineupsTab({ fixture }: FixtureScorersProps) {
                                                             />
                                                         </div>
                                                     }
-                                                    {player.stats.cards.yellow > 0 && player.stats.cards.red === 0 &&
+                                                    {player.stats?.cards.yellow > 0 && player.stats?.cards.red === 0 &&
                                                         <div
                                                             className={`rounded text-md font-bold text-white shadow-md `}
                                                         >
                                                             <img className="w-3.5 h-5" src={yellowCard.src} alt="Red card" />
                                                         </div>
                                                     }
-                                                    {player.stats.cards.red > 0 &&
+                                                    {player.stats?.cards.red > 0 &&
                                                         <div
                                                             className={`rounded text-md font-bold text-white shadow-md `}
                                                         >
@@ -280,10 +289,10 @@ export default function FixtureLineupsTab({ fixture }: FixtureScorersProps) {
                                                     }
                                                     <div className="flex flex-col justify-center">
                                                         <div className={`text-lg text-shadow-lg/30 px-1 ${ratingColor(
-                                                            player.stats.games.rating ?? "0"
+                                                            player.stats?.games.rating ?? "0"
                                                         )}`}
                                                         >
-                                                            {player.stats.games.rating
+                                                            {player.stats?.games.rating
                                                                 && Number(player.stats.games.rating ?? 0).toFixed(2)
                                                             }
                                                         </div>
