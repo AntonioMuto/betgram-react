@@ -1,6 +1,6 @@
 import { isFixtureFinished, isFixtureInProgress } from "@/app/utils/fixtureState";
 import { translate, translateOdds } from "@/app/utils/translate";
-import { OddsData } from "@/types/odds";
+import { OddsBet, OddsData } from "@/types/odds";
 import { FixtureData } from "@/types/results";
 import { useEffect, useState } from "react";
 
@@ -73,14 +73,17 @@ export default function FixtureOddsTab({ fixture }: FixtureOddsTabProps) {
   };
 
   // ✅ Filtraggio bets in base ai filtri selezionati
-  const filteredBets = odds?.bookmakers[0]?.bets.filter((bet) => {
-    if (selectedFilters.length === 0) return true; // Nessun filtro → mostra tutto
-    return selectedFilters.some((filter) =>
-      betCategories[filter]?.some((name) =>
-        bet.name.toLowerCase() === (name.toLowerCase())
-      )
-    );
-  });
+  let filteredBets: OddsBet[] = [];
+  if (odds && odds.bookmakers && odds.bookmakers.length > 0) {
+    filteredBets = odds?.bookmakers[0]?.bets.filter((bet) => {
+      if (selectedFilters.length === 0) return true; // Nessun filtro → mostra tutto
+      return selectedFilters.some((filter) =>
+        betCategories[filter]?.some((name) =>
+          bet.name.toLowerCase() === (name.toLowerCase())
+        )
+      );
+    });
+  }
 
   return (
     <div>
@@ -94,12 +97,12 @@ export default function FixtureOddsTab({ fixture }: FixtureOddsTabProps) {
             <div className="skeleton h-10 w-full"></div>
           </div>
           <div className="flex w-full flex-col gap-4 mt-4">
-              <div className="skeleton h-20 w-full"></div>
-              <div className="skeleton h-20 w-full"></div>
-              <div className="skeleton h-20 w-full"></div>
-              <div className="skeleton h-20 w-full"></div>
-              <div className="skeleton h-20 w-full"></div>
-              <div className="skeleton h-20 w-full"></div>
+            <div className="skeleton h-20 w-full"></div>
+            <div className="skeleton h-20 w-full"></div>
+            <div className="skeleton h-20 w-full"></div>
+            <div className="skeleton h-20 w-full"></div>
+            <div className="skeleton h-20 w-full"></div>
+            <div className="skeleton h-20 w-full"></div>
           </div>
         </div>
       )}
@@ -108,7 +111,7 @@ export default function FixtureOddsTab({ fixture }: FixtureOddsTabProps) {
           {["Classiche", "Goals", "Asiatiche", "PrimoTempo", "SecondoTempo", "Speciali", "Combo"].map((label) => (
             <label key={label} className="btn cursor-pointer w-23 bg-custom-dark-black-light has-[input:checked]:bg-green-800 has-[input:checked]:border-green-500">
               <input className="btn bg-transparent border-0" type="checkbox" checked={selectedFilters.includes(label)}
-                onChange={() => handleFilterChange(label)} aria-label={ label === 'PrimoTempo' ? '1° T' : label === 'SecondoTempo' ? '2° T' : label } />
+                onChange={() => handleFilterChange(label)} aria-label={label === 'PrimoTempo' ? '1° T' : label === 'SecondoTempo' ? '2° T' : label} />
             </label>
           ))}
           <input
@@ -150,10 +153,10 @@ export default function FixtureOddsTab({ fixture }: FixtureOddsTabProps) {
                     <div
                       key={valueKey}
                       className={`stat !border !border-custom-pitch rounded flex-1 cursor-pointer transition-colors ${isSelected
-                          ? "bg-green-800"
-                          : canEdit === true
-                            ? "hover:bg-highlight-custom-dark"
-                            : "bg-custom-disabled-odd"
+                        ? "bg-green-800"
+                        : canEdit === true
+                          ? "hover:bg-highlight-custom-dark"
+                          : "bg-custom-disabled-odd"
                         }`}
                       onClick={() => toggleSelected(bet.id, valueKey)}
                     >
