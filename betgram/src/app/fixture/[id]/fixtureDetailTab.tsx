@@ -39,7 +39,9 @@ export default function FixtureDetailTab({ fixture }: FixtureDetailTabProps) {
       if (event.type === "Card") {
         return (
           <div className="flex text-base text-gray-400">
-            {translate(event.comments)}
+            <span>
+              {translate(event.comments)}
+            </span>
           </div>
         );
       }
@@ -50,7 +52,9 @@ export default function FixtureDetailTab({ fixture }: FixtureDetailTabProps) {
             className="flex text-base text-green-500 cursor-pointer hover:underline"
             onClick={() => handleClick(event.assist.id, event.team.id)}
           >
-            {event.assist?.id === event.player?.id ? "" : event.assist?.name}
+            <span>
+              {event.assist?.id === event.player?.id ? "" : event.assist?.name}
+            </span>
           </div>
         );
       }
@@ -58,7 +62,7 @@ export default function FixtureDetailTab({ fixture }: FixtureDetailTabProps) {
       if (event.type === "Goal" && event.detail === "Penalty") {
         return (
           <div className="flex text-base text-gray-400">
-            {translate(event.detail)}
+            <span>{translate(event.detail)}</span>
           </div>
         );
       }
@@ -68,7 +72,9 @@ export default function FixtureDetailTab({ fixture }: FixtureDetailTabProps) {
           className="flex text-base text-gray-400 cursor-pointer hover:underline"
           onClick={() => handleClick(event.assist.id, event.team.id)}
         >
-          {event.assist?.id === event.player?.id ? "" : event.assist?.name}
+          <span>
+            {event.assist?.id === event.player?.id ? "" : event.assist?.name}
+          </span>
         </div>
       );
     },
@@ -151,9 +157,13 @@ export default function FixtureDetailTab({ fixture }: FixtureDetailTabProps) {
                 </div>
               </div>
               <div className="timeline-middle">
-                <div className="badge badge-md w-20 bg-zinc-600 text-zinc-300 text-lg">
-                  {event.time.elapsed}{" "}
-                  {event.time.extra && `+ ${event.time.extra}`}
+                <div className="indicator">
+                  {event.time.extra && <span className="indicator-item indicator-bottom badge bg-black border border-zinc-700 text-md rounded-full">{event.time.extra}</span>}
+                  <div className="rounded-full badge-md bg-transparent rounded-full border border-zinc-700 text-zinc-300 text-lg">
+                    <span>
+                      {event.time.elapsed + '°'}{" "}
+                    </span>
+                  </div>
                 </div>
               </div>
             </li>

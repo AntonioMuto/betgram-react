@@ -156,8 +156,6 @@ export default function FixtureLineupsTab({ fixture }: FixtureScorersProps) {
         });
     }
 
-    if (!lineups) return <div key={"loading"}>Caricamento formazioni...</div>;
-
     const teamIds = Object.keys(teamLineupsMap).sort((a, b) => {
         if (a === fixture.teams.home.id.toString()) return -1;
         if (b === fixture.teams.home.id.toString()) return 1;
@@ -166,9 +164,20 @@ export default function FixtureLineupsTab({ fixture }: FixtureScorersProps) {
 
     return (
         <div>
-            {isLoading && <div className="flex justify-center mt-5"><span className="loading loading-spinner loading-xl"></span></div>}
+            {isLoading &&
+                <div className="md:col-span-5 flex flex-col bg-custom-dark border border-gray-800 rounded-box shadow-md p-4 justify-center">
+                    <div className="flex w-full flex-col gap-4">
+                        <div className="skeleton h-150 w-full"></div>
+                    </div>
+                    <div className="flex w-full flex-col gap-4 mt-4">
+                        <div className="flex flex-row">
+                            <div className="skeleton h-120 w-full mr-50"></div>
+                            <div className="skeleton h-120 w-full"></div>
+                        </div>
+                    </div>
+                </div>}
             {teamIds.length === 0 && !isLoading && <div key={"loading"}>
-                <p className="text-center">Nessuna formazione disponibile</p>    
+                <p className="text-center">Nessuna formazione disponibile</p>
             </div>}
             {teamIds.map((teamId: any) => {
                 const team = teamLineupsMap[teamId];
@@ -227,7 +236,7 @@ export default function FixtureLineupsTab({ fixture }: FixtureScorersProps) {
                     </div>
                 );
             })}
-            { !isLoading && 
+            {!isLoading &&
                 <div className="divider"></div>
             }
             <div className="flex flex-row justify-between mt-8">
@@ -235,7 +244,7 @@ export default function FixtureLineupsTab({ fixture }: FixtureScorersProps) {
                     const team = teamLineupsMap[teamId];
                     return (
                         <div key={teamId} className="flex flex-col gap-5">
-                            <div className="flex flex-row justify-evenly items-center"> 
+                            <div className="flex flex-row justify-evenly items-center">
                                 <img
                                     src={team.team.logo}
                                     alt={team.team.name}

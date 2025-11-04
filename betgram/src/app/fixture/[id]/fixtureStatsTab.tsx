@@ -64,7 +64,7 @@ export default function FixtureStatsTab({ fixture }: FixtureDetailTabProps) {
         console.log(homeId, awayId);
         let homeRaw = stat[homeId] ?? "0";
         let awayRaw = stat[awayId] ?? "0";
-        if(fixture.teams.home.id !== Number(homeId)) {
+        if (fixture.teams.home.id !== Number(homeId)) {
             homeRaw = stat[awayId] ?? "0";
             awayRaw = stat[homeId] ?? "0";
         }
@@ -113,22 +113,25 @@ export default function FixtureStatsTab({ fixture }: FixtureDetailTabProps) {
                         </div>
                     </div>
                 ) :
-                    percentagesMap &&
-                    Object.entries(percentagesMap).map(([title, { homePercent, awayPercent, homeRaw, awayRaw }]) => (
-                        <div key={title} className="flex flex-col mb-7">
-                            <div className="flex flex-row justify-between mb-1 gap-1">
-                                <h3 className="text-lg ">{homeRaw}</h3>
-                                <h3 className="text-md">{translate(title).toUpperCase()}</h3>
-                                <h3 className="text-lg">{awayRaw}</h3>
+                    percentagesMap && Object.keys(percentagesMap).length ?
+                        Object.entries(percentagesMap).map(([title, { homePercent, awayPercent, homeRaw, awayRaw }]) => (
+                            <div key={title} className="flex flex-col mb-7">
+                                <div className="flex flex-row justify-between mb-1 gap-1">
+                                    <h3 className="text-lg ">{homeRaw}</h3>
+                                    <h3 className="text-md">{translate(title).toUpperCase()}</h3>
+                                    <h3 className="text-lg">{awayRaw}</h3>
+                                </div>
+                                <ProgressBar
+                                    homeValue={homePercent}
+                                    awayValue={awayPercent}
+                                    homeColor="bg-rose-800"
+                                    awayColor="bg-indigo-900"
+                                />
                             </div>
-                            <ProgressBar
-                                homeValue={homePercent}
-                                awayValue={awayPercent}
-                                homeColor="bg-rose-800"
-                                awayColor="bg-indigo-900"
-                            />
-                        </div>
-                    ))}
+                        )) : <div role="alert" className="alert alert-info alert-outline justify-center !bg-custom-dark !border-gray-800">
+                                <span className="text-white text-2xl">12 unread messages. Tap to see.</span>
+                            </div>
+            }
         </div>
     );
 }

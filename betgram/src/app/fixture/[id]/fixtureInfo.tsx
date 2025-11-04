@@ -48,8 +48,11 @@ export default function FixtureInfo({ fixture, setFixture }: FixtureInfoProps) {
       const formattedTime = ` ${String(days).padStart(2, "0")}:${String(hours).padStart(2, "0")}:${String(
         minutes
       ).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
-
-      setTimeLeft(formattedTime);
+      if(days > 0 || hours > 0 || minutes > 0 || seconds > 0){
+        setTimeLeft(formattedTime);
+      } else {
+        setTimeLeft("");
+      }
     }, 1000);
 
     return () => clearInterval(interval);
@@ -137,7 +140,7 @@ export default function FixtureInfo({ fixture, setFixture }: FixtureInfoProps) {
             ) : (
               <div className="flex flex-col items-center">
                 <div
-                  className={`text-2xl font-bold ${isFixtureInProgress(fixture.fixture.status.short)
+                  className={`text-3xl font-bold ${isFixtureInProgress(fixture.fixture.status.short)
                     ? "text-red-500"
                     : "text-white"
                     }`}
