@@ -1,6 +1,9 @@
 import { FixtureData, Standing, StandingsData } from "@/types/results";
 import { s } from "framer-motion/client";
 import { useEffect, useState } from "react";
+import { apiHandler } from '@/utils/apiHandler';
+import { useDispatch } from "react-redux";
+import { addError } from "@/store/errorSlice";
 
 interface FixtureStandingTabProps {
   fixture: FixtureData;
@@ -10,15 +13,21 @@ interface FixtureStandingTabProps {
 export default function FixtureStandingTab({ fixture }: FixtureStandingTabProps) {
   const [standing, setStanding] = useState<StandingsData>();
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const fetchStanding = async () => {
-      const res = await fetch(`https://betgram.click/api/standings/${fixture.league.id}/${fixture.league.season}`, {
-        headers: { "Cache-Control": "no-cache" },
-      });
-      const json = await res.json();
-      setStanding(json);
-      setIsLoading(false);
+      try {
+        const json = await apiHandler<StandingsData>(
+          `https://betgram.click/api/standings/${fixture.league.id}/${fixture.league.season}`,
+          { headers: { "Cache-Control": "no-cache" } }
+        );
+        setStanding(json);
+      } catch (error) {
+        console.error('Failed to fetch standings:', error);
+      } finally {
+        setIsLoading(false);
+      }
     };
     fetchStanding();
   }, [fixture]);

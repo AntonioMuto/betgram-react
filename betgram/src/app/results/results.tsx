@@ -1,31 +1,40 @@
 "use client";
 
-import { Result, League } from "@/types/results";
+import { Result } from "@/types/results";
+import { League } from "@/types/results";
 import LeagueCollapse from "./leagueCollapse";
 import { useEffect, useState } from "react";
-import { isFixtureInProgress } from "../utils/fixtureState";
+import { useDispatch } from "react-redux";
+import { apiHandler } from "@/utils/apiHandler";
+import { addError } from "@/store/errorSlice";
+import ErrorAlerts from "../components/ErrorAlerts";
+import { isFixtureInProgress } from '@/app/utils/fixtureState'; // Added import for isFixtureInProgress
 
 type Props = {
   date: string;
 };
 
 export default function Results({ date }: Props) {
+  const dispatch = useDispatch();
   const [results, setResults] = useState<Result[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
   const fetchByDate = async (): Promise<Result[]> => {
     setLoading(true);
-    const res = await fetch(
-      `https://betgram.click/api/fixtures/filter/data/${date}`,
-      {
-        method: "GET",
-        headers: { "Cache-Control": "no-cache" },
-      }
-    );
-    const json = await res.json();
-    setResults(json);
-    setLoading(false);
-    return json;
+    try {
+      const res = await apiHandler<Result[]>(
+        `https://betgram.click/api/fixtures/filter/data/${date}`
+      );
+      setResults(res);
+      setLoading(false);
+      return res;
+    } catch (err: any) {
+      const errorMessage =
+        err instanceof Error ? err.message : "An unknown error occurred";
+      dispatch(addError(errorMessage));
+      setLoading(false);
+      throw err; // Ensure the error is propagated
+    }
   };
 
   const mergeLiveData = (results: Result[], liveJson: any): Result[] => {
@@ -55,14 +64,10 @@ export default function Results({ date }: Props) {
   };
 
   const fetchLive = async () => {
-    const res = await fetch(
-      "https://api.jsonsilo.com/public/9147f508-d2b4-4309-8028-f82dc554152d",
-      {
-        method: "GET",
-        headers: { "Cache-Control": "no-cache" },
-      }
+    const res = await apiHandler<any>(
+      "https://api.jsonsilo.com/public/9147f508-d2b4-4309-8028-f82dc554152d"
     );
-    const json = await res.json();
+    const json = res; // Removed `.json()` as `apiHandler` already parses JSON
     setResults((prev) => mergeLiveData(prev, json));
   };
 
@@ -100,8 +105,8 @@ export default function Results({ date }: Props) {
   }, [date]);
 
   const uniqueLeagues: League[] = Array.from(
-    new Map(results.map((r) => [r.league.id, r.league])).values()
-  );
+    new Set(results.map((item) => item.league.id))
+  ).map((id) => results.find((item) => item.league.id === id)?.league!);
 
   uniqueLeagues.sort((a, b) => a.name.localeCompare(b.name));
   results.sort((a, b) => a.fixture.timestamp - b.fixture.timestamp);
@@ -133,8 +138,13 @@ export default function Results({ date }: Props) {
             </div>
         </div>
       ) : results.length === 0 ? (
-        <div className="md:col-span-8 flex flex-col items-center justify-center bg-base-100 p-4 text-center rounded">
-          Nessun match in programma
+        <div className="md:col-span-8 flex flex-col items-center bg-custom-dark justify-center bg-base-100 p-4 text-center rounded shadow-md">
+          <h2 className="text-xl font-bold text-gray-200 mb-2">
+            Nessun match in programma
+          </h2>
+          <p className="text-gray-500 mb-4">
+            Non ci sono partite disponibili per la data selezionata. Prova a scegliere un'altra data.
+          </p>
         </div>
       ) : (
         uniqueLeagues.map((league) => (
@@ -145,6 +155,7 @@ export default function Results({ date }: Props) {
           />
         ))
       )}
+      <ErrorAlerts />
     </>
   );
 }

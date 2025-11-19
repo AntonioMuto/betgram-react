@@ -74,7 +74,14 @@ export default function LeagueCollapse({ league, matches }: LeagueData) {
         <div className="collapse-content !p-0 text-sm dark:bg-custom-dark w-full">
           {matches.map((match) => (
             <div
+              role="button"
+              tabIndex={0}
               onClick={() => router.push(`/fixture/${match.fixture.id}`)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  router.push(`/fixture/${match.fixture.id}`);
+                }
+              }}
               key={match.fixture.id}
               className={`flex items-center justify-between p-4 mt-1 rounded w-full cursor-pointer border-t border-gray-800 ${open && "hover:bg-highlight-collapse-child"
                 }`}

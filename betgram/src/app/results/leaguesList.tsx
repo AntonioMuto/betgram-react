@@ -1,6 +1,7 @@
 "use client";
 import { LeagueData } from "@/types/results";
 import React, { use, useEffect, useState } from "react";
+import { apiHandler } from '@/utils/apiHandler';
 
 export default function LeaguesList() {
   const [leagues, setLeagues] = useState<LeagueData[]>([]);
@@ -9,10 +10,14 @@ export default function LeaguesList() {
   useEffect(() => {
     const fetchLeagues = async () => {
       setLoading(true);
-      const res = await fetch(`https://betgram.click/api/leagues`);
-      const json = await res.json();
-      setLeagues(json);
-      setLoading(false);
+      try {
+        const json = await apiHandler<LeagueData[]>(`https://betgram.click/api/leagues`);
+        setLeagues(json);
+      } catch (error) {
+        console.error('Failed to fetch leagues:', error);
+      } finally {
+        setLoading(false);
+      }
     };
     fetchLeagues();
   }, []);

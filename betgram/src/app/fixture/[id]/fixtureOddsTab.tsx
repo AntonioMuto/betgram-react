@@ -1,5 +1,6 @@
 import { isFixtureFinished, isFixtureInProgress } from "@/app/utils/fixtureState";
 import { translate, translateOdds } from "@/app/utils/translate";
+import { apiHandler } from '@/utils/apiHandler';
 import { OddsBet, OddsData } from "@/types/odds";
 import { FixtureData } from "@/types/results";
 import { useEffect, useState } from "react";
@@ -21,13 +22,17 @@ export default function FixtureOddsTab({ fixture }: FixtureOddsTabProps) {
 
   useEffect(() => {
     const fetchOdds = async () => {
-      const res = await fetch(
-        `https://betgram.click/api/fixtures/odds/${fixture.fixture.id}`,
-        { headers: { "Cache-Control": "no-cache" } }
-      );
-      const json = await res.json();
-      setOdds(json);
-      setIsLoading(false);
+      try {
+        const json = await apiHandler<OddsData>(
+          `https://betgram.click/api/fixtures/odds/${fixture.fixture.id}`,
+          { headers: { "Cache-Control": "no-cache" } }
+        );
+        setOdds(json);
+      } catch (error) {
+        console.error('Failed to fetch odds:', error);
+      } finally {
+        setIsLoading(false);
+      }
     };
     fetchOdds();
   }, [fixture]);

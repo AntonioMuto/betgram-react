@@ -11,6 +11,7 @@ import { GlobeEuropeAfricaIcon, ClockIcon } from "@heroicons/react/24/outline";
 import { DateTime } from "luxon";
 import React, { useEffect, useState } from "react";
 import FixtureScorers from "./fixtureScorers";
+import { apiHandler } from '@/utils/apiHandler';
 
 interface FixtureInfoProps {
   fixture: FixtureData;
@@ -63,17 +64,19 @@ export default function FixtureInfo({ fixture, setFixture }: FixtureInfoProps) {
     const interval = setInterval(async () => {
       if (!isFixtureInProgress(fixture.fixture.status.short)) return;
 
-      const res = await fetch(
-        `https://api.jsonsilo.com/public/9147f508-d2b4-4309-8028-f82dc554152d`,
-        { headers: { "Cache-Control": "no-cache" } }
-      );
-
-      const json = await res.json();
-      const newFixture = json[0].live.filter(
-        (f: FixtureData) => f.fixture.id === fixture.fixture.id
-      );
-      if (!newFixture.length) return;
-      setFixture(newFixture[0]);
+      try {
+        const json = await apiHandler<any[]>(
+          `https://api.jsonsilo.com/public/9147f508-d2b4-4309-8028-f82dc554152d`,
+          { headers: { "Cache-Control": "no-cache" } }
+        );
+        const newFixture = json[0].live.filter(
+          (f: FixtureData) => f.fixture.id === fixture.fixture.id
+        );
+        if (!newFixture.length) return;
+        setFixture(newFixture[0]);
+      } catch (error) {
+        console.error('Failed to fetch live fixture updates:', error);
+      }
     }, 15000);
 
     return () => clearInterval(interval);

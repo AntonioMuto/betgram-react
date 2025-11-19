@@ -2,6 +2,8 @@ import Navbar from "@/components/layout/Navbar"
 import Footer from "@/components/layout/Footer"
 import "./globals.css"
 import { UserProvider } from "./context/UserContext"
+import ReduxProvider from './components/ReduxProvider';
+import ErrorAlerts from "./components/ErrorAlerts";
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -11,11 +13,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <link href="https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap" rel="stylesheet" />
       <body>
-        <Navbar />
-        <UserProvider>
-          <main>{children}</main>
-        </UserProvider>
-        <Footer />
+        <ReduxProvider>
+          <Navbar />
+          <ErrorAlerts /> {/* Added ErrorAlerts to the layout */}
+          <UserProvider>
+            <main>{children}</main>
+          </UserProvider>
+          <Footer />
+        </ReduxProvider>
       </body>
     </html>
   )

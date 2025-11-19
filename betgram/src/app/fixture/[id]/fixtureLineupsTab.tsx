@@ -11,6 +11,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import PlayerFixtureInfo from "./playerFixtureInfo";
 import { soccerBall } from "@lucide/lab";
 import { Icon } from "lucide-react";
+import { apiHandler } from '@/utils/apiHandler';
 
 type FixtureScorersProps = {
     fixture: FixtureData;
@@ -26,12 +27,17 @@ export default function FixtureLineupsTab({ fixture }: FixtureScorersProps) {
     useEffect(() => {
         const fetchLineups = async () => {
             setIsLoading(true);
-            const res = await fetch(`https://betgram.click/api/lineups/${fixture.fixture.id}`, {
-                headers: { "Cache-Control": "no-cache" },
-            });
-            const json = await res.json();
-            setLineups(json);
-            setIsLoading(false);
+            try {
+                const json = await apiHandler<LineupData>(
+                    `https://betgram.click/api/lineups/${fixture.fixture.id}`,
+                    { headers: { "Cache-Control": "no-cache" } }
+                );
+                setLineups(json);
+            } catch (error) {
+                console.error('Failed to fetch lineups:', error);
+            } finally {
+                setIsLoading(false);
+            }
         };
         fetchLineups();
     }, [fixture]);

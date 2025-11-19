@@ -44,14 +44,38 @@ export default function MainPage() {
 
         {/* SEZIONE B */}
         <div className="col-span-6 bg-custom-dark rounded-2xl shadow-lg flex flex-col items-center">
-          <div className="w-full max-w-xl h-24 mb-6 rounded-2xl flex items-center justify-center">
+          <div className="w-full max-w-xl h-24 mb-6 rounded-2xl flex items-center justify-center gap-4 bg-highlight-custom-dark p-4 shadow-md">
+            <button
+              onClick={() => {
+                const prevDate = new Date(selectedDate);
+                prevDate.setDate(prevDate.getDate() - 1);
+                setSelectedDate(prevDate.toISOString().split("T")[0]);
+              }}
+              className="btn bg-gray-600 text-white text-lg px-5 py-2 rounded-lg shadow hover:bg-gray-600 transition-all"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-6 h-6">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
+              </svg>
+            </button>
             <input
               type="date"
               value={selectedDate}
               onChange={(e) => setSelectedDate(e.target.value)}
               id="selected-date"
-              className="p-2 text-2xl rounded-xl border border-gray-600 bg-custom-dark w-2/3 text-center"
+              className="p-3 text-lg rounded-lg border border-custom-league-card bg-custom-dark-black-light text-white w-1/2 text-center focus:outline-none focus:ring-2 focus:ring-gray-600"
             />
+            <button
+              onClick={() => {
+                const nextDate = new Date(selectedDate);
+                nextDate.setDate(nextDate.getDate() + 1);
+                setSelectedDate(nextDate.toISOString().split("T")[0]);
+              }}
+              className="btn bg-gray-600 text-white text-lg px-5 py-2 rounded-lg shadow hover:bg-gray-600 transition-all"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-6 h-6">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+              </svg>
+            </button>
           </div>
           {selectedDate && <Results date={formatDate(selectedDate)} />}
         </div>

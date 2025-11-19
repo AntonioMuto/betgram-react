@@ -6,6 +6,7 @@ import FixtureTabs from "./fixtureTabs";
 import FixtureHeader from "./fixtureHeader";
 import { FixtureData } from "@/types/results";
 import { isFixtureFinished, isFixtureInProgress } from "@/app/utils/fixtureState";
+import { apiHandler } from '@/utils/apiHandler';
 
 const FixturePage = () => {
   const { id } = useParams();
@@ -22,21 +23,30 @@ const FixturePage = () => {
   useEffect(() => {
     const fetchFixture = async () => {
       setIsLoading(true);
-      const res = await fetch(`https://betgram.click/api/fixtures/${id}`, {
-        headers: { "Cache-Control": "no-cache" },
-      });
-      let json = await res.json();
-      if (json?.events.length === 0 && isFixtureFinished(json.fixture.status.short)) {
-        const res = await fetch(`https://betgram.click/api/fixtures/update/${id}`, {
-          headers: { "Cache-Control": "no-cache" },
-        });
-        json = await res.json();
+      try {
+        let json = await apiHandler<any>(
+          `https://betgram.click/api/fixtures/${id}`,
+          { headers: { "Cache-Control": "no-cache" } }
+        );
+        if (json?.events.length === 0 && isFixtureFinished(json.fixture.status.short)) {
+          json = await apiHandler<any>(
+            `https://betgram.click/api/fixtures/update/${id}`,
+            { headers: { "Cache-Control": "no-cache" } }
+          );
+        }
+        setFixture(json);
+      } catch (error) {
+        console.error('Failed to fetch fixture:', error);
+      } finally {
+        setIsLoading(false);
       }
-      setFixture(json);
-      setIsLoading(false);
     };
     fetchFixture();
   }, [id]);
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, []);
 
   if (!fixture) return <div className="w-1/2 mx-auto mt-5 flex flex-col bg-custom-dark border border-gray-800 rounded-box shadow-md p-4 justify-center">
     <div className="flex w-full flex-col gap-4 mt-4">

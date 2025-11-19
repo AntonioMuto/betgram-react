@@ -3,6 +3,7 @@ import { FixtureData, FixtureStatistics, Statistic, StatPercentages } from "@/ty
 import { useEffect, useMemo, useState } from "react";
 import ProgressBar from "./progressBar";
 import { translate } from "@/app/utils/translate";
+import { apiHandler } from '@/utils/apiHandler';
 
 interface FixtureDetailTabProps {
     fixture: FixtureData;
@@ -16,15 +17,20 @@ export default function FixtureStatsTab({ fixture }: FixtureDetailTabProps) {
     useEffect(() => {
         setIsLoading(true);
         const fetchFixtureStats = async () => {
-            const res = await fetch(`https://betgram.click/api/fixtures/statistics/${fixture.fixture.id}`, {
-                headers: { "Cache-Control": "no-cache" },
-            });
-            const json = await res.json();
-            setStatistics(json);
-            setIsLoading(false)
+            try {
+                const json = await apiHandler<FixtureStatistics[]>(
+                    `https://betgram.click/api/fixtures/statistics/${fixture.fixture.id}`,
+                    { headers: { "Cache-Control": "no-cache" } }
+                );
+                setStatistics(json);
+            } catch (error) {
+                console.error('Failed to fetch fixture statistics:', error);
+            } finally {
+                setIsLoading(false);
+            }
         };
         fetchFixtureStats();
-    }, [fixture.fixture.id]);
+    }, [fixture]);
 
     function buildstatsHashMap(fixture: FixtureData) {
         const result: Record<string, Record<string, string | null>> = {};
