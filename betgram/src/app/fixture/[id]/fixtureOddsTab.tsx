@@ -4,6 +4,10 @@ import { apiHandler } from '@/utils/apiHandler';
 import { OddsBet, OddsData } from "@/types/odds";
 import { FixtureData } from "@/types/results";
 import { useEffect, useState } from "react";
+import RefreshIcon from "@heroicons/react/24/outline/ArrowPathRoundedSquareIcon";
+import { useDispatch, useSelector } from "react-redux";
+import { addBet, removeBet, replaceBet } from "@/store/betsSlice";
+import { RootState } from "@/store/store";
 
 interface FixtureOddsTabProps {
   fixture: FixtureData;
@@ -20,6 +24,9 @@ export default function FixtureOddsTab({ fixture }: FixtureOddsTabProps) {
   // ✅ Stato per selezione bet
   const [selectedMap, setSelectedMap] = useState<Record<string, string[]>>({});
 
+  const dispatch = useDispatch();
+  const bets = useSelector((state: RootState) => state.bets.bets);
+
   useEffect(() => {
     const fetchOdds = async () => {
       try {
@@ -28,6 +35,15 @@ export default function FixtureOddsTab({ fixture }: FixtureOddsTabProps) {
           { headers: { "Cache-Control": "no-cache" } }
         );
         setOdds(json);
+        if (canEdit) {
+          bets.forEach((bet) => {
+            if (bet.fixture.id.toString() === fixture.fixture.id.toString() && bet.valueKey) {
+              setSelectedMap((prev) => {
+                return { ...prev, [bet.bet.id]: [bet.valueKey ?? ""] };
+              });
+            }
+          });
+        }
       } catch (error) {
         console.error('Failed to fetch odds:', error);
       } finally {
@@ -45,16 +61,51 @@ export default function FixtureOddsTab({ fixture }: FixtureOddsTabProps) {
     }
   }, [fixture.fixture.status.short]);
 
+
+  // ✅ Gestione refresh
+  const handleRefresh = () => {
+    setIsLoading(true);
+    revalidateOdds();
+  };
+
+  const revalidateOdds = async () => {
+    try {
+      const json = await apiHandler<OddsData>(
+        `https://betgram.click/api/odds/refresh/${fixture.fixture.id}`,
+        { headers: { "Cache-Control": "no-cache" } }
+      );
+      setOdds(json);
+    } catch (error) {
+      console.error('Failed to fetch odds:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   // ✅ Toggle per selezione quote
   const toggleSelected = (betId: string, valueKey: string) => {
     if (!canEdit) return;
     setSelectedMap((prev) => {
       const current = prev[betId] || [];
       if (current.includes(valueKey)) {
+        dispatch(removeBet({ fixtureId: fixture.fixture.id.toString(), betId }));
         return { ...prev, [betId]: [] };
       }
-      return { ...prev, [betId]: [valueKey] };
+      const selectedBet = filteredBets.find((bet) => bet.id === betId);
+      if (selectedBet) {
+        dispatch(replaceBet({ fixture: fixture.fixture, bet: selectedBet, valueKey: valueKey }));
+        // Remove the previously selected bet for this fixture
+        const updatedMap = { ...prev };
+        Object.keys(updatedMap).forEach((key) => {
+          if (key !== betId) {
+            updatedMap[key] = [];
+          }
+        });
+        return { ...updatedMap, [betId]: [valueKey] };
+      }
+      return prev;
     });
+    console.log(selectedMap);
   };
 
   // ✅ Toggle per filtri (checkbox)
@@ -112,20 +163,27 @@ export default function FixtureOddsTab({ fixture }: FixtureOddsTabProps) {
         </div>
       )}
       {!isLoading && (
-        <form className="mb-5 flex gap-2 flex-wrap ">
-          {["Classiche", "Goals", "Asiatiche", "PrimoTempo", "SecondoTempo", "Speciali", "Combo"].map((label) => (
-            <label key={label} className="btn cursor-pointer w-23 bg-custom-dark-black-light has-[input:checked]:bg-green-800 has-[input:checked]:border-green-500">
-              <input className="btn bg-transparent border-0" type="checkbox" checked={selectedFilters.includes(label)}
-                onChange={() => handleFilterChange(label)} aria-label={label === 'PrimoTempo' ? '1° T' : label === 'SecondoTempo' ? '2° T' : label} />
-            </label>
-          ))}
-          <input
-            className="btn btn-square bg-custom-dark-black-light"
-            type="reset"
-            value="×"
-            onClick={() => setSelectedFilters([])}
-          />
-        </form>
+        <div className="flex flex-row">
+          <form className="mb-5 flex gap-2 flex-wrap ">
+            {["Classiche", "Goals", "Asiatiche", "PrimoTempo", "SecondoTempo", "Speciali", "Combo"].map((label) => (
+              <label key={label} className="btn cursor-pointer w-21 bg-highlight-custom-dark has-[input:checked]:bg-green-800 has-[input:checked]:border-green-500">
+                <input className="btn bg-transparent border-0" type="checkbox" checked={selectedFilters.includes(label)}
+                  onChange={() => handleFilterChange(label)} aria-label={label === 'PrimoTempo' ? '1° T' : label === 'SecondoTempo' ? '2° T' : label} />
+              </label>
+            ))}
+            <input
+              className="btn btn-square bg-highlight-custom-dark"
+              type="reset"
+              value="×"
+              onClick={() => setSelectedFilters([])}
+            />
+          </form>
+          {!canEdit && <button className="btn btn-info mx-2 hover:bg-lightblue-100" onClick={handleRefresh}>
+            <RefreshIcon className="w-6 h-6" />
+            <span className="text-sm">Aggiorna</span>
+          </button>
+          }
+        </div>
       )}
 
       {filteredBets?.map((bet) => {
