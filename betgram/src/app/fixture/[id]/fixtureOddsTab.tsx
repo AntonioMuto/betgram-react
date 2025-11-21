@@ -37,7 +37,7 @@ export default function FixtureOddsTab({ fixture }: FixtureOddsTabProps) {
         setOdds(json);
         if (canEdit) {
           bets.forEach((bet) => {
-            if (bet.fixture.id.toString() === fixture.fixture.id.toString() && bet.valueKey) {
+            if (bet.fixture.fixture.id.toString() === fixture.fixture.id.toString() && bet.valueKey) {
               setSelectedMap((prev) => {
                 return { ...prev, [bet.bet.id]: [bet.valueKey ?? ""] };
               });
@@ -83,7 +83,7 @@ export default function FixtureOddsTab({ fixture }: FixtureOddsTabProps) {
   };
 
   // ✅ Toggle per selezione quote
-  const toggleSelected = (betId: string, valueKey: string) => {
+  const toggleSelected = (betId: string, valueKey: string, selectedvalueName: string) => {
     if (!canEdit) return;
     setSelectedMap((prev) => {
       const current = prev[betId] || [];
@@ -93,7 +93,8 @@ export default function FixtureOddsTab({ fixture }: FixtureOddsTabProps) {
       }
       const selectedBet = filteredBets.find((bet) => bet.id === betId);
       if (selectedBet) {
-        dispatch(replaceBet({ fixture: fixture.fixture, bet: selectedBet, valueKey: valueKey }));
+        const updatedBet = { ...selectedBet, values: selectedBet.values.filter((value) => value.value === selectedvalueName) };
+        dispatch(replaceBet({ fixture: fixture, bet: updatedBet, valueKey: valueKey }));
         // Remove the previously selected bet for this fixture
         const updatedMap = { ...prev };
         Object.keys(updatedMap).forEach((key) => {
@@ -105,7 +106,6 @@ export default function FixtureOddsTab({ fixture }: FixtureOddsTabProps) {
       }
       return prev;
     });
-    console.log(selectedMap);
   };
 
   // ✅ Toggle per filtri (checkbox)
@@ -221,7 +221,7 @@ export default function FixtureOddsTab({ fixture }: FixtureOddsTabProps) {
                           ? "hover:bg-highlight-custom-dark"
                           : "bg-custom-disabled-odd"
                         }`}
-                      onClick={() => toggleSelected(bet.id, valueKey)}
+                      onClick={() => toggleSelected(bet.id, valueKey, value.value)}
                     >
                       <div className="stat-title text-lg">
                         {translateOdds(value.value, bet.name) ?? translate(value.value)}
