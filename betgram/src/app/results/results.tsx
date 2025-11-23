@@ -65,9 +65,9 @@ export default function Results({ date }: Props) {
 
   const fetchLive = async () => {
     const res = await apiHandler<any>(
-      "https://api.jsonsilo.com/public/9147f508-d2b4-4309-8028-f82dc554152d"
+      "http://[2a00:f48:1000:41e::1]:3005/live"
     );
-    const json = res; // Removed `.json()` as `apiHandler` already parses JSON
+    const json = res;
     setResults((prev) => mergeLiveData(prev, json));
   };
 

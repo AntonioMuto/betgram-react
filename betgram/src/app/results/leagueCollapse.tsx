@@ -99,9 +99,15 @@ export default function LeagueCollapse({ league, matches }: LeagueData) {
                   <div className="flex flex-row text-lg text-center font-bold text-red-500">
                     {match.goals.home} - {match.goals.away}
                   </div>
+                  {match.fixture.status.short === "HT" ? (
+                    <div className="flex flex-row text-lg text-center font-bold text-red-500">
+                      HT
+                    </div>
+                  ) : (
                   <div className="flex flex-row text-lg text-base text-center font-bold text-red-500">
-                    {match.fixture.status.elapsed}'
+                    {match.fixture.status.elapsed}' {match.fixture.status.extra && `+ ${match.fixture.status.extra}`}
                   </div>
+                  )}
                 </div>
               ) : isFixtureScheduled(match.fixture.status.short) ? (
                 <div className="text-lg text-center font-bold">

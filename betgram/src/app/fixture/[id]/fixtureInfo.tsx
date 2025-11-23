@@ -66,7 +66,7 @@ export default function FixtureInfo({ fixture, setFixture }: FixtureInfoProps) {
 
       try {
         const json = await apiHandler<any[]>(
-          `https://api.jsonsilo.com/public/9147f508-d2b4-4309-8028-f82dc554152d`,
+          `http://[2a00:f48:1000:41e::1]:3005/live`,
           { headers: { "Cache-Control": "no-cache" } }
         );
         const newFixture = json[0].live.filter(

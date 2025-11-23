@@ -220,7 +220,8 @@ export default function FixtureOddsTab({ fixture }: FixtureOddsTabProps) {
               <div className={containerClass}>
                 {bet.values.map((value, idx) => {
                   const valueKey = `${bet.id}_${value.value}_${idx}`;
-                  const isSelected = isFixtureFinished(fixture.fixture.status.short)
+                  const isInProgress = isFixtureInProgress(fixture.fixture.status.short);
+                  const isSelected = isFixtureFinished(fixture.fixture.status.short) || isInProgress
                     ? value.winner
                     : selectedMap[bet.id]?.includes(valueKey);
 
@@ -228,7 +229,7 @@ export default function FixtureOddsTab({ fixture }: FixtureOddsTabProps) {
                     <div
                       key={valueKey}
                       className={`stat !border !border-custom-pitch rounded flex-1 cursor-pointer transition-colors ${isSelected
-                        ? "bg-green-800"
+                        ? isInProgress ? "bg-red-900" : "bg-green-800"
                         : canEdit === true
                           ? "hover:bg-highlight-custom-dark"
                           : "bg-custom-disabled-odd"

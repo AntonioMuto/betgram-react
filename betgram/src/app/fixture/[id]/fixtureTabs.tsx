@@ -26,13 +26,14 @@ export default function FixtureTabs({ fixture }: FixtureTabsProps) {
     let selectedTab = "details";
     if (isFixtureFinished(fixture.fixture.status.short) || isFixtureInProgress(fixture.fixture.status.short)) selectedTab = "details";
     if (isFixtureScheduled(fixture.fixture.status.short)) selectedTab = "quote";
-
-    setActiveTab(selectedTab);
+    if(!isFixtureInProgress(fixture.fixture.status.short)){
+      setActiveTab(selectedTab);
+    }
   }, [fixture]);
 
   return (
     <div className="tabs tabs-lift mt-4">
-      {isFixtureInProgress(fixture.fixture.status.short) || isFixtureFinished(fixture.fixture.status.short) && (
+      {(isFixtureInProgress(fixture.fixture.status.short) || isFixtureFinished(fixture.fixture.status.short)) && (
         <>
           <label className="tab [--tab-bg:var(--selected-tab)]">
             <input
