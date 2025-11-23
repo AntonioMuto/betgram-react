@@ -54,6 +54,18 @@ export default function FixtureOddsTab({ fixture }: FixtureOddsTabProps) {
   }, [fixture]);
 
   useEffect(() => {
+    setSelectedMap((prev) => {
+      const newMap: Record<string, string[]> = {};
+      bets.forEach((bet) => {
+        if (bet.fixture.fixture.id.toString() === fixture.fixture.id.toString() && bet.valueKey) {
+          newMap[bet.bet.id] = [bet.valueKey ?? ""];
+        }
+      });
+      return newMap;
+    });
+  }, [bets]);
+
+  useEffect(() => {
     if (isFixtureFinished(fixture.fixture.status.short) || isFixtureInProgress(fixture.fixture.status.short)) {
       setCanEdit(false);
     } else {

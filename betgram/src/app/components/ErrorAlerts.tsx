@@ -16,7 +16,7 @@ const ErrorAlerts: React.FC = () => {
   }, [errors, dispatch]);
 
   return (
-    <div className="fixed bottom-4 right-4 space-y-2">
+    <div className="fixed bottom-4 right-4 space-y-2 z-50">
       {errors.map((error) => (
         <div
           key={error.id}

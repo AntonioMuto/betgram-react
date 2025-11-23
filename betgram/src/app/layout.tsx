@@ -14,9 +14,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <link href="https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap" rel="stylesheet" />
       <body>
         <ReduxProvider>
-          <Navbar />
           <ErrorAlerts /> {/* Added ErrorAlerts to the layout */}
           <UserProvider>
+          <Navbar />
             <main>{children}</main>
           </UserProvider>
           <Footer />

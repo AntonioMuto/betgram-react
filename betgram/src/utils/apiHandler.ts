@@ -3,19 +3,33 @@ import store from '@/store/store';
 import { addError } from '@/store/errorSlice';
 
 /**
+ * Supported HTTP methods.
+ */
+type HttpMethod = 'GET' | 'POST' | 'PUT' | 'DELETE';
+
+/**
  * API handler for making HTTP requests.
  * @param url - The endpoint URL.
  * @param options - Axios request configuration.
+ * @param type - HTTP method (e.g., 'GET', 'POST').
+ * @param body - Request body for POST/PUT requests.
  * @param onError - Optional callback for handling errors (e.g., triggering a DaisyUI alert).
  * @returns The response data or throws an error.
  */
 export const apiHandler = async <T>(
   url: string,
   options?: AxiosRequestConfig,
+  type: HttpMethod = 'GET', // Default to 'GET'
+  body?: any,
   onError?: (message: string) => void
 ): Promise<T> => {
   try {
-    const response = await axios({ url, ...options });
+    const response = await axios({
+      url,
+      method: type, // Use the specified HTTP method
+      data: body, // Include the body for POST/PUT requests
+      ...options,
+    });
 
     // Check for HTTP errors
     if (response.status >= 200 && response.status < 300) {

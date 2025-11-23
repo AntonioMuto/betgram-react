@@ -108,8 +108,13 @@ export default function LeagueCollapse({ league, matches }: LeagueData) {
                   {formatTimeToTimezone(match.fixture.date, timezone)}
                 </div>
               ) : (
-                <div className="text-lg text-center font-bold">
-                  {match.goals.home} - {match.goals.away}
+                <div className="flex flex-col items-center">
+                  <div className="text-lg text-center font-bold">
+                    {match.goals.home} - {match.goals.away}
+                  </div>
+                  <div className="text-sm text-center text-gray-400">
+                    ({match.score.halftime.home} - {match.score.halftime.away})
+                  </div>
                 </div>
               )}
 
