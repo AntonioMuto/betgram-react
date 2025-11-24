@@ -94,7 +94,6 @@ export default function FixtureOddsTab({ fixture }: FixtureOddsTabProps) {
     }
   };
 
-  // ✅ Toggle per selezione quote
   const toggleSelected = (betId: string, valueKey: string, selectedvalueName: string) => {
     if (!canEdit) return;
     setSelectedMap((prev) => {
@@ -107,7 +106,6 @@ export default function FixtureOddsTab({ fixture }: FixtureOddsTabProps) {
       if (selectedBet) {
         const updatedBet = { ...selectedBet, values: selectedBet.values.filter((value) => value.value === selectedvalueName) };
         dispatch(replaceBet({ fixture: fixture, bet: updatedBet, valueKey: valueKey }));
-        // Remove the previously selected bet for this fixture
         const updatedMap = { ...prev };
         Object.keys(updatedMap).forEach((key) => {
           if (key !== betId) {
@@ -120,7 +118,6 @@ export default function FixtureOddsTab({ fixture }: FixtureOddsTabProps) {
     });
   };
 
-  // ✅ Toggle per filtri (checkbox)
   const handleFilterChange = (filter: string) => {
     setSelectedFilters((prev) =>
       prev.includes(filter)

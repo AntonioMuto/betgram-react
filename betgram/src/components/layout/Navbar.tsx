@@ -11,7 +11,8 @@ import { useUser } from "@/app/context/UserContext";
 import { formatDateTimeToTimezone } from "@/app/utils/date";
 import { apiHandler } from "@/utils/apiHandler";
 import { addError } from "@/store/errorSlice";
-import { HttpMethod } from "@/types/utils";
+import { BONUS_TABLE, HttpMethod } from "@/types/utils";
+import { removeAllBets } from "@/store/betsSlice";
 
 export default function Navbar() {
   const [isCartOpen, setIsCartOpen] = useState(false);
@@ -23,6 +24,14 @@ export default function Navbar() {
   const cartRef = useRef<HTMLDivElement>(null);
   const iconButtonRef = useRef<HTMLButtonElement>(null);
   const [loadingCart, setLoadingCart] = useState(false);
+  const [bonusPercentage, setBonusPercentage] = useState(0);
+
+  const calculateBonusPercentage = (eventsCount: number): number => {
+    // Cap the events count at 30
+    const cappedEvents = Math.min(eventsCount, 30);
+    const bonusEntry = BONUS_TABLE.find((entry) => cappedEvents === entry.events);
+    return bonusEntry ? bonusEntry.bonus : 0;
+  };
 
   const toggleCart = () => {
     setIsCartOpen((prev) => !prev);
@@ -33,11 +42,17 @@ export default function Navbar() {
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as HTMLElement;
+
+      if (target.classList && [...target.classList].some((cls) => cls.includes("stat"))) {
+        return;
+      }
+
       if (
         cartRef.current &&
-        !cartRef.current.contains(event.target as Node) &&
+        !cartRef.current.contains(target) &&
         iconButtonRef.current &&
-        !iconButtonRef.current.contains(event.target as Node)
+        !iconButtonRef.current.contains(target)
       ) {
         setIsCartOpen(false);
       }
@@ -66,12 +81,24 @@ export default function Navbar() {
 
   const updateSummary = (puntata: number) => {
     if (puntata <= 0) return;
+
+    // Filter bets with odds >= 1.25
+    const qualifyingBets = bets.filter((bet) => parseFloat(bet.bet.values[0].odd) >= 1.25);
+    const qualifyingCount = qualifyingBets.length;
+
+    // Calculate total odds
     const betsQuote = bets.reduce((acc, bet) => {
       const odd = parseFloat(bet.bet.values[0].odd);
       return acc * (isNaN(odd) ? 1 : odd);
     }, 1);
-    const bonus = puntata * 0.1;
+
+    // Calculate bonus percentage
+    const bonusPercentage = calculateBonusPercentage(qualifyingCount);
+    setBonusPercentage(bonusPercentage * 100);
+    // Calculate bonus and total
+    const bonus = puntata * betsQuote * bonusPercentage;
     const total = puntata * betsQuote + bonus;
+
     setSummaryBet({
       tipped: puntata.toFixed(2),
       bonus: bonus.toFixed(2),
@@ -106,25 +133,48 @@ export default function Navbar() {
   };
 
   const createBet = async () => {
+    setLoadingCart(true);
+    const betsTipped = bets.map((b) => ({
+      fixture: {
+        id: b.fixture.fixture.id,
+        date: b.fixture.fixture.date,
+        status: b.fixture.fixture.status,
+        teams: b.fixture.teams,
+        league: b.fixture.league
+      },
+      bet: {
+        id: b.bet.id,
+        name: b.bet.name,
+        values: b.bet.values[0]
+      },
+      summaryBet: {
+        events: bets.length,
+        ...summaryBet
+      }
+    }));
+    const body = {
+      user: user?.id,
+      events: betsTipped
+    };
     try {
       setLoadingCart(true);
       const res = await apiHandler<any>(
-        `https://betgram.click/api/bets/insert/`,
+        `http://localhost:3001/api/bets/insert`,
         undefined,
         HttpMethod.POST,
-        bets
+        body
       );
-      if(res.ko) {
-        console.log("Errore nella creazione della scommessa");
-        return;
+      setLoadingCart(false);
+      if (res.success === true) {
+        dispatch(removeAllBets());
+        setIsCartOpen(false);
       }
-      dispatch(removeAllBets());
     } catch (err: any) {
       const errorMessage =
         err instanceof Error ? err.message : "An unknown error occurred";
       dispatch(addError(errorMessage));
       setLoadingCart(false);
-      throw err; // Ensure the error is propagated
+      throw err;
     }
   }
 
@@ -183,16 +233,16 @@ export default function Navbar() {
                               className="w-4 h-4 object-contain"
                             />
                           </div>
-                          <div className="text-sm text-gray-800">{translate(bet.bet.name)}</div>
-                          <div className="text-xs text-gray-600">
-                            {formatDateTimeToTimezone(bet.fixture.fixture.date, timezone)}
+                          <div className="text-sm text-gray-800 ml-1 mt-2">{translate(bet.bet.name)}</div>
+                          <div className="text-xs text-gray-600 ml-1">
+                            {formatDateTimeToTimezone(bet.fixture.fixture.date, timezone)} - {bet.fixture.league.name}
                           </div>
                         </div>
                         <div className="text-right mr-2">
                           <div className="text-md font-bold">
                             {translate(bet.bet.values[0].value)}
                           </div>
-                          <div className="text-sm text-gray-800">{bet.bet.values[0].odd}</div>
+                          <div className="text-sm text-gray-800 mt-5">{bet.bet.values[0].odd}</div>
                         </div>
                       </li>
                     ))}
@@ -217,8 +267,13 @@ export default function Navbar() {
                     <div className="mt-3">
                       <div className="flex items-center gap-4">
                         <div className="flex-grow">Bonus:</div>
-                        <div className="text-md uppercase font-semibold font-bold">
-                          € {summaryBet?.bonus || "0.00"}
+                        <div className="flex flex-row gap-5 items-center">
+                          <div className="text-sm text-green-700">
+                            {`+ ${bonusPercentage}% `}
+                          </div>
+                          <div className="text-md uppercase font-semibold font-bold">
+                            € {summaryBet?.bonus || "0.00"}
+                          </div>
                         </div>
                       </div>
                       <div className="flex items-center gap-4 mt-2">
@@ -245,8 +300,4 @@ export default function Navbar() {
       </div>
     </nav>
   );
-}
-
-function removeAllBets(): any {
-  throw new Error("Function not implemented.");
 }

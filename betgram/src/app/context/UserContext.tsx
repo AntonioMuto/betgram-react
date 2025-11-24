@@ -2,6 +2,7 @@
 import { createContext, useContext, useState, ReactNode } from "react";
 
 type User = {
+  id?: string;
   name?: string;
   timezone: string;
 };
@@ -12,6 +13,7 @@ type UserContextType = {
 };
 
 const defaultUser: User = {
+    id: "Ajeje123",
     timezone: "Europe/Rome",
   };
 
