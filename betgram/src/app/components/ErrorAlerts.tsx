@@ -11,7 +11,7 @@ const ErrorAlerts: React.FC = () => {
   useEffect(() => {
     errors.forEach((error) => {
       const timer = setTimeout(() => dispatch(removeError(error.id)), 10000);
-      return () => clearTimeout(timer); // Clear timer if the component unmounts
+      return () => clearTimeout(timer);
     });
   }, [errors, dispatch]);
 

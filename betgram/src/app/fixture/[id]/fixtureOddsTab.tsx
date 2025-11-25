@@ -18,10 +18,8 @@ export default function FixtureOddsTab({ fixture }: FixtureOddsTabProps) {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [canEdit, setCanEdit] = useState<boolean>(true);
 
-  // ✅ Stato per selezione filtri
   const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
 
-  // ✅ Stato per selezione bet
   const [selectedMap, setSelectedMap] = useState<Record<string, string[]>>({});
 
   const dispatch = useDispatch();
@@ -73,8 +71,6 @@ export default function FixtureOddsTab({ fixture }: FixtureOddsTabProps) {
     }
   }, [fixture.fixture.status.short]);
 
-
-  // ✅ Gestione refresh
   const handleRefresh = () => {
     setIsLoading(true);
     revalidateOdds();
@@ -126,7 +122,6 @@ export default function FixtureOddsTab({ fixture }: FixtureOddsTabProps) {
     );
   };
 
-  // ✅ Mappa di categorie → nomi scommesse
   const betCategories: Record<string, string[]> = {
     Classiche: ["Match Winner", "Goals Over/Under", "Both Teams Score", "Double Chance", "Own Goal"],
     Goals: ["Total - Home", "Total - Away", "Exact Goals Number", "Home Team Exact Goals Number", "Away Team Exact Goals Number"],
@@ -137,11 +132,10 @@ export default function FixtureOddsTab({ fixture }: FixtureOddsTabProps) {
     Combo: ["Results/Both Teams Score", "Result/Total Goals", "Total Goals/Both Teams To Score", "HT/FT Double"]
   };
 
-  // ✅ Filtraggio bets in base ai filtri selezionati
   let filteredBets: OddsBet[] = [];
   if (odds && odds.bookmakers && odds.bookmakers.length > 0) {
     filteredBets = odds?.bookmakers[0]?.bets.filter((bet) => {
-      if (selectedFilters.length === 0) return true; // Nessun filtro → mostra tutto
+      if (selectedFilters.length === 0) return true;
       return selectedFilters.some((filter) =>
         betCategories[filter]?.some((name) =>
           bet.name.toLowerCase() === (name.toLowerCase())

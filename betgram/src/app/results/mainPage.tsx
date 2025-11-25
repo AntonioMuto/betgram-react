@@ -11,7 +11,6 @@ export default function MainPage() {
 
   const [selectedDate, setSelectedDate] = useState("");
 
-  // al primo render recupera da localStorage o fallback su oggi
   useEffect(() => {
     const storedDate = localStorage.getItem("selectedDate");
     if (storedDate) {
@@ -21,7 +20,6 @@ export default function MainPage() {
     }
   }, [timezone]);
 
-  // ogni volta che cambia selectedDate la salvo
   useEffect(() => {
     if (selectedDate) {
       localStorage.setItem("selectedDate", selectedDate);

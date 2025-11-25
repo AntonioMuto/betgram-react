@@ -18,51 +18,27 @@ type HttpMethod = 'GET' | 'POST' | 'PUT' | 'DELETE';
  */
 export const apiHandler = async <T>(
   url: string,
-  options?: AxiosRequestConfig,
-  type: HttpMethod = 'GET', // Default to 'GET'
-  body?: any,
-  onError?: (message: string) => void
+  options?: AxiosRequestConfig & { onError?: (error: any) => void },
+  type: HttpMethod = 'GET', 
+  body?: any
 ): Promise<T> => {
   try {
     const response = await axios({
       url,
-      method: type, // Use the specified HTTP method
-      data: body, // Include the body for POST/PUT requests
+      method: type, 
+      data: body, 
       ...options,
     });
-
-    // Check for HTTP errors
     if (response.status >= 200 && response.status < 300) {
       return response.data;
     } else {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
   } catch (error: any) {
-    let errorMessage = 'An unexpected error occurred';
-
-    // Handle specific HTTP errors
-    if (error.response) {
-      const { status } = error.response;
-      if (status === 404) {
-        errorMessage = 'Resource not found (404)';
-      } else if (status === 500) {
-        errorMessage = 'Server error (500)';
-      } else {
-        errorMessage = `HTTP error! status: ${status}`;
-      }
-    } else {
-      errorMessage = `Network error: ${error.message}`;
+    if (options?.onError) {
+      options.onError(error); 
     }
-
-    // Trigger the onError callback if provided
-    if (onError) {
-      onError(errorMessage);
-    }
-
-    // Dispatch the error to Redux
-    store.dispatch(addError(errorMessage));
-
-    // Re-throw the error to handle it in the calling component
-    throw new Error(errorMessage);
+    store.dispatch(addError(error.message));
+    throw error; 
   }
 };

@@ -5,7 +5,7 @@ import { RootState } from "@/store/store";
 import { ListBulletIcon } from "@heroicons/react/24/outline";
 import { translate } from "@/app/utils/translate";
 import { betPredictionData } from "@/types/bets";
-import { Trash } from "lucide-react";
+import { ListCollapseIcon, Trash } from "lucide-react";
 import { removeBetByIndex } from "@/store/betsSlice";
 import { useUser } from "@/app/context/UserContext";
 import { formatDateTimeToTimezone } from "@/app/utils/date";
@@ -13,6 +13,7 @@ import { apiHandler } from "@/utils/apiHandler";
 import { addError } from "@/store/errorSlice";
 import { BONUS_TABLE, HttpMethod } from "@/types/utils";
 import { removeAllBets } from "@/store/betsSlice";
+import { useRouter } from "next/dist/client/components/navigation";
 
 export default function Navbar() {
   const [isCartOpen, setIsCartOpen] = useState(false);
@@ -25,9 +26,9 @@ export default function Navbar() {
   const iconButtonRef = useRef<HTMLButtonElement>(null);
   const [loadingCart, setLoadingCart] = useState(false);
   const [bonusPercentage, setBonusPercentage] = useState(0);
+  const router = useRouter();
 
   const calculateBonusPercentage = (eventsCount: number): number => {
-    // Cap the events count at 30
     const cappedEvents = Math.min(eventsCount, 30);
     const bonusEntry = BONUS_TABLE.find((entry) => cappedEvents === entry.events);
     return bonusEntry ? bonusEntry.bonus : 0;
@@ -82,20 +83,17 @@ export default function Navbar() {
   const updateSummary = (puntata: number) => {
     if (puntata <= 0) return;
 
-    // Filter bets with odds >= 1.25
     const qualifyingBets = bets.filter((bet) => parseFloat(bet.bet.values[0].odd) >= 1.25);
     const qualifyingCount = qualifyingBets.length;
 
-    // Calculate total odds
     const betsQuote = bets.reduce((acc, bet) => {
       const odd = parseFloat(bet.bet.values[0].odd);
       return acc * (isNaN(odd) ? 1 : odd);
     }, 1);
 
-    // Calculate bonus percentage
     const bonusPercentage = calculateBonusPercentage(qualifyingCount);
     setBonusPercentage(bonusPercentage * 100);
-    // Calculate bonus and total
+
     const bonus = puntata * betsQuote * bonusPercentage;
     const total = puntata * betsQuote + bonus;
 
@@ -145,16 +143,16 @@ export default function Navbar() {
       bet: {
         id: b.bet.id,
         name: b.bet.name,
-        values: b.bet.values[0]
+        values: b.bet.values.map((v) => ({
+          value: v.value,
+          odd: v.odd
+        }))
       },
-      summaryBet: {
-        events: bets.length,
-        ...summaryBet
-      }
     }));
     const body = {
       user: user?.id,
-      events: betsTipped
+      events: betsTipped,
+      summaryBet: summaryBet
     };
     try {
       setLoadingCart(true);
@@ -179,11 +177,11 @@ export default function Navbar() {
   }
 
   return (
-    <nav className="p-4 h-15 bg-custom-dark border-b border-gray-800 text-white sticky top-0 z-50 border-b border-black">
+    <nav className="p-5 h-19 bg-custom-dark border-b border-gray-800 text-white sticky top-0 z-50 border-b border-black">
       <div className="flex justify-between items-center">
         <h1 className="text-3xl font-bold">Betgram</h1>
         <div className="relative">
-          <div className="indicator">
+          <div className="indicator flex gap-10">
             <button
               ref={iconButtonRef}
               onClick={toggleCart}
@@ -195,6 +193,12 @@ export default function Navbar() {
                 </span>
               )}
               <ListBulletIcon className="w-6 h-6" />
+            </button>
+            <button
+              onClick={() => router.push(`/bets/${user?.id}`)}
+              className="text-white text-2xl"
+            >
+              <ListCollapseIcon className="w-6 h-6" />
             </button>
           </div>
           {isCartOpen && (
@@ -209,7 +213,7 @@ export default function Navbar() {
                 <div className="flex flex-col h-full">
                   <ul
                     className="list rounded-box shadow-md divide-y divide-gray-200 overflow-y-auto flex-grow"
-                    style={{ maxHeight: "350px" }} // Altezza massima per la lista scrollabile
+                    style={{ maxHeight: "350px" }}
                   >
                     {bets.map((bet, index) => (
                       <li key={index} className="flex items-center gap-4 py-3">
@@ -249,7 +253,7 @@ export default function Navbar() {
                   </ul>
                   <div
                     className="p-3 font-bold border-t pt-3 bg-white sticky bottom-0"
-                    style={{ zIndex: 10 }} // Mantieni il summary sopra la lista scrollabile
+                    style={{ zIndex: 10 }}
                   >
                     <div className="flex items-center gap-4">
                       <div className="flex-grow">Puntata:</div>

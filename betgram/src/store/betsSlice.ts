@@ -11,7 +11,7 @@ interface BetState {
 }
 
 const initialState: BetState = {
-  bets: localStorage.getItem("bets") ? JSON.parse(localStorage.getItem("bets")!) : [],
+  bets: localStorage?.getItem("bets") ? JSON.parse(localStorage?.getItem("bets")!) : [],
 };
 
 const betsSlice = createSlice({
