@@ -1,7 +1,9 @@
 "use client";
 import { useUser } from "@/app/context/UserContext";
+import { NotebookText, PlayIcon, Users } from "lucide-react";
 import { useParams } from "next/navigation";
 import { useState, useEffect } from "react";
+import UserTabs from "./userTabs";
 
 const ProfilePage = () => {
     const { userId } = useParams();
@@ -25,7 +27,7 @@ const ProfilePage = () => {
                     )
                 );
                 setFollowers(200);
-                setBetsCount(1);
+                setBetsCount(45);
             } catch (error) {
                 console.error("Failed to fetch profile data:", error);
             } finally {
@@ -41,25 +43,37 @@ const ProfilePage = () => {
         </div>
     ) : (
         <div className="max-w-4xl mx-auto p-6">
-            <div className="bg-white shadow-md rounded-lg p-6">
-                <div className="flex items-center gap-6 justify-evenly">
+            <div className="bg-custom-dark shadow-md rounded-lg p-6">
+                <div className="flex items-center gap-6 justify-evenly mb-5">
                     <div className="flex flex-col items-center">
-                        <div className="w-24 h-24 rounded-full bg-gray-300 flex items-center justify-center text-2xl font-bold text-gray-700">
-                            {user?.id?.charAt(0).toUpperCase() || "U"}
+                        <div className="avatar avatar-online">
+                            <div className="w-24 rounded-full ">
+                                <img src="/images/avatar01.jpg" />
+                            </div>
                         </div>
-                        <h1 className="text-2xl font-bold text-black mt-1">{user?.email || "User"}</h1>
+
+                        <h1 className="text-lg font-bold text-white mt-2">{user?.username || "User"}</h1>
                     </div>
-                    <div className="flex justify-between w-1/3">
-                    <div>
-                        <p className="text-lg font-bold text-black">{followers}</p>
-                        <p className="text-md text-gray-600">Followers</p>
+                    <div className="stats shadow">
+                        <div className="stat !border-none">
+                            <div className="stat-figure text-secondary">
+                                <Users size={30} className="mt-6 !text-green-600" />
+                            </div>
+                            <div className="stat-title text-lg">Follower</div>
+                            <div className="stat-value">{followers}</div>
+                        </div>
                     </div>
-                    <div>
-                        <p className="text-lg font-bold text-black">{betsCount}</p>
-                        <p className="text-md text-gray-600">Scommesse</p>
-                    </div>
+                    <div className="stats shadow">
+                        <div className="stat !border-none">
+                            <div className="stat-figure text-secondary">
+                                <NotebookText size={30} className="mt-6 !text-green-600" />
+                            </div>
+                            <div className="stat-title text-lg">Scommesse</div>
+                            <div className="stat-value">{betsCount}</div>
+                        </div>
                     </div>
                 </div>
+            <UserTabs user={user!} />
             </div>
         </div>
     );

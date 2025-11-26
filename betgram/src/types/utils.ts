@@ -5,6 +5,13 @@ export enum HttpMethod {
   DELETE = "DELETE"
 }
 
+export interface User {
+  id: string;
+  username: string;
+  email: string;
+  timezone: string;
+}
+
 export  const BONUS_TABLE = [
     { events: 5, bonus: 0.06 },
     { events: 6, bonus: 0.124 },

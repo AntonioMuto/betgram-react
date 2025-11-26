@@ -27,6 +27,7 @@ export default function Navbar() {
   const [loadingCart, setLoadingCart] = useState(false);
   const [bonusPercentage, setBonusPercentage] = useState(0);
   const router = useRouter();
+  const drawerRef = useRef<HTMLInputElement>(null); // Ref for the drawer checkbox
 
   const calculateBonusPercentage = (eventsCount: number): number => {
     const cappedEvents = Math.min(eventsCount, 30);
@@ -150,7 +151,7 @@ export default function Navbar() {
       },
     }));
     const body = {
-      user: user?.id,
+      user: user?.username,
       events: betsTipped,
       summaryBet: summaryBet
     };
@@ -176,11 +177,20 @@ export default function Navbar() {
     }
   };
 
+  const routeToPath = (path: string) => {
+    router.push(path);
+
+    // Close the drawer using the ref
+    if (drawerRef.current) {
+      drawerRef.current.checked = false;
+    }
+  };
+
   return (
     <div>
       {/* Drawer */}
       <div className="drawer">
-        <input id="my-drawer-1" type="checkbox" className="drawer-toggle" />
+        <input id="my-drawer-1" type="checkbox" className="drawer-toggle" ref={drawerRef} />
         <div className="drawer-content">
           <nav className="p-5 h-19 bg-custom-dark border-b border-gray-800 text-white sticky top-0 z-50 border-b border-black">
             <div className="flex justify-between items-center">
@@ -213,34 +223,34 @@ export default function Navbar() {
           </nav>
         </div>
         <div className="drawer-side">
-          <label htmlFor="my-drawer-1" aria-label="close sidebar" className="drawer-overlay z-0"></label>
+          <label htmlFor="my-drawer-1" aria-label="close sidebar" className="drawer-overlay"></label>
           <ul className="menu bg-base-200 min-h-full w-80 p-4 bg-custom-dark">
             <li className="h-19"><a></a></li>
             <li className="flex flex-row rounded-lg p-2 items-center hover:bg-custom-dark">
-              <div onClick={() => router.push("/")} className="flex flex-row items-center">
-                <HomeIcon className="w-6 h- text-white mr-2" />
-                 <a className="font-bold text-xl text-white">Home</a>
+              <div onClick={() => routeToPath("/")} className="flex flex-row items-center">
+                <HomeIcon className="w-6 h-6 text-white mr-2" />
+                <a className="font-bold text-xl text-white">Home</a>
               </div>
             </li>
             <div className="divider h-1 mt-1"></div>
             <li className="flex flex-row hover:bg-custom-dark rounded-lg p-2 items-center">
-              <div className="flex flex-row items-center">
-                <UserCircleIcon className="w-6 h- text-white mr-2" />
-                 <a className="font-bold text-xl text-white">Profilo</a>
+              <div onClick={() => routeToPath(`/profile/${user?.id}`)} className="flex flex-row items-center">
+                <UserCircleIcon className="w-6 h-6 text-white mr-2" />
+                <a className="font-bold text-xl text-white">Profilo</a>
               </div>
             </li>
             <div className="divider h-1 mt-0.5"></div>
             <li className="flex flex-row hover:bg-custom-dark rounded-lg p-2 items-center">
               <div className="flex flex-row items-center">
                 <ListBulletIcon className="w-6 h- text-white mr-2" />
-                 <a className="font-bold text-xl text-white">Scommesse</a>
+                <a className="font-bold text-xl text-white">Scommesse</a>
               </div>
             </li>
             <div className="divider h-1 mt-1"></div>
             <li className="flex flex-row hover:bg-custom-dark rounded-lg p-2 items-center">
               <div className="flex flex-row items-center">
                 <SettingsIcon className="w-6 h- text-white mr-2" />
-                 <a className="font-bold text-xl text-white">Impostazioni</a>
+                <a className="font-bold text-xl text-white">Impostazioni</a>
               </div>
             </li>
           </ul>
@@ -250,7 +260,7 @@ export default function Navbar() {
       {isCartOpen && (
         <div
           ref={cartRef}
-          className="absolute right-0 mt-2 w-120 bg-white text-black rounded shadow-lg p-4"
+          className="absolute right-0 mt-2 w-120 bg-white text-black rounded shadow-lg p-4 z-5000"
         >
           <h2 className="text-lg font-bold mb-2">Scommesse</h2>
           {bets.length === 0 ? (
