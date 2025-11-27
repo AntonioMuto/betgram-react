@@ -13,7 +13,7 @@ export interface UserBet {
     tippedDate: string;
     status: string;
     totalEvents: number;
-    totalWon: number;
+    totalWons: number;
     totalLost: number;
 }
 

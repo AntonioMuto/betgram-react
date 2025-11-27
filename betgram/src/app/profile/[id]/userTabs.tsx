@@ -30,6 +30,19 @@ const UserTabs = ({ user }: UserTabsProps) => {
       <div className="tab-content bg-custom-dark-black border-base-300 p-6">
         {activeTab === "bets" && <UserBetsList user={user} />}
       </div>
+      <label className="tab [--tab-bg:var(--unselected-tab)]">
+        <input
+          type="radio"
+          name="my_tabs_4"
+          checked={activeTab === "playlists"}
+          onChange={() => setActiveTab("playlists")}
+        />
+        <PlayIcon className="size-8 me-2" />
+        PLAYLISTS
+      </label>
+      <div className="tab-content bg-custom-dark-black border-base-300 p-6">
+        {activeTab === "playlists" && <div>Playlists content goes here.</div>}
+      </div>
     </div>
   );
 }

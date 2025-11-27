@@ -42,7 +42,7 @@ const ProfilePage = () => {
             <p>Loading...</p>
         </div>
     ) : (
-        <div className="max-w-4xl mx-auto p-6">
+        <div className="max-w-5xl mx-auto p-6">
             <div className="bg-custom-dark shadow-md rounded-lg p-6">
                 <div className="flex items-center gap-6 justify-evenly mb-5">
                     <div className="flex flex-col items-center">
