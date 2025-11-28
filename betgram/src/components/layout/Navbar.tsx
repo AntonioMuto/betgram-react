@@ -158,7 +158,7 @@ export default function Navbar() {
     try {
       setLoadingCart(true);
       const res = await apiHandler<any>(
-        `http://localhost:3001/api/bets/insert`,
+        `http://65.108.132.166:12030/api/bets/insert`,
         undefined,
         HttpMethod.POST,
         body

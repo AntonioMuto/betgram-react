@@ -16,7 +16,7 @@ const BetsPage = () => {
       setIsLoading(true);
       try {
         let json = await apiHandler<UserBet[]>(
-          `http://localhost:3001/api/bets/user/${user?.id}`,
+          `http://65.108.132.166:12030/api/bets/user/${user?.id}`,
           { headers: { "Cache-Control": "no-cache" } }
         );
         setBetsList(json);

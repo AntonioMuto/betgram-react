@@ -21,7 +21,7 @@ export const UserBetsList = ({ user }: UserBetsListProps) => {
             setIsLoading(true);
             try {
                 const json = await apiHandler<UserBet[]>(
-                    `http://localhost:3001/api/bets/user/${user?.username}`,
+                    `http://65.108.132.166:12030/api/bets/user/${user?.username}`,
                 );
                 setUserBetsList(json);
             } catch (error) {

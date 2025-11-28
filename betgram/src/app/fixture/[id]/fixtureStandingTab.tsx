@@ -19,7 +19,7 @@ export default function FixtureStandingTab({ fixture }: FixtureStandingTabProps)
     const fetchStanding = async () => {
       try {
         const json = await apiHandler<StandingsData>(
-          `https://betgram.click/api/standings/${fixture.league.id}/${fixture.league.season}`,
+          `http://65.108.132.166:12030/api/standings/${fixture.league.id}/${fixture.league.season}`,
           { headers: { "Cache-Control": "no-cache" } }
         );
         setStanding(json);

@@ -20,6 +20,7 @@ export function formatTimeToTimezone(
 ) {
   const d = typeof date === "string" ? new Date(date) : date;
   const dateLuxon = DateTime.fromJSDate(d).setZone(timezone);
+  console.log("DateLuxon:", dateLuxon.toString(), "Timezone:", timezone);
   const now = DateTime.now().setZone(timezone);
 
   const time = dateLuxon.toFormat("HH:mm");
@@ -33,7 +34,7 @@ export function formatDateTimeToTimezone(
   options?: Intl.DateTimeFormatOptions
 ) {
   const d = typeof date === "string" ? new Date(date) : date;
-  const dateLuxon = DateTime.fromJSDate(d).setZone(timezone);
+  const dateLuxon = DateTime.fromJSDate(d).setZone();
   const now = DateTime.now().setZone(timezone);
 
   const isYesterday = dateLuxon.hasSame(now.minus({ days: 1 }), "day");

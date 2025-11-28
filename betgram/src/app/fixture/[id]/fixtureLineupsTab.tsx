@@ -29,7 +29,7 @@ export default function FixtureLineupsTab({ fixture }: FixtureScorersProps) {
             setIsLoading(true);
             try {
                 const json = await apiHandler<LineupData>(
-                    `https://betgram.click/api/lineups/${fixture.fixture.id}`,
+                    `http://65.108.132.166:12030/api/lineups/${fixture.fixture.id}`,
                     { headers: { "Cache-Control": "no-cache" } }
                 );
                 setLineups(json);

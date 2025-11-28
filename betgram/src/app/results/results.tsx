@@ -23,7 +23,7 @@ export default function Results({ date }: Props) {
     setLoading(true);
     try {
       const res = await apiHandler<Result[]>(
-        `https://betgram.click/api/fixtures/filter/data/${date}`
+        `http://65.108.132.166:12030/api/fixtures/filter/data/${date}`
       );
       setResults(res);
       setLoading(false);

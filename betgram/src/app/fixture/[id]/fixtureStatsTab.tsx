@@ -19,7 +19,7 @@ export default function FixtureStatsTab({ fixture }: FixtureDetailTabProps) {
         const fetchFixtureStats = async () => {
             try {
                 const json = await apiHandler<FixtureStatistics[]>(
-                    `https://betgram.click/api/fixtures/statistics/${fixture.fixture.id}`,
+                    `http://65.108.132.166:12030/api/fixtures/statistics/${fixture.fixture.id}`,
                     { headers: { "Cache-Control": "no-cache" } }
                 );
                 setStatistics(json);
