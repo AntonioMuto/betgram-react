@@ -29,7 +29,7 @@ export default function FixtureLineupsTab({ fixture }: FixtureScorersProps) {
             setIsLoading(true);
             try {
                 const json = await apiHandler<LineupData>(
-                    `http://65.108.132.166:12030/api/lineups/${fixture.fixture.id}`,
+                    `http://localhost:3001/api/lineups/${fixture.fixture.id}`,
                     { headers: { "Cache-Control": "no-cache" } }
                 );
                 setLineups(json);

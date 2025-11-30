@@ -25,7 +25,7 @@ export default function Results({ date }: Props) {
     setLoading(true);
     try {
       const res = await apiHandler<Result[]>(
-        `http://65.108.132.166:12030/api/fixtures/filter/data/${date}`
+        `http://localhost:3001/api/fixtures/filter/data/${date}`
       );
       setResults(res);
       setLoading(false);
@@ -40,10 +40,8 @@ export default function Results({ date }: Props) {
   };
 
   const mergeLiveData = (results: Result[], liveJson: any): Result[] => {
-    if (!liveJson || !liveJson[0]?.live) return results;
-
-    const liveFixtures = liveJson[0].live;
-
+    if (!liveJson || !liveJson.file_data[0].live) return results;
+    const liveFixtures = liveJson.file_data[0].live;
     return results.map((r) => {
       const match = liveFixtures.find(
         (l: any) => l.fixture.id === r.fixture.id
@@ -51,7 +49,7 @@ export default function Results({ date }: Props) {
 
       if (match) {
         return {
-          ...r,
+          ...r, // Crea un nuovo oggetto per ogni risultato
           fixture: {
             ...r.fixture,
             status: match.fixture.status,
@@ -61,7 +59,7 @@ export default function Results({ date }: Props) {
         };
       }
 
-      return r;
+      return { ...r }; // Crea un nuovo oggetto anche per i risultati non aggiornati
     });
   };
 

@@ -19,7 +19,7 @@ export default function FixtureStandingTab({ fixture }: FixtureStandingTabProps)
     const fetchStanding = async () => {
       try {
         const json = await apiHandler<StandingsData>(
-          `http://65.108.132.166:12030/api/standings/${fixture.league.id}/${fixture.league.season}`,
+          `http://localhost:3001/api/standings/${fixture.league.id}/${fixture.league.season}`,
           { headers: { "Cache-Control": "no-cache" } }
         );
         setStanding(json);

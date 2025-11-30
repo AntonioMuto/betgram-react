@@ -25,12 +25,12 @@ const FixturePage = () => {
       setIsLoading(true);
       try {
         let json = await apiHandler<any>(
-          `http://65.108.132.166:12030/api/fixtures/${id}`,
+          `http://localhost:3001/api/fixtures/${id}`,
           { headers: { "Cache-Control": "no-cache" } }
         );
         if (json?.events.length === 0 && isFixtureFinished(json.fixture.status.short)) {
           json = await apiHandler<any>(
-            `http://65.108.132.166:12030/api/fixtures/update/${id}`,
+            `http://localhost:3001/api/fixtures/update/${id}`,
             { headers: { "Cache-Control": "no-cache" } }
           );
         }

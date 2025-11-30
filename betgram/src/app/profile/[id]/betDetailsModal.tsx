@@ -4,6 +4,7 @@ import { isFixtureFinished, isFixtureInProgress, isFixtureScheduled } from "@/ap
 import { translate } from "@/app/utils/translate";
 import { BetInfo } from "@/types/bets";
 import { apiHandler } from "@/utils/apiHandler";
+import { ExclamationTriangleIcon } from "@heroicons/react/24/outline";
 import { CheckCircle, CircleX } from "lucide-react";
 import { useEffect, useState } from "react";
 
@@ -17,7 +18,7 @@ const BetDetailsModal = ({ betId, onClose }: { betId: string; onClose: () => voi
             setIsLoading(true);
             try {
                 const json = await apiHandler<BetInfo>(
-                    `http://65.108.132.166:12030/api/bets/${betId}`,
+                    `http://localhost:3001/api/bets/${betId}`,
                 );
                 setBetDetails(json);
             } catch (error) {
@@ -48,6 +49,10 @@ const BetDetailsModal = ({ betId, onClose }: { betId: string; onClose: () => voi
                             <p>{formatDateTimeToTimezone(betDetails.tippedDate, user?.user?.timezone || "UTC")}</p>
                         </div>
                         <div className="flex flex-row justify-between mb-2">
+                            <strong>Quota totale:</strong>
+                            <p>{betDetails.summaryBet.betsQuote}</p>
+                        </div>
+                        <div className="flex flex-row justify-between mb-2">
                             <strong>Importo scommesso:</strong>
                             <p>€ {betDetails.summaryBet.tipped}</p>
                         </div>
@@ -68,14 +73,17 @@ const BetDetailsModal = ({ betId, onClose }: { betId: string; onClose: () => voi
                                     <div className="flex flex-row justify-between">
                                         <div className="flex flex-row gap-3 ">
                                             <img className="w-5 h-5 object-contain"
-                                                src={event.fixture.league.flag || ""}
-                                                alt={event.fixture.league.name}></img>
+                                                src={event.fixture.league?.flag || ""}
+                                                alt={event.fixture.league?.name}></img>
                                             <span className="font-bold text-sm">{event.fixture.league.name}</span>
                                             {isFixtureInProgress(event.fixture.status.short) && (
                                                 <div className="inline-grid *:[grid-area:1/1] mt-1">
                                                     <div className="status status-error animate-ping"></div>
                                                     <div className="status status-error "></div>
                                                 </div>
+                                            )}
+                                            {event.bet.abandoned && (
+                                                <span className="badge badge-error ml-2">Abbandonata</span>
                                             )}
                                         </div>
                                         <span className="stat-desc text-sm">{formatDateTimeToTimezone(event.fixture.date, user?.user?.timezone || "UTC")}</span>
@@ -92,9 +100,9 @@ const BetDetailsModal = ({ betId, onClose }: { betId: string; onClose: () => voi
                                                 src={event.fixture.teams.away.logo}
                                                 alt={event.fixture.teams.away.name}></img>
                                         </div>
-                                        {isFixtureInProgress(event.fixture.status.short) && (
+                                        {((isFixtureFinished(event.fixture.status.short) || isFixtureInProgress(event.fixture.status.short)) && !event.bet.abandoned) && (
                                             <div className="flex flex-row gap-2">
-                                                <span className="text-md font-bold text-red-500">{event.fixture.goals?.home ?? 0}-{event.fixture.goals?.away ?? 0}</span>
+                                                <span className={`${betDetails.isLive ?? "text-red-500" } text-md font-bold`}>{event.fixture.goals?.home ?? 0}-{event.fixture.goals?.away ?? 0}</span>
                                             </div>
                                         )}
                                     </div>
@@ -105,15 +113,18 @@ const BetDetailsModal = ({ betId, onClose }: { betId: string; onClose: () => voi
                                             <span className="font-bold">{translate(event.bet.values[0].value)}</span>
                                         </div>
                                         <div className="flex flex-row gap-2">
-                                            <span className="font-bold">{event.bet.values[0].odd}</span>
+                                            <span className={`${event.bet.abandoned ? "line-through" : ""} font-bold`}>{event.bet.values[0].odd}</span>
                                             {event.bet.values[0].winner === true &&
                                                 <CheckCircle className="w-5 h-5 text-green-500" />
                                             }
-                                            {(event.bet.values[0].winner === false && isFixtureFinished(event.fixture.status.short)) &&
+                                            {(event.bet.values[0].winner === false && event.bet.abandoned === undefined) &&
                                                 <CircleX className="w-5 h-5 text-red-500" />
                                             }
-                                            {event.bet.values[0].winner === false && !isFixtureFinished(event.fixture.status.short) &&
+                                            {event.bet.values[0].winner === undefined &&
                                                 <span className="loading loading-dots loading-md text-amber-400"></span>
+                                            }
+                                            {(event.bet.values[0].winner === false && event.bet.abandoned) &&
+                                                <ExclamationTriangleIcon className="w-5 h-5 text-yellow-500" />
                                             }
                                         </div>
                                     </div>

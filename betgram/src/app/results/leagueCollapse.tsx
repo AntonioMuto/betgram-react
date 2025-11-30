@@ -13,6 +13,7 @@ type LeagueData = {
 };
 
 export default function LeagueCollapse({ league, matches, clearLiveInterval }: LeagueData) {
+
   const [open, setOpen] = useState(true);
   const { user } = useUser();
   const timezone = user?.timezone || "UTC";
@@ -35,7 +36,7 @@ export default function LeagueCollapse({ league, matches, clearLiveInterval }: L
   }, [matches]);
 
   const showInfo = (fixtureId: number) => {
-    clearLiveInterval(); // Chiama la funzione per cancellare l'interval
+    clearLiveInterval();
     router.push(`/fixture/${fixtureId}`);
   }
 
@@ -98,26 +99,30 @@ export default function LeagueCollapse({ league, matches, clearLiveInterval }: L
                   alt={match.teams.home.name}
                   className="w-8 h-8 mr-2 object-contain"
                 />
-                <div className="text-left text-lg ml-4">{match.teams.home.name}</div>
+                <div className={`${match.teams.home.winner ? "font-bold" : ""} text-left text-lg ml-4`}>{match.teams.home.name}</div>
               </div>
               {isFixtureInProgress(match.fixture.status.short) ? (
                 <div className="flex flex-col items-center">
                   <div className="flex flex-row text-lg text-center font-bold text-red-500">
                     {match.goals.home} - {match.goals.away}
                   </div>
-                  {match.fixture.status.short === "HT" ? (
+                  {(match.fixture.status.short === "HT" || match.fixture.status.short === "INT") ? (
                     <div className="flex flex-row text-lg text-center font-bold text-red-500">
-                      HT
+                      {match.fixture.status.short}
                     </div>
                   ) : (
-                  <div className="flex flex-row text-lg text-base text-center font-bold text-red-500">
-                    {match.fixture.status.elapsed}' {match.fixture.status.extra && `+ ${match.fixture.status.extra}`}
-                  </div>
+                    <div className="flex flex-row text-lg text-base text-center font-bold text-red-500">
+                      {match.fixture.status.elapsed}' {match.fixture.status.extra && `+ ${match.fixture.status.extra}`}
+                    </div>
                   )}
                 </div>
               ) : isFixtureScheduled(match.fixture.status.short) ? (
                 <div className="text-lg text-center font-bold">
                   {formatTimeToTimezone(match.fixture.date, timezone)}
+                </div>
+              ) : match.fixture.status.short === "ABD" ? (
+                <div className="flex flex-row text-lg text-center font-bold">
+                  {match.fixture.status.short}
                 </div>
               ) : (
                 <div className="flex flex-col items-center">
@@ -131,7 +136,7 @@ export default function LeagueCollapse({ league, matches, clearLiveInterval }: L
               )}
 
               <div className="flex items-center justify-end w-1/3">
-                <div className="text-right text-lg mr-4">
+                <div className={`${match.teams.away.winner ? "font-bold" : ""} text-right text-lg mr-4`}>
                   {match.teams.away.name}
                 </div>
                 <img

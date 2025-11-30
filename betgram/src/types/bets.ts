@@ -2,6 +2,7 @@ export interface betPredictionData {
     tipped: string;
     bonus: string;
     total: string;
+    betsQuote?: string;
 }
 
 export interface UserBet {
@@ -63,6 +64,7 @@ export interface BetInfo {
                 odd: string;
                 winner?: boolean;
             }>;
+            abandoned?: boolean;
         };
     }>;
     summaryBet: betPredictionData;

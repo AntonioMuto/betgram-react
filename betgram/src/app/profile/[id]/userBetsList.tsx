@@ -19,12 +19,11 @@ export const UserBetsList = ({ user }: UserBetsListProps) => {
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false); // Stato per l'apertura del modale
 
     useEffect(() => {
-        console.log("Fetching bets for user:", user);
         const fetchUserBetsList = async () => {
             setIsLoading(true);
             try {
                 const json = await apiHandler<UserBet[]>(
-                    `http://65.108.132.166:12030/api/bets/user/${user?.username}`,
+                    `http://localhost:3001/api/bets/user/${user?.username}`,
                 );
                 setUserBetsList(json);
             } catch (error) {

@@ -6,7 +6,6 @@ export function isFixtureInProgress(code: string) {
         case "ET":
         case "BT":
         case "P":
-        case "SUSP":
         case "INT":
         case "LIVE":
             return true;
@@ -30,6 +29,8 @@ export function isFixtureFinished(code: string) {
         case "FT": 
         case "AET":
         case "PEN":
+        case "ABD":
+        case "SUSP":
             return true;
         default:
             return false;

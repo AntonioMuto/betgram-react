@@ -19,7 +19,7 @@ export default function FixtureStatsTab({ fixture }: FixtureDetailTabProps) {
         const fetchFixtureStats = async () => {
             try {
                 const json = await apiHandler<FixtureStatistics[]>(
-                    `http://65.108.132.166:12030/api/fixtures/statistics/${fixture.fixture.id}`,
+                    `http://localhost:3001/api/fixtures/statistics/${fixture.fixture.id}`,
                     { headers: { "Cache-Control": "no-cache" } }
                 );
                 setStatistics(json);
@@ -67,7 +67,6 @@ export default function FixtureStatsTab({ fixture }: FixtureDetailTabProps) {
 
     function getStatPercentages(stat: Record<string, string | null>): StatPercentages {
         const [homeId, awayId] = Object.keys(stat);
-        console.log(homeId, awayId);
         let homeRaw = stat[homeId] ?? "0";
         let awayRaw = stat[awayId] ?? "0";
         if (fixture.teams.home.id !== Number(homeId)) {

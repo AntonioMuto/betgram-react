@@ -102,6 +102,7 @@ export default function Navbar() {
       tipped: puntata.toFixed(2),
       bonus: bonus.toFixed(2),
       total: total.toFixed(2),
+      betsQuote: betsQuote.toFixed(2),
     });
   };
 
@@ -159,7 +160,7 @@ export default function Navbar() {
     try {
       setLoadingCart(true);
       const res = await apiHandler<any>(
-        `http://65.108.132.166:12030/api/bets/insert`,
+        `http://localhost:3001/api/bets/insert`,
         undefined,
         HttpMethod.POST,
         body

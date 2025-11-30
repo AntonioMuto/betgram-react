@@ -29,7 +29,7 @@ export default function FixtureOddsTab({ fixture }: FixtureOddsTabProps) {
     const fetchOdds = async () => {
       try {
         const json = await apiHandler<OddsData>(
-          `http://65.108.132.166:12030/api/fixtures/odds/${fixture.fixture.id}`,
+          `http://localhost:3001/api/fixtures/odds/${fixture.fixture.id}`,
           { headers: { "Cache-Control": "no-cache" } }
         );
         setOdds(json);
@@ -79,7 +79,7 @@ export default function FixtureOddsTab({ fixture }: FixtureOddsTabProps) {
   const revalidateOdds = async () => {
     try {
       const json = await apiHandler<OddsData>(
-        `http://65.108.132.166:12030/api/odds/refresh/${fixture.fixture.id}`,
+        `http://localhost:3001/api/odds/refresh/${fixture.fixture.id}`,
         { headers: { "Cache-Control": "no-cache" } }
       );
       setOdds(json);

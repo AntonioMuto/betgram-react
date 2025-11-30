@@ -11,7 +11,7 @@ export default function LeaguesList() {
     const fetchLeagues = async () => {
       setLoading(true);
       try {
-        const json = await apiHandler<LeagueData[]>(`http://65.108.132.166:12030/api/leagues`);
+        const json = await apiHandler<LeagueData[]>(`http://localhost:3001/api/leagues`);
         setLeagues(json);
       } catch (error) {
         console.error('Failed to fetch leagues:', error);

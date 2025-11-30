@@ -18,8 +18,8 @@ const AuthPage = () => {
     setError(null);
 
     const endpoint = isRegistering
-      ? "http://65.108.132.166:12030/api/auth/register"
-      : "http://65.108.132.166:12030/api/auth/login";
+      ? "http://localhost:3001/api/auth/register"
+      : "http://localhost:3001/api/auth/login";
 
     try {
       const response = await apiHandler<{
