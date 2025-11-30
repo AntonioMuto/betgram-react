@@ -3,12 +3,13 @@
 import { Result } from "@/types/results";
 import { League } from "@/types/results";
 import LeagueCollapse from "./leagueCollapse";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useDispatch } from "react-redux";
 import { apiHandler } from "@/utils/apiHandler";
 import { addError } from "@/store/errorSlice";
 import ErrorAlerts from "../components/ErrorAlerts";
-import { isFixtureInProgress } from '@/app/utils/fixtureState'; // Added import for isFixtureInProgress
+import { isFixtureInProgress } from '@/app/utils/fixtureState';
+import { log } from "console";
 
 type Props = {
   date: string;
@@ -18,6 +19,7 @@ export default function Results({ date }: Props) {
   const dispatch = useDispatch();
   const [results, setResults] = useState<Result[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
   const fetchByDate = async (): Promise<Result[]> => {
     setLoading(true);
@@ -33,7 +35,7 @@ export default function Results({ date }: Props) {
         err instanceof Error ? err.message : "An unknown error occurred";
       dispatch(addError(errorMessage));
       setLoading(false);
-      throw err; // Ensure the error is propagated
+      throw err;
     }
   };
 
@@ -65,7 +67,7 @@ export default function Results({ date }: Props) {
 
   const fetchLive = async () => {
     const res = await apiHandler<any>(
-      "http://[2a00:f48:1000:41e::1]:3005/live"
+      "http://62.113.198.26:10290/live"
     );
     const json = res;
     setResults((prev) => mergeLiveData(prev, json));
@@ -73,8 +75,6 @@ export default function Results({ date }: Props) {
 
   useEffect(() => {
     if (!date) return;
-
-    let interval: NodeJS.Timeout | null = null;
 
     const init = async () => {
       const initialResults = await fetchByDate();
@@ -85,24 +85,52 @@ export default function Results({ date }: Props) {
       ).padStart(2, "0")}-${d.getFullYear()}`;
 
       const isToday = date === today;
-      if (!isToday) return;
 
+     
+      if (!isToday) {
+        if (intervalRef.current) {
+          clearInterval(intervalRef.current);
+          intervalRef.current = null;
+        }
+        return;
+      }
+
+     
       const hasInProgress = initialResults.some((r) =>
         isFixtureInProgress(r.fixture.status.short)
       );
 
       if (hasInProgress) {
         fetchLive();
-        interval = setInterval(fetchLive, 20000);
+        if (!intervalRef.current) {
+          intervalRef.current = setInterval(fetchLive, 20000);
+        }
+      } else {
+        if (intervalRef.current) {
+          clearInterval(intervalRef.current);
+          intervalRef.current = null;
+        }
       }
     };
 
     init();
 
     return () => {
-      if (interval) clearInterval(interval);
+     
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+        intervalRef.current = null;
+      }
     };
   }, [date]);
+
+ 
+  const clearLiveInterval = () => {
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
+    }
+  };
 
   const uniqueLeagues: League[] = Array.from(
     new Set(results.map((item) => item.league.id))
@@ -152,6 +180,7 @@ export default function Results({ date }: Props) {
             key={league.id}
             league={league}
             matches={fixturesByLeagueId[league.id]}
+            clearLiveInterval={clearLiveInterval}
           />
         ))
       )}

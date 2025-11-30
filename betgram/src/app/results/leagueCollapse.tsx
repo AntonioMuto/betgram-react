@@ -9,9 +9,10 @@ import { isFixtureInProgress, isFixtureScheduled } from "../utils/fixtureState";
 type LeagueData = {
   league: League;
   matches: Result[];
+  clearLiveInterval: () => void; // Aggiungi il tipo per la funzione di callback
 };
 
-export default function LeagueCollapse({ league, matches }: LeagueData) {
+export default function LeagueCollapse({ league, matches, clearLiveInterval }: LeagueData) {
   const [open, setOpen] = useState(true);
   const { user } = useUser();
   const timezone = user?.timezone || "UTC";
@@ -32,6 +33,11 @@ export default function LeagueCollapse({ league, matches }: LeagueData) {
 
     return { inProgressCount: inProgress, scheduledCount: scheduled, finishedCount: finished };
   }, [matches]);
+
+  const showInfo = (fixtureId: number) => {
+    clearLiveInterval(); // Chiama la funzione per cancellare l'interval
+    router.push(`/fixture/${fixtureId}`);
+  }
 
   return (
     <div
@@ -76,10 +82,10 @@ export default function LeagueCollapse({ league, matches }: LeagueData) {
             <div
               role="button"
               tabIndex={0}
-              onClick={() => router.push(`/fixture/${match.fixture.id}`)}
+              onClick={() => showInfo(match.fixture.id)} // Usa la funzione showInfo
               onKeyDown={(e) => {
                 if (e.key === "Enter") {
-                  router.push(`/fixture/${match.fixture.id}`);
+                  showInfo(match.fixture.id);
                 }
               }}
               key={match.fixture.id}

@@ -139,6 +139,7 @@ export default function Navbar() {
         date: b.fixture.fixture.date,
         status: b.fixture.fixture.status,
         teams: b.fixture.teams,
+        goals: b.fixture.goals,
         league: b.fixture.league
       },
       bet: {

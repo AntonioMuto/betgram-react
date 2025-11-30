@@ -62,14 +62,17 @@ export default function FixtureInfo({ fixture, setFixture }: FixtureInfoProps) {
   // aggiornamento live
   useEffect(() => {
     const interval = setInterval(async () => {
-      if (!isFixtureInProgress(fixture.fixture.status.short)) return;
+      if (!isFixtureInProgress(fixture.fixture.status.short)){
+        clearInterval(interval);
+        return;
+      };
 
       try {
-        const json = await apiHandler<any[]>(
-          `http://[2a00:f48:1000:41e::1]:3005/live`,
+        const json = await apiHandler<any>(
+          `http://62.113.198.26:10290/live`,
           { headers: { "Cache-Control": "no-cache" } }
         );
-        const newFixture = json[0].live.filter(
+        const newFixture = json.file_data[0].live.filter(
           (f: FixtureData) => f.fixture.id === fixture.fixture.id
         );
         if (!newFixture.length) return;
