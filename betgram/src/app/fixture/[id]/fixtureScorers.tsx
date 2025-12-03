@@ -2,6 +2,7 @@ import { Event, Fixture, FixtureData } from "@/types/results";
 import React, { useMemo } from "react";
 import { Icon } from "lucide-react";
 import { soccerBall } from "@lucide/lab";
+import { t } from "i18next";
 
 type FixtureScorersProps = {
   fixture: FixtureData;
@@ -71,7 +72,7 @@ export default function FixtureScorers({ fixture }: FixtureScorersProps) {
                     iconNode={soccerBall}
                     className="w-4 h-4 text-gray-400 ml-5"
                   />
-                  <span className="text-gray-400">(Rig)</span>
+                  <span className="text-gray-400">({t("rig")})</span>
                 </div>
               )}
             </div>
@@ -113,7 +114,7 @@ export default function FixtureScorers({ fixture }: FixtureScorersProps) {
                     iconNode={soccerBall}
                     className="w-4 h-4 text-gray-400 ml-5"
                   />
-                  <span className="text-gray-400">(Rig)</span>
+                  <span className="text-gray-400">({t("rig")})</span>
                 </div>
               )}
             </div>

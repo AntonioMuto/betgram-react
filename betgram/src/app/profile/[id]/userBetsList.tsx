@@ -7,6 +7,7 @@ import { ListBulletIcon } from "@heroicons/react/24/outline";
 import { formatDateTimeToTimezoneBet } from "@/app/utils/date";
 import { Clock } from "lucide-react";
 import BetDetailsModal from "./betDetailsModal";
+import { t } from "i18next";
 
 interface UserBetsListProps {
     user: User;
@@ -15,8 +16,8 @@ interface UserBetsListProps {
 export const UserBetsList = ({ user }: UserBetsListProps) => {
     const [betsList, setUserBetsList] = useState<UserBet[] | null>(null);
     const [isLoading, setIsLoading] = useState<boolean>(true);
-    const [selectedBetId, setSelectedBetId] = useState<string | null>(null); // Stato per il betId selezionato
-    const [isModalOpen, setIsModalOpen] = useState<boolean>(false); // Stato per l'apertura del modale
+    const [selectedBetId, setSelectedBetId] = useState<string | null>(null);
+    const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
     useEffect(() => {
         const fetchUserBetsList = async () => {
@@ -36,34 +37,22 @@ export const UserBetsList = ({ user }: UserBetsListProps) => {
     }, [user]);
 
     const openBetDetails = (betId: string) => {
-        setSelectedBetId(betId); // Imposta il betId selezionato
-        setIsModalOpen(true); // Apri il modale
+        setSelectedBetId(betId);
+        setIsModalOpen(true); 
     };
 
     const closeModal = () => {
-        setIsModalOpen(false); // Chiudi il modale
-        setSelectedBetId(null); // Resetta il betId selezionato
+        setIsModalOpen(false); 
+        setSelectedBetId(null); 
     };
 
     return (
         <div>
             {isLoading ? (
-                <div>Loading...</div>
+                <div>{t("loading")}...</div>
             ) : (
                 <div className="flex flex-wrap gap-4">
                     {betsList?.map((bet) => {
-                        // const pieData = [
-                        //     { label: "Lost", value: bet.totalLost || 0, color: "#E92121FF" }, // Red for lost
-                        //     { label: "Won", value: bet.totalWons || 0, color: "#1AD81AFF" }, // Green for won
-                        //     {
-                        //         label: "Pending",
-                        //         value:
-                        //             (bet.totalEvents || 0) -
-                        //             ((bet.totalWons || 0) + (bet.totalLost || 0)),
-                        //         color: "#DDBE0DFF", // Yellow for pending
-                        //     },
-                        // ];
-
                         return (
                             <div className="flex flex-col w-32/100" key={bet.id}>
                                 <div
@@ -91,24 +80,24 @@ export const UserBetsList = ({ user }: UserBetsListProps) => {
                                     </div>
                                     <div className="flex flex-row mt-5 items-center justify-between">
                                         <div className={`stat-desc text-right text-sm`}>
-                                            Stato:
+                                            {t("stato scommessa")}:
                                         </div>
                                         {bet.status === "PENDING" ? (
                                             <div className="badge badge-warning !bg-yellow-500 text-yellow-900 font-semibold">
                                                 <div className="flex items-center gap-2">
-                                                    IN CORSO
+                                                    {t("in corso")}
                                                 </div>
                                                 <span className="loading loading-dots loading-md"></span>
                                             </div>
                                         ) : bet.status === "OK" ? (
-                                            <div className="badge badge-success !bg-green-600 text-white font-semibold">VINTA</div>
+                                            <div className="badge badge-success !bg-green-600 text-white font-semibold">{t("vinta")}</div>
                                         ) : (
-                                            <div className="badge badge-error !bg-red-600 text-white font-semibold">PERSA</div>
+                                            <div className="badge badge-error !bg-red-600 text-white font-semibold">{t("persa")}</div>
                                         )}
                                     </div>
                                     <div className="flex flex-row mt-2 items-center justify-between">
                                         <div className={`stat-desc text-right text-sm`}>
-                                            Puntata:
+                                            {t("puntata")}:
                                         </div>
                                         <div className={`stat-value text-gray-400 text-right text-lg`}>
                                             € {bet.summaryBet.tipped}
@@ -116,7 +105,7 @@ export const UserBetsList = ({ user }: UserBetsListProps) => {
                                     </div>
                                     <div className="flex flex-row mt-2 items-center justify-between">
                                         <div className={`stat-desc text-right text-sm`}>
-                                            Vittoria Potenziale:
+                                            {t("vittoria potenziale")}:
                                         </div>
                                         <div
                                             className={`${bet.status === "OK"
@@ -134,7 +123,7 @@ export const UserBetsList = ({ user }: UserBetsListProps) => {
                                                             innerRadius: 14,
                                                             outerRadius: 35,
                                                             data: pieData,
-                                                            arcLabel: (item) => (item.value > 0 ? `${item.value}` : ""), // Only show label if value > 0
+                                                            arcLabel: (item) => (item.value > 0 ? `${item.value}` : ""), 
                                                         },
                                                     ]}
                                                     slotProps={{
@@ -164,7 +153,7 @@ export const UserBetsList = ({ user }: UserBetsListProps) => {
                         <BetDetailsModal betId={selectedBetId} onClose={closeModal} />
                     </div>
                     <form method="dialog" className="modal-backdrop">
-                        <button onClick={closeModal}>Chiudi</button>
+                        <button onClick={closeModal}>{t("chiudi")}</button>
                     </form>
                 </dialog>
             )}

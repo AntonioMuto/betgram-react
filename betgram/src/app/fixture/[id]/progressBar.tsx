@@ -1,8 +1,8 @@
 import { motion } from "framer-motion";
 
 type ProgressBarProps = {
-    homeValue: number; // es. 69
-    awayValue: number; // es. 31
+    homeValue: number;
+    awayValue: number; 
     homeColor?: string;
     awayColor?: string;
     height?: string,

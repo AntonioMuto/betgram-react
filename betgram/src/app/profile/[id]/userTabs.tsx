@@ -3,6 +3,7 @@ import { useUser } from "../../context/UserContext";
 import { User } from "@/types/utils";
 import { useEffect, useState } from "react";
 import { UserBetsList } from "./userBetsList";
+import { t } from "i18next";
 
 interface UserTabsProps {
   user: User;
@@ -25,7 +26,7 @@ const UserTabs = ({ user }: UserTabsProps) => {
           onChange={() => setActiveTab("bets")}
         />
         <Table className="size-8 me-2" />
-        SCOMMESSE
+        {t("scommesse").toUpperCase()}
       </label>
       <div className="tab-content bg-custom-dark-black border-base-300 p-6">
         {activeTab === "bets" && <UserBetsList user={user} />}
@@ -37,8 +38,8 @@ const UserTabs = ({ user }: UserTabsProps) => {
           checked={activeTab === "playlists"}
           onChange={() => setActiveTab("playlists")}
         />
-        <PlayIcon className="size-8 me-2" />
-        PLAYLISTS
+        <PlayIcon className="size-8 me-2 " />
+        {t("statistiche").toUpperCase()}
       </label>
       <div className="tab-content bg-custom-dark-black border-base-300 p-6">
         {activeTab === "playlists" && <div>Playlists content goes here.</div>}

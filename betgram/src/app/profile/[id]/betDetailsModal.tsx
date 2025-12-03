@@ -5,10 +5,12 @@ import { translate } from "@/app/utils/translate";
 import { BetInfo } from "@/types/bets";
 import { apiHandler } from "@/utils/apiHandler";
 import { ExclamationTriangleIcon } from "@heroicons/react/24/outline";
+import { useTranslation } from "react-i18next";
 import { CheckCircle, CircleX } from "lucide-react";
 import { useEffect, useState } from "react";
 
 const BetDetailsModal = ({ betId, onClose }: { betId: string; onClose: () => void }) => {
+    const { t } = useTranslation(); // Usa il hook per traduzioni
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [betDetails, setBetDetails] = useState<BetInfo | null>(null);
     const user = useUser();
@@ -41,27 +43,27 @@ const BetDetailsModal = ({ betId, onClose }: { betId: string; onClose: () => voi
                 <div>
                     <div className="flex flex-col">
                         <div className="flex flex-row justify-between mb-2">
-                            <strong>Bet ID:</strong>
+                            <strong>{t("ID scommessa")}:</strong>
                             <p>{betDetails.id}</p>
                         </div>
                         <div className="flex flex-row justify-between mb-2">
-                            <strong>Data di creazione:</strong>
+                            <strong>{t("data di creazione")}:</strong>
                             <p>{formatDateTimeToTimezone(betDetails.tippedDate, user?.user?.timezone || "UTC")}</p>
                         </div>
                         <div className="flex flex-row justify-between mb-2">
-                            <strong>Quota totale:</strong>
+                            <strong>{t("quota totale")}:</strong>
                             <p>{betDetails.summaryBet.betsQuote}</p>
                         </div>
                         <div className="flex flex-row justify-between mb-2">
-                            <strong>Importo scommesso:</strong>
+                            <strong>{t("importo scommesso")}:</strong>
                             <p>€ {betDetails.summaryBet.tipped}</p>
                         </div>
                         <div className="flex flex-row justify-between mb-2">
-                            <strong>Bonus:</strong>
+                            <strong>{t("bonus")}:</strong>
                             <p>€ {betDetails.summaryBet.bonus}</p>
                         </div>
                         <div className="flex flex-row justify-between mb-1">
-                            <strong>Possibile vincita:</strong>
+                            <strong>{t("vittoria potenziale")}:</strong>
                             <p>€ {betDetails.summaryBet.total}</p>
                         </div>
                     </div>
@@ -83,7 +85,7 @@ const BetDetailsModal = ({ betId, onClose }: { betId: string; onClose: () => voi
                                                 </div>
                                             )}
                                             {event.bet.abandoned && (
-                                                <span className="badge badge-error ml-2">Abbandonata</span>
+                                                <span className="badge badge-error ml-2">{t("abbandonata")}</span>
                                             )}
                                         </div>
                                         <span className="stat-desc text-sm">{formatDateTimeToTimezone(event.fixture.date, user?.user?.timezone || "UTC")}</span>
@@ -135,7 +137,7 @@ const BetDetailsModal = ({ betId, onClose }: { betId: string; onClose: () => voi
                     
                 </div>
             ) : (
-                <p>Nessun dettaglio disponibile.</p>
+                <p>{t("nessun dettaglio disponibile")}.</p>
             )}
         </div>
     );

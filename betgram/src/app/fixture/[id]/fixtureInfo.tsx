@@ -23,7 +23,6 @@ export default function FixtureInfo({ fixture, setFixture }: FixtureInfoProps) {
   const { user } = useUser();
   const timezone = user?.timezone || "UTC";
 
-  // countdown pre-partita
   useEffect(() => {
     if (!fixture || fixture.fixture.status.short !== "NS") return;
 
@@ -59,7 +58,7 @@ export default function FixtureInfo({ fixture, setFixture }: FixtureInfoProps) {
     return () => clearInterval(interval);
   }, [fixture]);
 
-  // aggiornamento live
+  
   useEffect(() => {
     const interval = setInterval(async () => {
       if (!isFixtureInProgress(fixture.fixture.status.short)){

@@ -2,6 +2,7 @@ import { PlayerInfoModal, PlayersData } from "@/types/results";
 import { Icon, LucideShield, PlayIcon, SwordsIcon, TableIcon } from "lucide-react";
 import React, { useCallback, useEffect, useMemo } from "react";
 import { soccerBall } from "@lucide/lab";
+import { t } from "i18next";
 
 type PlayerFixtureInfoProps = {
   players: PlayersData[];
@@ -106,16 +107,16 @@ export default function PlayerFixtureInfo({
           <>
             <div className="stats stats-horizontal lg:stats-horizontal shadow">
               <div className="stat !border-none w-40">
-                <div className="stat-title text-lg">Rating</div>
+                <div className="stat-title text-lg">{t("rating")}</div>
                 <div className={`stat-value ${ratingColor(playerData?.statistics[0].games.rating ?? "0")}`}>{Number(playerData?.statistics[0].games.rating).toFixed(2) ?? "0"}</div>
               </div>
               <div className="stat !border-none w-40">
-                <div className="stat-title text-lg">Maglia</div>
+                <div className="stat-title text-lg">{t("maglia")}</div>
                 <div className="stat-value">#{playerData?.statistics[0].games.number}</div>
               </div>
 
               <div className="stat !border-none w-40">
-                <div className="stat-title text-lg">Posizione</div>
+                <div className="stat-title text-lg">{t("posizione")}</div>
                 <div className="stat-value">{transcodePosition(playerData?.statistics[0].games.position)}</div>
               </div>
             </div>
@@ -130,38 +131,38 @@ export default function PlayerFixtureInfo({
                   defaultChecked
                 />
                 <TableIcon className="size-5 me-2" />
-                GENERALI
+                {t("generali").toUpperCase()}
               </label>
               <div className="tab-content p-1 mt-5 ">
                 <div className="stats stats-horizontal lg:stats-horizontal shadow">
                   <div className="stat !border-none w-40">
-                    <div className="stat-title text-lg">Minuti Giocati</div>
+                    <div className="stat-title text-lg">{t("minuti_giocati")}</div>
                     <div className="stat-value">{playerData?.statistics[0].games.minutes ?? 0}'</div>
                   </div>
 
                   <div className="stat !border-none w-40">
-                    <div className="stat-title text-lg">Pass. Totali</div>
+                    <div className="stat-title text-lg">{t("pass_totali")}</div>
                     <div className="stat-value ">{playerData?.statistics[0].passes.total ?? 0}</div>
                   </div>
 
                   <div className="stat !border-none w-40">
-                    <div className="stat-title text-lg">Pass. Chiave</div>
+                    <div className="stat-title text-lg">{t("pass_chiave")}</div>
                     <div className="stat-value ">{playerData?.statistics[0].passes.key ?? 0}</div>
                   </div>
                 </div>
                 <div className="stats stats-horizontal lg:stats-horizontal shadow mt-0.5">
                   <div className="stat !border-none w-40">
-                    <div className="stat-title text-lg">Precisione Pass.</div>
+                    <div className="stat-title text-lg">{t("precisione_pass")}</div>
                     <div className="stat-value">{playerData?.statistics[0].passes.accuracy ?? 0}%</div>
                   </div>
 
                   <div className="stat !border-none w-40">
-                    <div className="stat-title text-lg">Goals</div>
+                    <div className="stat-title text-lg">{t("goals")}</div>
                     <div className="stat-value">{playerData?.statistics[0].goals.total ?? 0}</div>
                   </div>
 
                   <div className="stat !border-none w-40">
-                    <div className="stat-title text-lg">Assists</div>
+                    <div className="stat-title text-lg">{t("assists")}</div>
                     <div className="stat-value">{playerData?.statistics[0].goals.assists ?? 0}</div>
                   </div>
                 </div>
@@ -174,38 +175,38 @@ export default function PlayerFixtureInfo({
                   aria-label="DIFESA"
                 />
                 <LucideShield className="size-5 me-2" />
-                DIFESA
+                {t("difesa").toUpperCase()}
               </label>
               <div className="tab-content p-1 mt-5">
                 <div className="stats stats-horizontal lg:stats-horizontal shadow">
                   <div className="stat !border-none w-40">
-                    <div className="stat-title text-lg">Ammonizioni</div>
+                    <div className="stat-title text-lg">{t("ammonizioni")}</div>
                     <div className="stat-value text-yellow-500">{playerData?.statistics[0].cards.yellow ?? 0}</div>
                   </div>
 
                   <div className="stat !border-none w-40">
-                    <div className="stat-title text-lg">Espulsioni</div>
+                    <div className="stat-title text-lg">{t("espulsioni")}</div>
                     <div className="stat-value text-red-500">{playerData?.statistics[0].cards.red ?? 0}</div>
                   </div>
 
                   <div className="stat !border-none w-40">
-                    <div className="stat-title text-lg">Rigori Parati</div>
+                    <div className="stat-title text-lg">{t("rigori_parati")}</div>
                     <div className="stat-value">{playerData?.statistics[0].penalty.saved ?? 0}</div>
                   </div>
                 </div>
                 <div className="stats stats-horizontal lg:stats-horizontal shadow mt-0.5">
                   <div className="stat !border-none w-40">
-                    <div className="stat-title text-lg">Falli Commessi</div>
+                    <div className="stat-title text-lg">{t("falli_commessi")}</div>
                     <div className="stat-value"> {playerData?.statistics[0].fouls.committed ?? 0}</div>
                   </div>
 
                   <div className="stat !border-none w-40">
-                    <div className="stat-title text-lg">Duelli Totali</div>
+                    <div className="stat-title text-lg">{t("duelli_totali")}</div>
                     <div className="stat-value">{playerData?.statistics[0].duels.total ?? 0}</div>
                   </div>
 
                   <div className="stat !border-none w-40">
-                    <div className="stat-title text-lg">Duelli Vinti</div>
+                    <div className="stat-title text-lg">{t("duelli_vinti")}</div>
                     <div className="stat-value">{playerData?.statistics[0].duels.won ?? 0}</div>
                   </div>
                 </div>
@@ -218,33 +219,33 @@ export default function PlayerFixtureInfo({
                   aria-label="ATTACCO"
                 />
                 <SwordsIcon className="size-5 me-2" />
-                ATTACCO
+                {t("attacco").toUpperCase()}
               </label>
               <div className="tab-content p-1 mt-5">
                 <div className="stats stats-horizontal lg:stats-horizontal shadow">
                   <div className="stat !border-none w-40">
-                    <div className="stat-title text-lg">Tiri Totali</div>
+                    <div className="stat-title text-lg">{t("tiri_totali")}</div>
                     <div className="stat-value">{playerData?.statistics[0].shots.total ?? 0}</div>
                   </div>
 
                   <div className="stat !border-none w-40">
-                    <div className="stat-title text-lg">Tiri in Porta</div>
+                    <div className="stat-title text-lg">{t("tiri_in_porta")}</div>
                     <div className="stat-value">{playerData?.statistics[0].shots.on ?? 0}</div>
                   </div>
 
                   <div className="stat !border-none w-40">
-                    <div className="stat-title text-lg">Fuorigioco</div>
+                    <div className="stat-title text-lg">{t("fuorigioco")}</div>
                     <div className="stat-value">{playerData?.statistics[0].offsides ?? 0}</div>
                   </div>
                 </div>
                 <div className="stats stats-horizontal lg:stats-horizontal shadow mt-0.5">
                   <div className="stat !border-none w-40">
-                    <div className="stat-title text-lg">Rigori Segnati</div>
+                    <div className="stat-title text-lg">{t("rigori_segnati")}</div>
                     <div className="stat-value">{playerData?.statistics[0].penalty.scored ?? 0}</div>
                   </div>
 
                   <div className="stat !border-none w-40">
-                    <div className="stat-title text-lg">Falli Subiti</div>
+                    <div className="stat-title text-lg">{t("falli_subiti")}</div>
                     <div className="stat-value">{playerData?.statistics[0].fouls.drawn ?? 0}</div>
                   </div>
                 </div>

@@ -4,6 +4,7 @@ import {
   ArrowLeftCircleIcon,
   InformationCircleIcon,
 } from "@heroicons/react/24/outline";
+import { t } from "i18next";
 import { useRouter } from "next/navigation";
 import React from "react";
 
@@ -19,7 +20,7 @@ export default function FixtureHeader({ fixture }: FixtureInfoProps) {
         <button className="btn btn-circle" onClick={() => router.back()}>
           <ArrowLeftCircleIcon className="w-8 h-8" />
         </button>
-        <span className="text-lg font-light">Indietro</span>
+        <span className="text-lg font-light">{t("indietro")}</span>
       </div>
       <div className="flex items-center gap-2 mx-auto">
         <img

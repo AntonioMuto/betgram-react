@@ -1,4 +1,5 @@
 "use client";
+import { useTranslation } from "react-i18next"; 
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useRef, useState } from "react";
 import { RootState } from "@/store/store";
@@ -16,6 +17,7 @@ import { removeAllBets } from "@/store/betsSlice";
 import { useRouter } from "next/dist/client/components/navigation";
 
 export default function Navbar() {
+  const { t, i18n } = useTranslation(); 
   const [isCartOpen, setIsCartOpen] = useState(false);
   const bets = useSelector((state: RootState) => state.bets.bets);
   const dispatch = useDispatch();
@@ -27,7 +29,7 @@ export default function Navbar() {
   const [loadingCart, setLoadingCart] = useState(false);
   const [bonusPercentage, setBonusPercentage] = useState(0);
   const router = useRouter();
-  const drawerRef = useRef<HTMLInputElement>(null); // Ref for the drawer checkbox
+  const drawerRef = useRef<HTMLInputElement>(null); 
 
   const calculateBonusPercentage = (eventsCount: number): number => {
     const cappedEvents = Math.min(eventsCount, 30);
@@ -182,10 +184,14 @@ export default function Navbar() {
   const routeToPath = (path: string) => {
     router.push(path);
 
-    // Close the drawer using the ref
+    
     if (drawerRef.current) {
       drawerRef.current.checked = false;
     }
+  };
+
+  const changeLanguage = (lng: string) => {
+    i18n.changeLanguage(lng); 
   };
 
   return (
@@ -210,15 +216,10 @@ export default function Navbar() {
               <div className="relative flex items-center gap-4">
                 <button
                   ref={iconButtonRef}
-                  onClick={toggleCart}
-                  className="text-white text-2xl"
+                  onClick={() => changeLanguage(i18n.language === "en" ? "it" : "en")}
+                  className="btn btn-sm btn-outline text-white"
                 >
-                  {bets.length > 0 && (
-                    <span className="indicator-item badge bg-green-800 w-4 h-5">
-                      {bets.length}
-                    </span>
-                  )}
-                  <ListBulletIcon className="w-6 h-" />
+                  {i18n.language === "en" ? "IT" : "EN"}
                 </button>
               </div>
             </div>
@@ -231,28 +232,28 @@ export default function Navbar() {
             <li className="flex flex-row rounded-lg p-2 items-center hover:bg-custom-dark">
               <div onClick={() => routeToPath("/")} className="flex flex-row items-center">
                 <HomeIcon className="w-6 h-6 text-white mr-2" />
-                <a className="font-bold text-xl text-white">Home</a>
+                <a className="font-bold text-xl text-white capitalize">{t("home")}</a> {/* Usa .toUpperCase() */}
               </div>
             </li>
             <div className="divider h-1 mt-1"></div>
             <li className="flex flex-row hover:bg-custom-dark rounded-lg p-2 items-center">
               <div onClick={() => routeToPath(`/profile/${user?.id}`)} className="flex flex-row items-center">
                 <UserCircleIcon className="w-6 h-6 text-white mr-2" />
-                <a className="font-bold text-xl text-white">Profilo</a>
+                <a className="font-bold text-xl text-white">{t("profilo")}</a>
               </div>
             </li>
             <div className="divider h-1 mt-0.5"></div>
             <li className="flex flex-row hover:bg-custom-dark rounded-lg p-2 items-center">
               <div className="flex flex-row items-center">
                 <ListBulletIcon className="w-6 h- text-white mr-2" />
-                <a className="font-bold text-xl text-white">Scommesse</a>
+                <a className="font-bold text-xl text-white">{t("scommesse")}</a>
               </div>
             </li>
             <div className="divider h-1 mt-1"></div>
             <li className="flex flex-row hover:bg-custom-dark rounded-lg p-2 items-center">
-              <div className="flex flex-row items-center">
+              <div onClick={() => routeToPath(`/settings/${user?.id}`)} className="flex flex-row items-center">
                 <SettingsIcon className="w-6 h- text-white mr-2" />
-                <a className="font-bold text-xl text-white">Impostazioni</a>
+                <a className="font-bold text-xl text-white">{t("impostazioni")}</a>
               </div>
             </li>
           </ul>
@@ -264,7 +265,7 @@ export default function Navbar() {
           ref={cartRef}
           className="absolute right-0 mt-2 w-120 bg-white text-black rounded shadow-lg p-4 z-5000"
         >
-          <h2 className="text-lg font-bold mb-2">Scommesse</h2>
+          <h2 className="text-lg font-bold mb-2">{t("scommesse")}</h2>
           {bets.length === 0 ? (
             <p>Nessuna scommessa aggiunta.</p>
           ) : (
@@ -314,7 +315,7 @@ export default function Navbar() {
                 style={{ zIndex: 10 }}
               >
                 <div className="flex items-center gap-4">
-                  <div className="flex-grow">Puntata:</div>
+                  <div className="flex-grow">{t("puntata")}:</div>
                   <div className="flex flex-row items-center gap-2">
                     <span>{"€"}</span>
                     <input
@@ -328,7 +329,7 @@ export default function Navbar() {
                 </div>
                 <div className="mt-3">
                   <div className="flex items-center gap-4">
-                    <div className="flex-grow">Bonus:</div>
+                    <div className="flex-grow">{t("bonus")}:</div>
                     <div className="flex flex-row gap-5 items-center">
                       <div className="text-sm text-green-700">
                         {`+ ${bonusPercentage}% `}
@@ -339,7 +340,7 @@ export default function Navbar() {
                     </div>
                   </div>
                   <div className="flex items-center gap-4 mt-2">
-                    <div className="flex-grow">Totale:</div>
+                    <div className="flex-grow">{t("totale")}:</div>
                     <div className="text-md uppercase font-semibold font-bold">
                       € {summaryBet?.total || "0.00"}
                     </div>
@@ -348,7 +349,7 @@ export default function Navbar() {
                     <div className="flex-grow"></div>
                     <div className="text-md uppercase font-semibold font-bold">
                       <button onClick={createBet} className="btn btn-primary btn-sm btn-success text-black">
-                        SCOMMETTI ORA
+                        {t("scommetti ora")}
                       </button>
                     </div>
                   </div>

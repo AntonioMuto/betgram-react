@@ -12,6 +12,7 @@ import PlayerFixtureInfo from "./playerFixtureInfo";
 import { soccerBall } from "@lucide/lab";
 import { Icon } from "lucide-react";
 import { apiHandler } from '@/utils/apiHandler';
+import { t } from "i18next";
 
 type FixtureScorersProps = {
     fixture: FixtureData;
@@ -183,7 +184,7 @@ export default function FixtureLineupsTab({ fixture }: FixtureScorersProps) {
                     </div>
                 </div>}
             {teamIds.length === 0 && !isLoading && <div key={"loading"}>
-                <p className="text-center">Nessuna formazione disponibile</p>
+                <p className="text-center">{t("nessuna formazione disponibile")}</p>
             </div>}
             {teamIds.map((teamId: any) => {
                 const team = teamLineupsMap[teamId];
@@ -332,7 +333,7 @@ export default function FixtureLineupsTab({ fixture }: FixtureScorersProps) {
                     />
                 </div>
                 <form method="dialog" className="modal-backdrop">
-                    <button>close</button>
+                    <button>{t("chiudi")}</button>
                 </form>
             </dialog>
         </div>

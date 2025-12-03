@@ -8,6 +8,7 @@ import RefreshIcon from "@heroicons/react/24/outline/ArrowPathRoundedSquareIcon"
 import { useDispatch, useSelector } from "react-redux";
 import { addBet, removeBet, replaceBet } from "@/store/betsSlice";
 import { RootState } from "@/store/store";
+import { t } from "i18next";
 
 interface FixtureOddsTabProps {
   fixture: FixtureData;
@@ -183,7 +184,7 @@ export default function FixtureOddsTab({ fixture }: FixtureOddsTabProps) {
           </form>
           {!canEdit && <button className="btn btn-info mx-2 hover:bg-lightblue-100" onClick={handleRefresh}>
             <RefreshIcon className="w-6 h-6" />
-            <span className="text-sm">Aggiorna</span>
+            <span className="text-sm">{t("aggiorna")}</span>
           </button>
           }
         </div>

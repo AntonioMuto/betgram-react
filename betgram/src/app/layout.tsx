@@ -7,6 +7,7 @@ import { UserProvider } from "./context/UserContext";
 import ReduxProvider from "./components/ReduxProvider";
 import ErrorAlerts from "./components/ErrorAlerts";
 import ProtectedRoute from "@/app/auth/ProtectedRoute";
+import "../i18n";
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();

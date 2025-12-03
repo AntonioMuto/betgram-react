@@ -10,7 +10,7 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
 
   useEffect(() => {
     if (!loading && !user && pathname !== "/auth") {
-      router.push("/auth"); // Redirect to login/register page if not logged in
+      router.push("/auth");
     }
   }, [user, loading, router, pathname]);
 

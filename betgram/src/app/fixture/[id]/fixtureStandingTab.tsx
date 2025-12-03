@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { apiHandler } from '@/utils/apiHandler';
 import { useDispatch } from "react-redux";
 import { addError } from "@/store/errorSlice";
+import { t } from "i18next";
 
 interface FixtureStandingTabProps {
   fixture: FixtureData;
@@ -63,52 +64,52 @@ export default function FixtureStandingTab({ fixture }: FixtureStandingTabProps)
             <thead>
               <tr className="text-center">
                 <th className="text-white">#</th>
-                <th className="text-white">SQUADRA</th>
+                <th className="text-white">{t("squadra").toUpperCase()}</th>
                 <th></th>
                 <th></th>
                 <th></th>
                 <th></th>
                 <th>
-                  <div className="tooltip tooltip-bottom tooltip-info text-white" data-tip="Punti">
-                    PT
+                  <div className="tooltip tooltip-bottom tooltip-info text-white" data-tip={t("punti")}>
+                    {t("pt_standing").toUpperCase()}
                   </div>
                 </th>
                 <th>
-                  <div className="tooltip tooltip-bottom tooltip-info" data-tip="Vittorie">
-                    V
+                  <div className="tooltip tooltip-bottom tooltip-info" data-tip={t("vittorie")}>
+                    {t("v_standing").toUpperCase()}
                   </div>
                 </th>
                 <th>
-                  <div className="tooltip tooltip-bottom tooltip-info" data-tip="Sconfitte">
-                    S
+                  <div className="tooltip tooltip-bottom tooltip-info" data-tip={t("sconfitte")}>
+                    {t("s_standing").toUpperCase()}
                   </div>
                 </th>
                 <th>
-                  <div className="tooltip tooltip-bottom tooltip-info" data-tip="Pareggiate">
-                    P
+                  <div className="tooltip tooltip-bottom tooltip-info" data-tip={t("pareggiate")}>
+                    {t("p_standing").toUpperCase()}
                   </div>
                 </th>
                 <th>
-                  <div className="tooltip tooltip-bottom tooltip-info" data-tip="Goal Fatti">
-                    GF
+                  <div className="tooltip tooltip-bottom tooltip-info" data-tip={t("goal_fatti")}>
+                    {t("gf_standing").toUpperCase()}
                   </div>
                 </th>
                 <th>
-                  <div className="tooltip tooltip-bottom tooltip-info" data-tip="Goal Subiti">
-                    GS
+                  <div className="tooltip tooltip-bottom tooltip-info" data-tip={t("goal_subiti")}>
+                    {t("gs_standing").toUpperCase()}
                   </div>
                 </th>
                 <th>
-                  <div className="tooltip tooltip-bottom tooltip-info" data-tip="Differenza Reti">
-                    DR
+                  <div className="tooltip tooltip-bottom tooltip-info" data-tip={t("differenza_reti")}>
+                    {t("dr_standing").toUpperCase()}
                   </div>
                 </th>
                 <th>
-                  <div className="tooltip tooltip-bottom tooltip-info" data-tip="Partite Giocate">
-                    PG
+                  <div className="tooltip tooltip-bottom tooltip-info" data-tip={t("partite_giocate")}>
+                    {t("pg_standing").toUpperCase()}
                   </div>
                 </th>
-                <th>FORMA</th>
+                <th>{t("forma").toUpperCase()}</th>
               </tr>
             </thead>
             <tbody>
@@ -172,7 +173,7 @@ export default function FixtureStandingTab({ fixture }: FixtureStandingTabProps)
           </div>
           <div className="flex flex-row gap-2 items-center">
             <div className="w-3 h-3 rounded-full bg-red-700" />
-            <span className="text-lg text-gray-400">Retrocessione</span>
+            <span className="text-lg text-gray-400">{t("retrocessione")}</span>
           </div>
         </div>
       </>

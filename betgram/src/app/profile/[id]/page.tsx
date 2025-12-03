@@ -4,6 +4,7 @@ import { NotebookText, PlayIcon, Users } from "lucide-react";
 import { useParams } from "next/navigation";
 import { useState, useEffect } from "react";
 import UserTabs from "./userTabs";
+import { t } from "i18next";
 
 const ProfilePage = () => {
     const { userId } = useParams();
@@ -68,7 +69,7 @@ const ProfilePage = () => {
                             <div className="stat-figure text-secondary">
                                 <NotebookText size={30} className="mt-6 !text-green-600" />
                             </div>
-                            <div className="stat-title text-lg">Scommesse</div>
+                            <div className="stat-title text-lg">{t("scommesse")}</div>
                             <div className="stat-value">{betsCount}</div>
                         </div>
                     </div>

@@ -8,6 +8,7 @@ import { soccerBall } from "@lucide/lab";
 import { ArrowPathRoundedSquareIcon } from "@heroicons/react/24/outline";
 import { translate } from "@/app/utils/translate";
 import PlayerFixtureInfo from "./playerFixtureInfo";
+import { t } from "i18next";
 interface FixtureDetailTabProps {
   fixture: FixtureData;
 }
@@ -85,7 +86,7 @@ export default function FixtureDetailTab({ fixture }: FixtureDetailTabProps) {
     <div>
       {fixture.events.length === 0 ? (
         <div className="flex flex-col items-center justify-center p-10">
-          <span className="text-gray-400 text-lg">Nessun evento disponibile</span>
+          <span className="text-gray-400 text-lg">{translate("nessun evento disponibile")}</span>
         </div>
       ) : (
         <ul className="timeline timeline-vertical gap-4">
@@ -181,7 +182,7 @@ export default function FixtureDetailTab({ fixture }: FixtureDetailTabProps) {
           />
         </div>
         <form method="dialog" className="modal-backdrop">
-          <button>close</button>
+          <button>{t("chiudi")}</button>
         </form>
       </dialog>
     </div>

@@ -14,6 +14,7 @@ import FixtureStandingTab from "./fixtureStandingTab";
 import FixtureLineupsTab from "./fixtureLineupsTab";
 import FixtureOddsTab from "./fixtureOddsTab";
 import { isFixtureFinished, isFixtureInProgress, isFixtureScheduled } from "@/app/utils/fixtureState";
+import { t } from "i18next";
 
 interface FixtureTabsProps {
   fixture: FixtureData;
@@ -43,7 +44,7 @@ export default function FixtureTabs({ fixture }: FixtureTabsProps) {
               onChange={() => setActiveTab("details")}
             />
             <PlayIcon className="size-8 me-2" />
-            DETTAGLI
+            {t("dettagli").toUpperCase()}
           </label>
           <div className="tab-content bg-custom-dark-black border-base-300 p-6">
             {activeTab === "details" && <FixtureDetailTab fixture={fixture} />}
@@ -57,7 +58,7 @@ export default function FixtureTabs({ fixture }: FixtureTabsProps) {
               onChange={() => setActiveTab("stats")}
             />
             <ChartBarSquareIcon className="size-8 me-2" />
-            STATISTICHE
+            {t("statistiche").toUpperCase()}
           </label>
           <div className="tab-content bg-custom-dark-black border-base-300 p-6">
             {activeTab === "stats" && <FixtureStatsTab fixture={fixture} />}
@@ -72,7 +73,7 @@ export default function FixtureTabs({ fixture }: FixtureTabsProps) {
           onChange={() => setActiveTab("quote")}
         />
         <BanknotesIcon className="size-8 me-2" />
-        QUOTE
+        {t("quote").toUpperCase()}
       </label>
       <div className="tab-content bg-custom-dark-black border-base-300 p-6">
         {activeTab === "quote" && <FixtureOddsTab fixture={fixture} />}
@@ -85,7 +86,7 @@ export default function FixtureTabs({ fixture }: FixtureTabsProps) {
           onChange={() => setActiveTab("formations")}
         />
         <UsersIcon className="size-8 me-2" />
-        FORMAZIONI
+        {t("formazioni").toUpperCase()}
       </label>
       <div className="tab-content bg-custom-dark-black border-base-300 p-6">
         {activeTab === "formations" && <><FixtureLineupsTab fixture={fixture} /></>}
@@ -99,7 +100,7 @@ export default function FixtureTabs({ fixture }: FixtureTabsProps) {
           onChange={() => setActiveTab("standings")}
         />
         <QueueListIcon className="size-8 me-2" />
-        CLASSIFICA
+        {t("classifica").toUpperCase()}
       </label>
       <div className="tab-content bg-custom-dark-black border-base-300 p-6">
         {activeTab === "standings" && <FixtureStandingTab fixture={fixture} />}
