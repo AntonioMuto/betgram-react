@@ -6,7 +6,8 @@
   --background: #ffffff;
   --foreground: #000000;
   --selected-tab: #1d1d1d;
-  --example: #201f1f;
+  --example: #1a1919;
+  --bg-custom-gray: #232324;
 }
 
 @theme inline {
@@ -26,6 +27,8 @@
   --color-custom-highlighted-list-row: #363636;
   --color-custom-pitch: #FFFFFF4D;
   --color-custom-disabled-odd: #201f1f;
+  --color-custom-token-bg: #e2d51e;
+  --color-custom-setting-card: #1a1919;
 
 }
 

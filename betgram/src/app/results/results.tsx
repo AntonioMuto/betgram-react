@@ -6,7 +6,7 @@ import LeagueCollapse from "./leagueCollapse";
 import { useEffect, useState, useRef } from "react";
 import { useDispatch } from "react-redux";
 import { apiHandler } from "@/utils/apiHandler";
-import { addError } from "@/store/errorSlice";
+import { addAlert } from "@/store/errorSlice";
 import ErrorAlerts from "../components/ErrorAlerts";
 import { isFixtureInProgress } from '@/app/utils/fixtureState';
 import { log } from "console";
@@ -33,7 +33,7 @@ export default function Results({ date }: Props) {
     } catch (err: any) {
       const errorMessage =
         err instanceof Error ? err.message : "An unknown error occurred";
-      dispatch(addError(errorMessage));
+      dispatch(addAlert({ text: errorMessage, type: "error" }));
       setLoading(false);
       throw err;
     }

@@ -1,28 +1,40 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-interface ErrorState {
-  messages: { id: string; text: string }[];
+export type AlertType = 'error' | 'info' | 'success' | 'warning';
+
+interface Alert {
+  id: string;
+  text: string;
+  type: AlertType;
 }
 
-const initialState: ErrorState = {
+interface AlertState {
+  messages: Alert[];
+}
+
+const initialState: AlertState = {
   messages: [],
 };
 
-const errorSlice = createSlice({
-  name: 'error',
+const alertSlice = createSlice({
+  name: 'alert',
   initialState,
   reducers: {
-    addError: (state, action: PayloadAction<string>) => {
-      state.messages.push({ id: Date.now().toString(), text: action.payload });
+    addAlert: (state, action: PayloadAction<{ text: string; type?: AlertType }>) => {
+      state.messages.push({
+        id: Date.now().toString(),
+        text: action.payload.text,
+        type: action.payload.type || 'info',
+      });
     },
-    removeError: (state, action: PayloadAction<string>) => {
-      state.messages = state.messages.filter((error) => error.id !== action.payload);
+    removeAlert: (state, action: PayloadAction<string>) => {
+      state.messages = state.messages.filter((alert) => alert.id !== action.payload);
     },
-    clearErrors: (state) => {
+    clearAlerts: (state) => {
       state.messages = [];
     },
   },
 });
 
-export const { addError, removeError, clearErrors } = errorSlice.actions;
-export default errorSlice.reducer;
+export const { addAlert, removeAlert, clearAlerts } = alertSlice.actions;
+export default alertSlice.reducer;

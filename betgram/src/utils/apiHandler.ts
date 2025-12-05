@@ -1,6 +1,6 @@
 import axios, { AxiosRequestConfig } from 'axios';
 import store from '@/store/store';
-import { addError } from '@/store/errorSlice';
+import { addAlert } from '@/store/errorSlice';
 
 /**
  * Supported HTTP methods.
@@ -38,7 +38,7 @@ export const apiHandler = async <T>(
     if (options?.onError) {
       options.onError(error); 
     }
-    store.dispatch(addError(error.message));
+    store.dispatch(addAlert({ text: error.message, type: "error" }));
     throw error; 
   }
 };

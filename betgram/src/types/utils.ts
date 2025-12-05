@@ -10,6 +10,9 @@ export interface User {
   username: string;
   email: string;
   timezone: string;
+  tokens: number;
+  isVerified?: boolean;
+  language: string;
 }
 
 export  const BONUS_TABLE = [

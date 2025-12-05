@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { apiHandler } from "@/utils/apiHandler";
 import { useUser } from "@/app/context/UserContext";
+import { User } from "@/types/utils";
 
 const AuthPage = () => {
   const [isRegistering, setIsRegistering] = useState(false);
@@ -24,7 +25,7 @@ const AuthPage = () => {
     try {
       const response = await apiHandler<{
         token: string;
-        user: { id: string; username: string; email: string; timezone?: string };
+        user: User;
       }>(
         endpoint,
         {
@@ -49,8 +50,8 @@ const AuthPage = () => {
       if (response.token) {
         
         localStorage.setItem("authToken", response.token);
-        const { id, username, email, timezone } = response.user;
-        const updatedUser = { id, username, email, timezone: timezone || "UTC" };
+        const { id, username, email, timezone, tokens, isVerified, language } = response.user;
+        const updatedUser = { id, username, email, timezone: timezone || "UTC", tokens: tokens, isVerified: isVerified, language: language };
         localStorage.setItem("user", JSON.stringify(updatedUser));
         setUser(updatedUser);
         

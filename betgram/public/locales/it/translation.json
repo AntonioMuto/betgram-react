@@ -76,6 +76,19 @@
     "goals": "Goal",
     "account": "Account",
     "lingua": "Lingua",
-    "privacy": "Privacy"
-
+    "lingua_e_ora": "Lingua e Ora",
+    "privacy": "Privacy",
+    "cambia": "Cambia",
+    "email_verificata": "Email Verificata",
+    "aggiorna_password": "Aggiorna Password",
+    "dati_account": "Dati Account",
+    "seleziona_nuovo_colore": "Seleziona un nuovo colore",
+    "attuale": "Attuale",
+    "salva_e_ricarica_pagina": "Salva e ricarica la pagina",
+    "orario": "Orario",
+    "fuso_orario_aggiornato": "Fuso orario aggiornato con successo",
+    "fuso_orario": "Fuso Orario",
+    "salva": "Salva",
+    "personalizzazione": "Personalizzazione",
+    "inviti": "Inviti"
 }

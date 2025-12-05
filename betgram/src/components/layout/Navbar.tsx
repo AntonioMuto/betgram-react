@@ -11,7 +11,7 @@ import { removeBetByIndex } from "@/store/betsSlice";
 import { useUser } from "@/app/context/UserContext";
 import { formatDateTimeToTimezone } from "@/app/utils/date";
 import { apiHandler } from "@/utils/apiHandler";
-import { addError } from "@/store/errorSlice";
+import { addAlert } from "@/store/errorSlice";
 import { BONUS_TABLE, HttpMethod } from "@/types/utils";
 import { removeAllBets } from "@/store/betsSlice";
 import { useRouter } from "next/dist/client/components/navigation";
@@ -175,7 +175,7 @@ export default function Navbar() {
     } catch (err: any) {
       const errorMessage =
         err instanceof Error ? err.message : "An unknown error occurred";
-      dispatch(addError(errorMessage));
+      dispatch(addAlert({ text: errorMessage, type: "error" }));
       setLoadingCart(false);
       throw err;
     }
@@ -210,6 +210,8 @@ export default function Navbar() {
                     className="w-10 h-10 rounded-full"
                   />
                   <span className="ml-4 font-bold">{user?.username}</span>
+                  <span className="ml-5 font-semibold text-custom-token-bg">{user?.tokens}</span>
+                  <img src="/images/bg_token.png" alt="Menu Icon" className="w-10 h-10 " />
                 </div>
               </label>
               <h1 className="text-3xl font-bold">Betgram</h1>

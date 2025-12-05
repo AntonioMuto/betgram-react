@@ -76,5 +76,19 @@
     "fuorigioco": "Offsides",
     "account": "Account",
     "lingua": "Language",
-    "privacy": "Privacy"
+    "privacy": "Privacy",
+    "lingua_e_ora": "Language and Time",
+    "cambia": "Change",
+    "email_verificata": "Email Verified",
+    "aggiorna_password": "Update Password",
+    "dati_account": "Account Data",
+    "seleziona_nuovo_colore": "Select a new color",
+    "attuale": "Current",
+    "salva_e_ricarica_pagina": "Save and reload the page",
+    "orario": "Time",
+    "fuso_orario_aggiornato": "Time zone updated successfully",
+    "fuso_orario": "Time Zone",
+    "inviti": "Invitations",
+    "personalizzazione": "Customization",
+    "salva": "Save"
 }
