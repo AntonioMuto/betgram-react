@@ -93,5 +93,8 @@
     "inviti": "Inviti",
     "nessuna_scommessa_aggiunta": "Nessuna scommessa aggiunta",
     "token_insufficienti": "Token insufficienti",
-    "scommessa_creata_con_successo": "Scommessa creata con successo"
+    "scommessa_creata_con_successo": "Scommessa creata con successo",
+    "pt_standing": "Pt",
+    "tokens": "Tokens",
+    "teams": "Squadre"
 }

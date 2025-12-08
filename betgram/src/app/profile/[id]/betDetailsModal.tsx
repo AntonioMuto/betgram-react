@@ -56,15 +56,24 @@ const BetDetailsModal = ({ betId, onClose }: { betId: string; onClose: () => voi
                         </div>
                         <div className="flex flex-row justify-between mb-2">
                             <strong>{t("importo scommesso")}:</strong>
-                            <p>€ {betDetails.summaryBet.tipped}</p>
+                            <div className="flex flex-row items-center">
+                                <img src="/images/bg_token.png" alt="Token Icon" className="w-7 h-7 inline-block mr-1" />
+                                <p> {betDetails.summaryBet.tipped}</p>
+                            </div>
                         </div>
                         <div className="flex flex-row justify-between mb-2">
                             <strong>{t("bonus")}:</strong>
-                            <p>€ {betDetails.summaryBet.bonus}</p>
+                            <div className="flex flex-row items-center">
+                                <img src="/images/bg_token.png" alt="Token Icon" className="w-7 h-7 inline-block mr-1" />
+                                <p> {betDetails.summaryBet.bonus}</p>
+                            </div>
                         </div>
                         <div className="flex flex-row justify-between mb-1">
                             <strong>{t("vittoria potenziale")}:</strong>
-                            <p>€ {betDetails.summaryBet.total}</p>
+                            <div className="flex flex-row items-center">
+                                <img src="/images/bg_token.png" alt="Token Icon" className="w-7 h-7 inline-block mr-1" />
+                                <p>{betDetails.summaryBet.total}</p>
+                            </div>
                         </div>
                     </div>
                     <div className="divider mt-1 mb-0.5"></div>
@@ -104,7 +113,7 @@ const BetDetailsModal = ({ betId, onClose }: { betId: string; onClose: () => voi
                                         </div>
                                         {((isFixtureFinished(event.fixture.status.short) || isFixtureInProgress(event.fixture.status.short)) && !event.bet.abandoned) && (
                                             <div className="flex flex-row gap-2">
-                                                <span className={`${betDetails.isLive ?? "text-red-500" } text-md font-bold`}>{event.fixture.goals?.home ?? 0}-{event.fixture.goals?.away ?? 0}</span>
+                                                <span className={`${betDetails.isLive ?? "text-red-500"} text-md font-bold`}>{event.fixture.goals?.home ?? 0}-{event.fixture.goals?.away ?? 0}</span>
                                             </div>
                                         )}
                                     </div>
@@ -134,7 +143,7 @@ const BetDetailsModal = ({ betId, onClose }: { betId: string; onClose: () => voi
                             </div>
                         ))}
                     </div>
-                    
+
                 </div>
             ) : (
                 <p>{t("nessun dettaglio disponibile")}.</p>

@@ -93,5 +93,8 @@
     "salva": "Save",
     "nessuna_scommessa_aggiunta": "No bets added",
     "token_insufficienti": "Insufficient tokens",
-    "scommessa_creata_con_successo": "Bet created successfully"
+    "scommessa_creata_con_successo": "Bet created successfully",
+    "pt_standing": "Pts",
+    "tokens": "Tokens",
+    "teams": "Teams"
 }

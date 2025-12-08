@@ -38,12 +38,12 @@ export const UserBetsList = ({ user }: UserBetsListProps) => {
 
     const openBetDetails = (betId: string) => {
         setSelectedBetId(betId);
-        setIsModalOpen(true); 
+        setIsModalOpen(true);
     };
 
     const closeModal = () => {
-        setIsModalOpen(false); 
-        setSelectedBetId(null); 
+        setIsModalOpen(false);
+        setSelectedBetId(null);
     };
 
     return (
@@ -100,7 +100,10 @@ export const UserBetsList = ({ user }: UserBetsListProps) => {
                                             {t("puntata")}:
                                         </div>
                                         <div className={`stat-value text-gray-400 text-right text-lg`}>
-                                            € {bet.summaryBet.tipped}
+                                            <div className="flex flex-row items-center">
+                                                <img src="/images/bg_token.png" alt="Token Icon" className="w-7 h-7 inline-block mr-1" />
+                                                {bet.summaryBet.tipped}
+                                            </div>
                                         </div>
                                     </div>
                                     <div className="flex flex-row mt-2 items-center justify-between">
@@ -115,7 +118,10 @@ export const UserBetsList = ({ user }: UserBetsListProps) => {
                                                     : ""
                                                 } stat-value text-right text-xl`}
                                         >
-                                            € {bet.summaryBet.total}
+                                            <div className="flex flex-row items-center">
+                                                <img src="/images/bg_token.png" alt="Token Icon" className="w-7 h-7 inline-block mr-1" />
+                                                {bet.summaryBet.total}
+                                            </div>
                                         </div>
                                         {/* <PieChart
                                                     series={[

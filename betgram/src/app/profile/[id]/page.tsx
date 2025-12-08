@@ -73,6 +73,15 @@ const ProfilePage = () => {
                             <div className="stat-value">{betsCount}</div>
                         </div>
                     </div>
+                    <div className="stats shadow">
+                        <div className="stat !border-none">
+                            <div className="stat-figure text-secondary">
+                                <img src="/images/bg_token.png" alt="Token Icon" className="w-12 h-12 mt-5" />
+                            </div>
+                            <div className="stat-title text-lg">{t("tokens")}</div>
+                            <div className="stat-value">{user?.tokens.$numberDecimal}</div>
+                        </div>
+                    </div>
                 </div>
             <UserTabs user={user!} />
             </div>

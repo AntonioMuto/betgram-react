@@ -2,10 +2,12 @@
 import { LeagueData } from "@/types/results";
 import React, { use, useEffect, useState } from "react";
 import { apiHandler } from '@/utils/apiHandler';
+import { useRouter } from "next/dist/client/components/navigation";
 
 export default function LeaguesList() {
   const [leagues, setLeagues] = useState<LeagueData[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const router = useRouter();
 
   useEffect(() => {
     const fetchLeagues = async () => {
@@ -41,7 +43,11 @@ export default function LeaguesList() {
       ) : (
         <ul className="md:col-span-3 list bg-custom-dark border border-gray-800 rounded-box shadow-md">
           {leagues.map((league) => (
-            <li key={league.league.id} className="list-row hover:bg-highlight-custom-dark">
+            <li
+              onClick={() => router.push(`/league/${league.league.id}`)} // Passa l'id nella route
+              key={league.league.id}
+              className="list-row hover:bg-highlight-custom-dark"
+            >
               <div>
                 <div className="w-11 h-11 bg-gray-200 rounded flex items-center justify-center">
                   <img

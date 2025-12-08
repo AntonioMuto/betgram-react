@@ -335,7 +335,7 @@ export default function Navbar() {
                 <div className="flex items-center gap-4">
                   <div className="flex-grow">{t("puntata")}:</div>
                   <div className="flex flex-row items-center gap-2">
-                    <span>{"€"}</span>
+                    <img src="/images/bg_token.png" alt="Token Icon" className="w-6 h-6 " />
                     <input
                       type="text"
                       onChange={calculateSummary()}
@@ -352,15 +352,17 @@ export default function Navbar() {
                       <div className="text-sm text-green-700">
                         {`+ ${bonusPercentage}% `}
                       </div>
-                      <div className="text-md uppercase font-semibold font-bold">
-                        € {summaryBet?.bonus || "0.00"}
+                      <div className="flex flex-row text-md uppercase font-semibold font-bold">
+                        <img src="/images/bg_token.png" alt="Token Icon" className="w-6 h-6 " />
+                        {summaryBet?.bonus || "0.00"}
                       </div>
                     </div>
                   </div>
                   <div className="flex items-center gap-4 mt-2">
                     <div className="flex-grow">{t("totale")}:</div>
-                    <div className="text-md uppercase font-semibold font-bold">
-                      € {summaryBet?.total || "0.00"}
+                    <div className="flex flex-row text-md uppercase font-semibold font-bold">
+                      <img src="/images/bg_token.png" alt="Token Icon" className="w-6 h-6 " />
+                      {summaryBet?.total || "0.00"}
                     </div>
                   </div>
                   <div className="flex items-center gap-4 mt-2">
