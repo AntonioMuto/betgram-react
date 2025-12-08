@@ -1,23 +1,45 @@
-import { User } from "@/types/utils";
+import { useUser } from "@/app/context/UserContext";
+import { isFixtureFinished } from "@/app/utils/fixtureState";
+import { HttpMethod, User } from "@/types/utils";
+import { apiHandler } from "@/utils/apiHandler";
 import RefreshIcon from "@heroicons/react/24/outline/ArrowPathRoundedSquareIcon";
 import { t } from "i18next";
 import { Check, Lock, Plus, Save, X } from "lucide-react";
 import { use, useState } from "react";
 
 const colorOptions = [
-    { value: "white", className: "checkbox-white bg-white" },
-    { value: "primary", className: "checkbox-primary bg-primary" },
-    { value: "secondary", className: "checkbox-secondary bg-secondary" },
-    { value: "accent", className: "checkbox-accent bg-accent" },
-    { value: "info", className: "checkbox-info bg-info" },
-    { value: "success", className: "checkbox-success bg-success" },
-    { value: "warning", className: "checkbox-warning bg-warning" },
-    { value: "error", className: "checkbox-error bg-error" },
+    { value: "#ffffff", className: "checkbox-white bg-white" },
+    { value: "#0d6efd", className: "checkbox-primary bg-primary" },
+    { value: "#e0147dff", className: "checkbox-secondary bg-secondary" },
+    { value: "#16eb8fff", className: "checkbox-accent bg-accent" },
+    { value: "#0dcaf0", className: "checkbox-info bg-info" },
+    { value: "#17c843ff", className: "checkbox-success bg-success" },
+    { value: "#ffc107", className: "checkbox-warning bg-warning" },
+    { value: "#dc3545", className: "checkbox-error bg-error" },
 ];
+
 
 const AccountSettingTab = ({ user }: { user: User | null }) => {
     const [selectedColor, setSelectedColor] = useState<string>("primary");
     const [selectedAvatar, setSelectedAvatar] = useState<string>("");
+    const { setUser } = useUser(); 
+    
+    const saveColorName = async () => {
+        let json = await apiHandler<any>(
+            `http://localhost:3001/api/auth/update-profile-color-username`,
+            { headers: { "Cache-Control": "no-cache" } },
+            HttpMethod.POST,
+            {
+                userId: user?._id,
+                nameColor: selectedColor,
+            }
+        );
+        if(json){
+            console.log("Color name saved successfully");
+            localStorage.setItem("user", JSON.stringify(json.user));
+            setUser(json.user);
+        }
+    };
 
     return <div className="tab-content bg-custom-dark border-base-300 p-6">
         <span className="text-2xl font-semibold">{t("dati_account").toUpperCase()}</span>
@@ -60,13 +82,13 @@ const AccountSettingTab = ({ user }: { user: User | null }) => {
             <div className="flex flex-col">
                 <span className="text-gray-400 text-md mb-2">Username</span>
                 <span
-                    className={`text-lg font-medium ${selectedColor === "primary" ? "text-primary" :
-                        selectedColor === "secondary" ? "text-secondary" :
-                            selectedColor === "accent" ? "text-accent" :
-                                selectedColor === "info" ? "text-info" :
-                                    selectedColor === "success" ? "text-success" :
-                                        selectedColor === "warning" ? "text-warning" :
-                                            selectedColor === "error" ? "text-error" : ""
+                    className={`text-lg font-medium ${selectedColor === "#0d6efd" ? "text-primary" :
+                        selectedColor === "#e0147dff" ? "text-secondary" :
+                            selectedColor === "#16eb8fff" ? "text-accent" :
+                                selectedColor === "#0dcaf0" ? "text-info" :
+                                    selectedColor === "#17c843ff" ? "text-success" :
+                                        selectedColor === "#ffc107" ? "text-warning" :
+                                            selectedColor === "#dc3545" ? "text-error" : ""
                         }`}
                 >
                     {user?.username}
@@ -85,7 +107,7 @@ const AccountSettingTab = ({ user }: { user: User | null }) => {
                         <Plus className="inline-block me-2 bg-gray-300 rounded-full text-black" />
                     </div>
                 </div>
-                <div className="btn btn-outline btn-accent mt-6 w-26">
+                <div onClick={() => saveColorName()} className="btn btn-outline btn-accent mt-6 w-26">
                     {t("salva").toUpperCase()}
                     <Save className="w-12 h-12" />
                 </div>
@@ -95,19 +117,19 @@ const AccountSettingTab = ({ user }: { user: User | null }) => {
                 <div className="flex flex-row">
                     <div className="avatar">
                         <div className="w-24 rounded-full hover:scale-105 transition-transform duration-300 ease-in-out">
-                            <img src="https://img.daisyui.com/images/profile/demo/yellingcat@192.webp" />
+                            <img src={`../images/${user?.avatar}`} />
                         </div>
                     </div>
                     <div className="divider divider-horizontal"></div>
                     <div className="avatar">
-                        <div  className="w-24 rounded-full hover:scale-105 transition-transform duration-300 ease-in-out">
-                            <img src="../images/avatar01.png"/>
+                        <div className="w-24 rounded-full hover:scale-105 transition-transform duration-300 ease-in-out">
+                            <img src="../images/avatar01.png" />
                         </div>
                         <div className="w-24 rounded-full hover:scale-105 transition-transform duration-300 ease-in-out ml-1">
-                            <img src="../images/avatar02.png"/>
+                            <img src="../images/avatar02.png" />
                         </div>
                         <div className="w-24 rounded-full hover:scale-105 transition-transform duration-300 ease-in-out ml-1">
-                            <Plus className="inline-block bg-gray-300 rounded-full text-black w-24 h-24 flex items-center justify-center"/>
+                            <Plus className="inline-block bg-gray-300 rounded-full text-black w-24 h-24 flex items-center justify-center" />
                         </div>
                     </div>
                 </div>

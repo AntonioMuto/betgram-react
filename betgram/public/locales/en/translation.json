@@ -90,5 +90,8 @@
     "fuso_orario": "Time Zone",
     "inviti": "Invitations",
     "personalizzazione": "Customization",
-    "salva": "Save"
+    "salva": "Save",
+    "nessuna_scommessa_aggiunta": "No bets added",
+    "token_insufficienti": "Insufficient tokens",
+    "scommessa_creata_con_successo": "Bet created successfully"
 }

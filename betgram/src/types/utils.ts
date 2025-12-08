@@ -6,13 +6,15 @@ export enum HttpMethod {
 }
 
 export interface User {
-  id: string;
+  _id: string;
   username: string;
   email: string;
   timezone: string;
-  tokens: number;
+  tokens: any;
   isVerified?: boolean;
   language: string;
+  nameColor?: string;
+  avatar?: string;
 }
 
 export  const BONUS_TABLE = [

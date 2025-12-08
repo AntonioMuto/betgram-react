@@ -90,5 +90,8 @@
     "fuso_orario": "Fuso Orario",
     "salva": "Salva",
     "personalizzazione": "Personalizzazione",
-    "inviti": "Inviti"
+    "inviti": "Inviti",
+    "nessuna_scommessa_aggiunta": "Nessuna scommessa aggiunta",
+    "token_insufficienti": "Token insufficienti",
+    "scommessa_creata_con_successo": "Scommessa creata con successo"
 }

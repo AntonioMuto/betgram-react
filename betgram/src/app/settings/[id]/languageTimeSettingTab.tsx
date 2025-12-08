@@ -82,9 +82,13 @@ const LanguageTimeSettingTab = () => {
         <div className="mt-4">
             <span className="text-gray-400 text-md mb-2">{t("fuso_orario")}</span>
             <div>
-                <select onChange={(e) => setSelectedTimeZone(e.target.value)} className="select select-bordered w-80 bg-black">
+                <select
+                    value={selectedTimeZone} // Use the value prop to control the selected option
+                    onChange={(e) => setSelectedTimeZone(e.target.value)}
+                    className="select select-bordered w-80 bg-black"
+                >
                     {timeZoneOptions.map((option) => (
-                        <option key={option.value} value={option.value} selected={user?.timezone === option.value}>
+                        <option key={option.value} value={option.value}>
                             {option.label}
                         </option>
                     ))}

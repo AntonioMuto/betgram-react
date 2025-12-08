@@ -28,8 +28,10 @@ export default function Navbar() {
   const iconButtonRef = useRef<HTMLButtonElement>(null);
   const [loadingCart, setLoadingCart] = useState(false);
   const [bonusPercentage, setBonusPercentage] = useState(0);
+  const [hastokensError, setHasTokensError] = useState(false);
   const router = useRouter();
   const drawerRef = useRef<HTMLInputElement>(null); 
+  const { setUser } = useUser();
 
   const calculateBonusPercentage = (eventsCount: number): number => {
     const cappedEvents = Math.min(eventsCount, 30);
@@ -45,6 +47,7 @@ export default function Navbar() {
   };
 
   useEffect(() => {
+    console.log(user);
     const handleClickOutside = (event: MouseEvent) => {
       const target = event.target as HTMLElement;
 
@@ -109,6 +112,9 @@ export default function Navbar() {
   };
 
   const calculateSummary = () => (e: React.ChangeEvent<HTMLInputElement>) => {
+    if(hastokensError){
+      setHasTokensError(false);
+    }
     const value = e.target.value.replace(/[^0-9]/g, "");
     const formattedValue = (parseFloat(value) / 100).toFixed(2);
     e.target.value = formattedValue;
@@ -171,6 +177,13 @@ export default function Navbar() {
       if (res.success === true) {
         dispatch(removeAllBets());
         setIsCartOpen(false);
+        dispatch(addAlert({ text: t("scommessa_creata_con_successo"), type: "success" }));
+        setUser(res.user);
+      } else {
+        if(res.modalMessage === "Token insufficienti"){
+          setHasTokensError(true);
+          dispatch(addAlert({ text: t("token_insufficienti"), type: "error" }));
+        }
       }
     } catch (err: any) {
       const errorMessage =
@@ -205,12 +218,12 @@ export default function Navbar() {
               <label htmlFor="my-drawer-1" className="cursor-pointer">
                 <div className="flex items-center flex-row">
                   <img
-                    src="/images/avatar01.jpg"
+                    src={`/images/${user?.avatar}`}
                     alt="User Avatar"
                     className="w-10 h-10 rounded-full"
                   />
-                  <span className="ml-4 font-bold">{user?.username}</span>
-                  <span className="ml-5 font-semibold text-custom-token-bg">{user?.tokens}</span>
+                  <span className="ml-4 font-bold" style={{ color: user?.nameColor }}>{user?.username}</span>
+                  <span className="ml-5 font-semibold text-custom-token-bg">{user?.tokens?.$numberDecimal}</span>
                   <img src="/images/bg_token.png" alt="Menu Icon" className="w-10 h-10 " />
                 </div>
               </label>
@@ -218,10 +231,13 @@ export default function Navbar() {
               <div className="relative flex items-center gap-4">
                 <button
                   ref={iconButtonRef}
-                  onClick={() => changeLanguage(i18n.language === "en" ? "it" : "en")}
+                  onClick={() => toggleCart()}
                   className="btn btn-sm btn-outline text-white"
                 >
-                  {i18n.language === "en" ? "IT" : "EN"}
+                  <ListBulletIcon className="w-6 h-6" />
+                  {bets.length > 0 && (
+                    <span className="badge badge-sm indicator-item bg-red-600 text-white absolute top-0 right-0 transform translate-x-1/2 -translate-y-1/2">{bets.length}</span>
+                  )}
                 </button>
               </div>
             </div>
@@ -239,7 +255,7 @@ export default function Navbar() {
             </li>
             <div className="divider h-1 mt-1"></div>
             <li className="flex flex-row hover:bg-custom-dark rounded-lg p-2 items-center">
-              <div onClick={() => routeToPath(`/profile/${user?.id}`)} className="flex flex-row items-center">
+              <div onClick={() => routeToPath(`/profile/${user?._id}`)} className="flex flex-row items-center">
                 <UserCircleIcon className="w-6 h-6 text-white mr-2" />
                 <a className="font-bold text-xl text-white">{t("profilo")}</a>
               </div>
@@ -253,7 +269,7 @@ export default function Navbar() {
             </li>
             <div className="divider h-1 mt-1"></div>
             <li className="flex flex-row hover:bg-custom-dark rounded-lg p-2 items-center">
-              <div onClick={() => routeToPath(`/settings/${user?.id}`)} className="flex flex-row items-center">
+              <div onClick={() => routeToPath(`/settings/${user?._id}`)} className="flex flex-row items-center">
                 <SettingsIcon className="w-6 h- text-white mr-2" />
                 <a className="font-bold text-xl text-white">{t("impostazioni")}</a>
               </div>
@@ -269,7 +285,7 @@ export default function Navbar() {
         >
           <h2 className="text-lg font-bold mb-2">{t("scommesse")}</h2>
           {bets.length === 0 ? (
-            <p>Nessuna scommessa aggiunta.</p>
+            <p>{t("nessuna_scommessa_aggiunta")}</p>
           ) : (
             <div className="flex flex-col h-full">
               <ul
@@ -323,7 +339,7 @@ export default function Navbar() {
                     <input
                       type="text"
                       onChange={calculateSummary()}
-                      className="input bg-white w-25 border border-gray-300 text-center"
+                      className={`input bg-white w-25 border text-center ${hastokensError ? "border-red-500" : "border-gray-300"}`}
                       maxLength={5}
                       value={summaryBet?.tipped}
                     />

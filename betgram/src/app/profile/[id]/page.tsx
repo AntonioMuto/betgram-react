@@ -49,11 +49,11 @@ const ProfilePage = () => {
                     <div className="flex flex-col items-center">
                         <div className="avatar avatar-online">
                             <div className="w-24 rounded-full ">
-                                <img src="/images/avatar01.jpg" />
+                                <img src={`/images/${user?.avatar}`} />
                             </div>
                         </div>
 
-                        <h1 className="text-lg font-bold text-white mt-2">{user?.username || "User"}</h1>
+                        <h1 className="text-lg font-bold text-white mt-2"  style={{ color: user?.nameColor }}>{user?.username || "User"}</h1>
                     </div>
                     <div className="stats shadow">
                         <div className="stat !border-none">

@@ -50,10 +50,8 @@ const AuthPage = () => {
       if (response.token) {
         
         localStorage.setItem("authToken", response.token);
-        const { id, username, email, timezone, tokens, isVerified, language } = response.user;
-        const updatedUser = { id, username, email, timezone: timezone || "UTC", tokens: tokens, isVerified: isVerified, language: language };
-        localStorage.setItem("user", JSON.stringify(updatedUser));
-        setUser(updatedUser);
+        localStorage.setItem("user", JSON.stringify(response.user));
+        setUser(response.user);
         
         router.push("/");
       }
